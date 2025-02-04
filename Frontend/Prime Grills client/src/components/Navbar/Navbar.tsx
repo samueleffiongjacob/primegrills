@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { FaAngleDown } from "react-icons/fa";
 import logo from "../../assets/images/primeLogo.png"
 
 const navbar = () => {
@@ -14,10 +13,28 @@ const navbar = () => {
                         />
                     <nav className="">
                         <Link to="home" className="cursor-pointer"> Home </Link>
-                        <Link to="menu" className="cursor-pointer">MenuCategory<span><FaAngleDown  className=""/> </span></Link>
-                        <Link to="services" className="cursor-pointer"> Services </Link>
+                        <Link to="menu" className="cursor-pointer">
+                        <select>
+                            <option>MenuCategory</option>
+                        </select>
+                        </Link>
+                        <Link to="services" className="cursor-pointer">
+                        <select>
+                            <option>Services</option>
+                        </select>
+                        </Link>
                         <Link to="offer" className="cursor-pointer"> Offers </Link>
                         
+
+                        {/* {["MenuCategory", "Services"].map(
+                                    (item) => (
+                                    <Link  to="menu" key={item}>
+                                        <select className="">
+                                        <option value={item}>{item}</option>
+                                        </select>
+                                    </Link>
+                                    )
+                                )} */}
                     </nav>
                     
 
