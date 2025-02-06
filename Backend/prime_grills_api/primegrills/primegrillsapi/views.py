@@ -44,7 +44,7 @@ class CustomLoginView(ObtainAuthToken):
         token = Token.objects.get(key=response.data['token'])
         return Response({
             'token': token.key,
-            'user_id': token.user_id,
+            # 'user_id': token.user_id,
             'email': token.user.email
         })
 

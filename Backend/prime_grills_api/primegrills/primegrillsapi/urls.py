@@ -17,8 +17,8 @@ router.register(r'oauth-providers', OAuthProviderViewSet)
 router.register(r'oauth-accounts', OAuthAccountViewSet)
 
 urlpatterns = [
-    path('api/', include(router.urls)),
-    path('api/register/', register_user, name='register'),
-    path('api/login/', CustomLoginView.as_view(), name='login'),
+    path('prime/', include(router.urls)),
+    path('prime/register/', register_user, name='register'),
+    path('prime/login/', CustomLoginView.as_view(), name='login'),
     path('health/', health_check, name='health_check'),
 ]
