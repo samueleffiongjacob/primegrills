@@ -1,6 +1,7 @@
-import { BrowserRouter as Router, Routes } from 'react-router-dom';
-// import Home from "../pages/Homes"
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import LandingPage from "../Pages/LandingPage"
 import Navbar from "../components/Navbar/Navbar"
+// import Signin from "../components/Login/login";
 // import Footer from "../components/footer/Footer"
 // import Blog from '../pages/blog';
 
@@ -12,8 +13,8 @@ const Navigations = () => {
 
         {/* pages */}
         <Routes>
-            {/* <Route path="/" element={<Blog />} /> */}
-            {/* <Route path="/Platform" element={<Home />} /> */}
+             {/* <Route path="/" element={<Signin />} />  */}
+            <Route path="/" element={<LandingPage />} />
         </Routes>
 
         {/* footer */}
