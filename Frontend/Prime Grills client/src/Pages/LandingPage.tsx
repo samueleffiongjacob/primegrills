@@ -1,5 +1,8 @@
 import Hero from "../components/HeroSection/Hero.tsx";
 import Menu from "../components/Menu/Category.tsx";
+import ProductMenu from "../components/product/ProductMenu.tsx";
+import Testimonials from "../components/Testimonials/Testimonials.tsx";
+
 
 const PrimePages = () => {
     return (
@@ -9,6 +12,10 @@ const PrimePages = () => {
             </div>
             <div className="">
                 <Menu />
+                <ProductMenu />
+            </div>
+            <div className=" ">
+                <Testimonials />
             </div>
             
         </div>
