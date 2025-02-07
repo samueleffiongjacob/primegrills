@@ -4,7 +4,7 @@ import Card from "../OurStory/Card";
 const Story =() => {
     return (
         <div>
-            <div className="container mt-10 grid grid-cols-1 md:grid-cols-2 lg:px-32 px-5 gap-8 ">
+            <div className="container mt-30 grid grid-cols-1 md:grid-cols-2 lg:px-32 px-5 gap-8 ">
 
                 {/* Left column */}
                 <div className=" text-left flex flex-col mr-5">
