@@ -1,7 +1,7 @@
 import messagebox from "../../assets/images/messagebox.png";
 import padlock from "../../assets/images/padlock.png";
 import eye from "../../assets/images/eye.png";
-import Button from "../../components/Navbar/button";
+import Button from "../Navbar/button";
 import { FaApple, FaFacebook, FaGoogle } from 'react-icons/fa';
 import { BiBarChart, BiBattery, BiFilterAlt } from "react-icons/bi";
 

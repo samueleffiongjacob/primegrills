@@ -1,5 +1,5 @@
 import Button from "../Navbar/button";
-import Card from "../OurStory/Card";
+import Card from "./Card";
 
 const Story =() => {
     return (

@@ -1,5 +1,5 @@
 import { FaApple, FaFacebook, FaGoogle } from "react-icons/fa";
-import Button from "../../components/Navbar/button";
+import Button from "../Navbar/button";
 import { BiBarChart, BiBattery, BiFilterAlt } from "react-icons/bi";
 
 const SignUp = () => {

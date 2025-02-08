@@ -1,4 +1,4 @@
-import Button from "../Navbar/button";
+import Button from "../Navbar/button.tsx";
 import hero from "../../assets/images/heroimage.png";
 import ItemCard from "../itemCard/itemCard.tsx";
 // import heroimg1 from "../../assets/images/heroimg1.png"
