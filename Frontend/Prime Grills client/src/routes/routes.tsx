@@ -3,7 +3,8 @@ import LandingPage from "../Pages/LandingPage"
 import Navbar from "../components/Navbar/Navbar"
 // import Signin from "../components/Login/login";
 import Footer from "../components/Footer/Footer.js"
-// import Blog from '../pages/blog';
+import SignUp from '../components/SignUp/signup.js';
+// import Blog from '../pages/blog';*
 
 const Navigations = () => {
     return (
@@ -15,6 +16,7 @@ const Navigations = () => {
         <Routes>
              {/* <Route path="/" element={<Signin />} />  */}
             <Route path="/" element={<LandingPage />} />
+            <Route path="/offers" element={<SignUp />} /> 
         </Routes>
 
         {/* footer */}

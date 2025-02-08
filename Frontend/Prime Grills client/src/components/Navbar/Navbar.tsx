@@ -38,7 +38,7 @@ const navbar = () => {
                         </div>
                         
                         <Link to="services" className="cursor-pointer"> Services  </Link> */}
-                        <Link to="offer" className="cursor-pointer hover:border-b-2 border-blue-300"> Offers </Link>
+                        <Link to="offers" className="cursor-pointer hover:border-b-2 border-blue-300"> Offers </Link>
                         <div className="relative size-12">
                             <div className="absolute inset-x-0 top-1 text-orange-500 text-sm pl-2">8</div>
                             <img src={bin} alt="bin"/>

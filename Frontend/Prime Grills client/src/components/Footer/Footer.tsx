@@ -8,12 +8,12 @@ const Footer = () => {
       <div className="container text-left mx-auto grid grid-cols-1 lg:grid-cols-4 gap-10">
         {/* First Column - Larger */}
         <div className="col-span-1">
-        <img
-                            src={logo} 
-                            alt="Logo"
-                            className="h-10 w-10 "
-                        />
-          <p className="text-sm leading-relaxed text-gray-600">
+          <img
+            src={logo} 
+            alt="Logo"
+            className="h-10 w-10 mb-3 "
+          />
+          <p className="text-sm leading-relaxed ">
             Savor the artisary  where <br/>every dish is a cullinary <br/>master piece
           </p>
 
@@ -47,17 +47,16 @@ const Footer = () => {
           <ul className="space-y-2 text-sm font-normal text-gray-600">
             <li>123@p&g.com</li>
             <li>+234-332-211</li>
-            <li>SocialMedia </li>
           </ul>
           <div className="flex space-x-4">
-              <a href="#" className="text-[#EE7F61] hover:text-white">
-                <FaFacebook/>
+              <a href="#" >
+                <FaFacebook className="bg-[#EE7F61] text-white rounded-full p-1 text-2xl"/>
               </a>
-              <a href="#" className="text-[#EE7F61] hover:text-white">
-                <FaXTwitter/>
+              <a href="#" >
+                <FaXTwitter className="bg-[#EE7F61] text-white rounded-full p-1 text-2xl"/>
               </a>
-              <a href="#" className="text-[#EE7F61] hover:text-white">
-                <FaInstagramSquare/>
+              <a href="#" >
+                <FaInstagramSquare className="bg-[#EE7F61] text-white rounded-full p-1 text-2xl"/>
               </a>
             </div>
         </div>
