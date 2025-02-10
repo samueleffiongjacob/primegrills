@@ -41,8 +41,12 @@ const Hero =() => {
                 </div>
                 
                 <div className=" relative">
-                    <img src={hero} alt="heroimg"
-                        className="object-cover w-[400px] h-3/4  bg-[#EE7F61] item-center rounded-full overflow- "/>
+                    <div className=" h-[400px] item-center rounded-full">
+                        <span className="bg-[#EE7F61] top-16 left-10 text-white rounded-full absolute h-[300px] w-[300px]"> Red cirle </span>
+                        <img src={hero} alt="heroimg"
+                        className="object-cover absolute w-[400px] h-3/4   overflow-hidden  "/>
+                    </div>
+                    
                 
                     <div className="absolute bg-white px-8 py-4 top-0  rounded-lg">
                         <h2 className="text-[#EE7F61]">Hot Spicy Meal</h2>

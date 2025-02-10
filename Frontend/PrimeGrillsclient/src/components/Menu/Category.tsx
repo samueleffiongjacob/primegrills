@@ -9,7 +9,7 @@ import heroimg1 from "../../assets/images/heroimg1.png";
 
 const Menu =() => {
     return (
-        <div className=" flex flex-col lg:px-32 px-5 ">
+        <div id="menuCategory" className=" flex flex-col lg:px-32 px-5 ">
             <h1 className=" bg-clip-text text-transparent font-semibold text-sm px-2 "
                         style={{
                             backgroundColor: '#EE7F61',

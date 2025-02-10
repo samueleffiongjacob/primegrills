@@ -27,8 +27,8 @@ const navbar = () => {
                         />
                     <nav className=" hidden md:flex flex-row items-center text-lg font-sm gap-8 ">
                         <Link to="home"   className="cursor-pointer hover:border-b-2 border-blue-300"> Home </Link>
-                        <Link to="home" className="cursor-pointer flex hover:border-2 border-blue-300"> MenuCategory <IoIosArrowDown className=" p-1 text-orange-500 text-2xl" /> </Link>
-                        <Link to="home" className="cursor-pointer flex hover:border-2 border-blue-300"> Services <IoIosArrowDown className=" p-1 text-orange-500 text-2xl" /> </Link>
+                        <Link to="home" className="cursor-pointer flex hover:border-b-2 border-blue-300"> MenuCategory <IoIosArrowDown className=" p-1 mt-1 text-orange-500 text-2xl" /> </Link>
+                        <Link to="home" className="cursor-pointer flex hover:border-b-2 border-blue-300"> Services <IoIosArrowDown className=" p-1 mt-1 text-orange-500 text-2xl" /> </Link>
                         {/* <div className="relative group">
                             <div className="flex item-center gap-1">
                                 <Link to="menu" className="cursor-pointer hover:text-underline transiton-all"> MenuCategory  </Link>

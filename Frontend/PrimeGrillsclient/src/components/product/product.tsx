@@ -4,7 +4,7 @@ const Product =(props) => {
     return (
         <div className="w-full lg:w-1/4 bg-white p-3 rounded-xl flex flex-col justify-center shadow-lg">
             <div className=" relative ms-auto  ">
-                <FaHeart className="absolute top-0   right-0 bg-[#EE7F61]"/>
+                <FaHeart className="absolute top-0 text-white   right-0 bg-[#EE7F61]"/>
              </div>   
             <div className=" justify-items-start items-start">
                 

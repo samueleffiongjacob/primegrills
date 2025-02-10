@@ -2,7 +2,7 @@
 
 const MenuCard =(props) => {
     return (
-        <div className="w-full lg:w-1/5 bg-white p-3 rounded-xl flex flex-col items-center justify-center shadow-lg">
+        <div id="menuCategory" className="w-full lg:w-1/5 bg-white p-3 rounded-xl flex flex-col items-center justify-center shadow-lg">
             <div className="  ">
                 <img src={props.img} alt="" className="h-[81px] w-[79px] rounded-full bg-[#EE7F61]" />
             </div>
