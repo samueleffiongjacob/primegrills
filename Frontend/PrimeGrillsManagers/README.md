@@ -1,50 +1,35 @@
-# React + TypeScript + Vite
+# **4. PrimeGrillsManager** (Manager Dashboard)  
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A dashboard for managers to track sales, staff performance, and restaurant insights.  
 
-Currently, two official plugins are available:
+## **Folder Structure**  
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```bash
+PrimeGrillsManager/  
+│── src/  
+│   ├── components/        # Reports, Staff Management UI  
+│   ├── pages/             # Sales Dashboard, Staff Management  
+│   ├── services/          # API calls for fetching reports 
+│   ├── utils/             # Helper functions  , configurations  & App.ts 
+│   ├── assets/            # Images, icons, and static files  
+│   │   ├── styles/        # Global styles (CSS or Tailwind)
+│   │   ├── images/        # All Images  
+│   ├── hooks/             # Custom hooks for data handling  and  state management
+│   ├── context/           # Global state management (React Context or Redux/Context API)
+│── public/                # Public assets (favicon, images) 
+│── .env                   # Environment variables  
+│── package.json           # Dependencies & scripts  
+│── tsconfig.json          # TypeScript configuration  
+│── vite.config.js         # Vite configuration  
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+### **Setup & Start**  
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+```bash
+cd PrimeGrillsManager  
+npm install  
+npm run dev  
 ```
+
+---
+The app is built modularly, ensuring maintainability, scalability, and performance optimization. 🚀
