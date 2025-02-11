@@ -6,6 +6,8 @@ import { FiSearch } from "react-icons/fi";
 import logo from "../../assets/images/primeLogo.png";
 import bin from "../../assets/images/bin.png";
 import Button from "./button";
+import LoginModal from "../Auth/Login";
+import SignUpModal from "../Auth/SignUp";
 
 const NavLink = ({ to, children, onClick }) => (
   <Link
@@ -46,6 +48,20 @@ const CartIcon = () => (
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const [activeModal, setActiveModal] = useState<'login' | 'signup' | null>(null);
+
+  // handle login
+  const handleLogin = (email: string, password: string) => {
+    console.log('Logging in with:', email, password);
+    setActiveModal(null); // Close the modal after login
+  };
+
+  // handle sign up
+  const handleSignUp = (email: string, password: string) => {
+    console.log('Signing up with:', email, password);
+    setActiveModal(null); // Close the modal after signup
+  };
+
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const closeMenu = () => setIsMenuOpen(false);
@@ -107,8 +123,24 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-6">
             <SearchBar className="w-48" />
             <CartIcon />
-            <Button title="Login" />
+            <Button title="Login" onClick={() => setActiveModal('login')} />
           </div>
+      
+        {/* LoginModal */}
+        <LoginModal
+          isOpen={activeModal === 'login'}
+          onClose={() => setActiveModal(null)}
+          onLogin={handleLogin}
+          onToggleSignUp={() => setActiveModal('signup')} // Toggle to SignUpModal
+        />
+
+        {/* SignUpModal */}
+        <SignUpModal
+          isOpen={activeModal === 'signup'}
+          onClose={() => setActiveModal(null)}
+          onSignUp={handleSignUp}
+          onToggleLogin={() => setActiveModal('login')} // Toggle to LoginModal
+        />
 
           {/* Mobile Menu Button */}
           <button

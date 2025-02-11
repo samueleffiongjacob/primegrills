@@ -1,4 +1,5 @@
 import {motion} from 'framer-motion';
+import { FaArrowDown, FaCaretDown } from 'react-icons/fa';
 
 // INTERNAL IMPORTS
 import Button from "../Navbar/button";
@@ -8,7 +9,7 @@ import { headerVariants, slideVariants } from '../../utils/utils.ts';
 
 const Hero =() => {
     return (
-        <div className="container justify-self-center">
+        <div className="container -mt-8 justify-self-center">
             <div className="min-h-screen flex flex-col justify-center lg:flex-row lg:justify-center items-center lg:px-12 px-5 gap-10 ">
                 <div className="w-full lg:w-2/4 space-y-4 mt-14 lg:mt-0">
                  <motion.div
@@ -74,8 +75,10 @@ const Hero =() => {
                     </div>
 
                     {/* Hot Spicy Meal Label */}
-                    <div className="absolute left-[-120px] top-26 transform -translate-y-1/2 bg-white px-8 py-4 rounded-lg shadow-md">
+                    <div className="absolute left-[-120px] top-26 transform -translate-y-1/2 bg-white px-8 py-4
+                     rounded-lg shadow-[#EE7F61] shadow-2xl">
                         <h2 className="text-[#EE7F61] font-semibold">Hot Spicy Meal ?</h2>
+                        <div className='bg-white absolute right-0 shadow-xl h-7 w-3 rounded-bl-3xl rounded-xl'/>
                     </div>
 
                     {/* Item Card */}
