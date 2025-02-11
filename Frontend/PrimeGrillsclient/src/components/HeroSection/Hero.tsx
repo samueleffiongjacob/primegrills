@@ -40,22 +40,45 @@ const Hero =() => {
                     </div>
                 </div>
                 
-                <div className=" relative">
+                {/* <div className=" relative">
                     <div className=" h-[400px] item-center rounded-full">
-                        <span className="bg-[#EE7F61] top-16 left-10 text-white rounded-full absolute h-[300px] w-[300px]"> Red cirle </span>
+                        <span className="bg-[#EE7F61] top-22 left-0 text-white rounded-full absolute h-[300px] w-[300px]"> Red cirle </span>
                         <img src={hero} alt="heroimg"
-                        className="object-cover absolute w-[400px] h-3/4   overflow-hidden  "/>
+                        className="object-cover absolute w-[300px] h-[400px]   overflow-hidden  "/>
                     </div>
                     
                 
-                    <div className="absolute bg-white px-8 py-4 top-0  rounded-lg">
-                        <h2 className="text-[#EE7F61]">Hot Spicy Meal</h2>
+                    <div className="absolute bg-white px-8 py-4 top-18 left-0 items-start justify-items-start  rounded-lg">
+                        <h2 className="text-[#EE7F61]">Hot Spicy Meal ? </h2>
                     </div>
                     <div className="  bottom-0">
                         <ItemCard  />
                     </div>
                 
+                </div> */}
+                <div className="relative flex justify-center">
+                    <div className="relative h-[400px] w-[300px]">
+                        {/* Red Circle */}          
+                        <span className="bg-[#EE7F61] absolute inset-0 m-auto top-20  rounded-full h-[300px] w-[300px] z-[-1]"></span>
+                        {/* Hero Image */}
+                        <img
+                        src={hero}
+                        alt="heroimg"
+                        className="object-cover absolute top-0 left-0 w-[300px] h-[400px] rounded-full overflow-hidden"
+                        />
+                    </div>
+
+                    {/* Hot Spicy Meal Label */}
+                    <div className="absolute left-[-120px] top-25 transform -translate-y-1/2 bg-white px-8 py-4 rounded-lg shadow-md">
+                        <h2 className="text-[#EE7F61] font-semibold">Hot Spicy Meal ?</h2>
+                    </div>
+
+                    {/* Item Card */}
+                    <div className="absolute bottom-[-60px] right-2  ">
+                        <ItemCard />
+                    </div>
                 </div>
+
                 
             </div>
             
