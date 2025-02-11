@@ -1,14 +1,25 @@
 
+interface MenuProps {
+    img: string;
+    title: string;
+    value: string;
+   
+}
 
-const MenuCard =(props) => {
+const MenuCard: React.FC<MenuProps> =  ({
+    img,
+    title,
+    value
+  }) => {
     return (
-        <div id="menuCategory" className="w-full lg:w-1/5 bg-white p-3 rounded-xl flex flex-col items-center justify-center shadow-lg">
+        <div id="menuCategory" className="w-full border-t border-t-gray-300 bg-white p-3 rounded-2xl flex flex-col
+         shadow-gray-400 shadow-lg items-center justify-center">
             <div className="  ">
-                <img src={props.img} alt="" className="h-[81px] w-[79px] rounded-full bg-[#EE7F61]" />
+                <img src={img} alt={title} className="h-[81px] w-[79px] mt-2 rounded-full bg-[#EE7F61]" />
             </div>
-            <div className="text-left p-2 mt-2">
-                <h3 className="font-bold text-md" >{props.title}</h3>
-                <p> {props.value} </p>
+            <div className="text-left p-2 ">
+                <h3 className="font-bold text-md text-center" >{title}</h3>
+                <p className="text-center"> {value} </p>
             </div>
         </div>
     )

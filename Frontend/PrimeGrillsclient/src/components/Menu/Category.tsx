@@ -1,38 +1,138 @@
+import { useRef, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { motion } from 'framer-motion';
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import { Swiper as SwiperType } from "swiper/types";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+
+// INTERNAL IMPORTS
 import MenuCard from "./MenuCard";
-import menuimg1 from "../../assets/images/menuimg1.png";
-import menuimg2 from "../../assets/images/menuimg2.png";
-import menuimg3 from "../../assets/images/menuimg3.png";
-import heroimg1 from "../../assets/images/heroimg1.png";
+import { MENU_CARD_ITEMS } from "./menuItemDetails";
+import { headerVariants, slideVariants } from "../../utils/utils";
 
 
+const Menu = () => {
+    const swiperRef = useRef<SwiperType | null>(null);
+    const [isBeginning, setIsBeginning] = useState(true);
+    const [isEnd, setIsEnd] = useState(false);
 
-const Menu =() => {
+    const handleSlideChange = () => {
+        if (swiperRef.current) {
+            setIsBeginning(swiperRef.current.isBeginning);
+            setIsEnd(swiperRef.current.isEnd);
+        }
+    };
+
     return (
-        <div id="menuCategory" className=" flex flex-col lg:px-32 px-5 ">
-            <h1 className=" bg-clip-text text-transparent font-semibold text-sm px-2 "
-                        style={{
-                            backgroundColor: '#EE7F61',
-                            letterSpacing: '0.4em',
-                          }}>CUSTOMER FAVORITE</h1>
-            <p className="text-4xl font-bold">Popular Categories</p>
-            <div className=" p-4  flex ms-auto">
-                <div className="bg-gray-300 rounded-full w-10 h-10 me-4 flex items-center justify-center shadow-md">
+        <div id="menuCategory" className="my-32 justify-center flex flex-col lg:px-32 px-5">
+            {/* Header and title */}
+            <motion.div
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-100px" }}
+                variants={headerVariants}
+            >
+                <h1 className="bg-clip-text text-center text-transparent font-semibold text-sm px-2"
+                    style={{
+                        backgroundColor: "#EE7F61",
+                        letterSpacing: "0.4em",
+                    }}
+                >
+                    CUSTOMER FAVORITE
+                </h1>
+                <p className="text-4xl font-bold text-center">Popular Categories</p>
+            </motion.div>
+
+            {/* Navigation Buttons */}
+             <motion.div 
+                className="p-4 flex ms-auto"
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3, duration: 0.5 }}
+            >
+                <button 
+                    onClick={() => swiperRef.current?.slidePrev()}
+                    disabled={isBeginning}
+                    className={`rounded-full w-10 h-10 me-4 flex items-center justify-center shadow-md transition-all duration-300 ${
+                        isBeginning 
+                        ? 'bg-gray-200 cursor-not-allowed opacity-50' 
+                        : 'bg-gray-300 hover:bg-gray-400'
+                    }`}
+                >
                     <FaChevronLeft size={20} className="text-black" />
-                </div>
-                <div className="bg-[#EE7F61] rounded-full w-10 h-10 flex items-center justify-center shadow-md">
- 
+                </button>
+                <button 
+                    onClick={() => swiperRef.current?.slideNext()}
+                    disabled={isEnd}
+                    className={`rounded-full w-10 h-10 flex items-center justify-center shadow-md transition-all duration-300 ${
+                        isEnd 
+                        ? 'bg-[#ffaa91] cursor-not-allowed opacity-50' 
+                        : 'bg-[#EE7F61] hover:bg-[#ff8f71]'
+                    }`}
+                >
                     <FaChevronRight size={20} className="text-white" />
-                </div>
-            </div>
-            <div className="flex flex-wrap pb-8 gap-8 justify-center">
-                <MenuCard img={menuimg1} title="Food" value="(150 Dishes)" />
-                <MenuCard img={menuimg2} title="Pastries" value="(150 Dishes)" />
-                <MenuCard img={menuimg3} title="Bar/Drinks" value="(150 Dishes)"/>
-                <MenuCard img={heroimg1} title="Barbeque" value="(150 Dishes)" />
-            </div>
-            
+                </button>
+            </motion.div>
+
+            {/* Swiper Component */}
+            <motion.div 
+                className="w-full  px-6 py-1"
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-50px" }}
+                variants={slideVariants}
+            >
+
+                <Swiper>
+                    <SwiperSlide></SwiperSlide>
+                </Swiper>
+                <Swiper
+                    onSwiper={(swiper) => {
+                        swiperRef.current = swiper;
+                        setIsBeginning(swiper.isBeginning);
+                        setIsEnd(swiper.isEnd);
+                    }}
+                    onSlideChange={handleSlideChange}
+                    modules={[Navigation, Pagination, Autoplay]}
+                    spaceBetween={32}
+                    autoplay={{ delay: 3000, disableOnInteraction: false, pauseOnMouseEnter: true }}
+                    slidesPerView={1}
+                    breakpoints={{
+                        640: {slidesPerView: 2, spaceBetween: 20},
+                        1024: { slidesPerView: 4, spaceBetween: 30},
+                    }}
+                    className=" h-[220px] "
+                >
+                    {MENU_CARD_ITEMS.map((item, index) => (
+                        <SwiperSlide key={item.id} className="p-2">
+                            <motion.div 
+                                className="w-full max-w-sm"
+                                initial={{ opacity: 0, y: 50 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ 
+                                    delay: index * 0.1,
+                                    duration: 0.5,
+                                    ease: "easeOut"
+                                }}
+                            >
+                                <MenuCard
+                                    img={item.img}
+                                    title={item.title}
+                                    value={item.value}
+                                />
+                            </motion.div>
+                        </SwiperSlide>
+                    ))}
+                </Swiper>
+            </motion.div>
         </div>
-    )
-}
+        
+    );
+};
+
 export default Menu;
