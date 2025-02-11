@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LandingPage from "../Pages/LandingPage"
 import Navbar from "../components/Navbar/Navbar"
-// import Signin from "../components/Login/login";
 import Footer from "../components/Footer/Footer.js"
-// import Blog from '../pages/blog';
+import MenuPage from '../Pages/MenuPage.js';
+
 
 const Navigations = () => {
     return (
@@ -13,8 +13,8 @@ const Navigations = () => {
 
         {/* pages */}
         <Routes>
-             {/* <Route path="/" element={<Signin />} />  */}
             <Route path="/" element={<LandingPage />} />
+            <Route path="/menu" element={<MenuPage />} />
         </Routes>
 
         {/* footer */}

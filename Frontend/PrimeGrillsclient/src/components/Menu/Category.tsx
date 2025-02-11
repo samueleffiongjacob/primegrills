@@ -86,10 +86,6 @@ const Menu = () => {
                 viewport={{ once: true, margin: "-50px" }}
                 variants={slideVariants}
             >
-
-                <Swiper>
-                    <SwiperSlide></SwiperSlide>
-                </Swiper>
                 <Swiper
                     onSwiper={(swiper) => {
                         swiperRef.current = swiper;

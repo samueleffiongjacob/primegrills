@@ -1,5 +1,5 @@
 import {motion} from 'framer-motion';
-import { FaArrowDown, FaCaretDown } from 'react-icons/fa';
+// import { FaArrowDown, FaCaretDown } from 'react-icons/fa';
 
 // INTERNAL IMPORTS
 import Button from "../Navbar/button";
@@ -35,7 +35,7 @@ const Hero =() => {
                     >
                         <p className="text-md text-center relative top-8 mb-5 lg:text-start leading-tight">Where Each Bite Weaves a Story of Culinary <br/> Mastery and Passionate Craftmanship</p>
                         <div className="flex flex-row relative top-12 mt-5 gap-16">
-                            <Button className="" title="Order Now" />
+                            <Button  title="Order Now" />
                             <h4 className="flex  items-center gap-4 text-lg font-medium text-gray-800">
                                 Watch Video
                                 <span
