@@ -1,7 +1,12 @@
+import React from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useState } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 // Importing images
 import menuimg1 from "../../../assets/images/menuimg1.png";
@@ -33,14 +38,6 @@ const MenuItem: React.FC<MenuProps> = ({ img, title, path }) => {
   );
 };
 
-
-// Menu Section Component
-interface MenuProps {
-  img: string;
-  title: string;
-  path: string; // Add path to the interface
-}
-
 const CategorySection = () => {
   const MENU_ITEMS: MenuProps[] = [
     { img: product4, title: "All", path: "/menu/all" },
@@ -53,16 +50,15 @@ const CategorySection = () => {
     { img: menuimg1, title: "Grilled Fish", path: "/menu/grilled-fish" },
   ];
 
-  const [currentPage, setCurrentPage] = useState(0);
-  const itemsPerPage = 5;
-  const totalPages = Math.ceil(MENU_ITEMS.length / itemsPerPage);
+  const [isBeginning, setIsBeginning] = useState(true);
+  const [isEnd, setIsEnd] = useState(false);
+  const swiperRef = React.useRef<any>(null);
 
-  const handleNext = () => {
-    if (currentPage < totalPages - 1) setCurrentPage(currentPage + 1);
-  };
-
-  const handlePrev = () => {
-    if (currentPage > 0) setCurrentPage(currentPage - 1);
+  const handleSlideChange = () => {
+    if (swiperRef.current) {
+      setIsBeginning(swiperRef.current.isBeginning);
+      setIsEnd(swiperRef.current.isEnd);
+    }
   };
 
   return (
@@ -72,10 +68,10 @@ const CategorySection = () => {
         <h1 className="text-3xl font-bold">Menu</h1>
         <div className="flex gap-2">
           <button
-            onClick={handlePrev}
-            disabled={currentPage === 0}
+            onClick={() => swiperRef.current?.slidePrev()}
+            disabled={isBeginning}
             className={`rounded-full w-10 me-4 h-10 flex items-center justify-center shadow-md transition-all duration-300 ${
-              currentPage === 0
+              isBeginning
                 ? "bg-gray-200 cursor-not-allowed opacity-50"
                 : "bg-gray-300 hover:bg-gray-400"
             }`}
@@ -83,10 +79,10 @@ const CategorySection = () => {
             <FaChevronLeft size={20} className="text-black" />
           </button>
           <button
-            onClick={handleNext}
-            disabled={currentPage === totalPages - 1}
+            onClick={() => swiperRef.current?.slideNext()}
+            disabled={isEnd}
             className={`rounded-full w-10 h-10 flex items-center justify-center shadow-md transition-all duration-300 ${
-              currentPage === totalPages - 1
+              isEnd
                 ? "bg-[#ffaa91] cursor-not-allowed opacity-50"
                 : "bg-[#EE7F61] hover:bg-[#ff8f71]"
             }`}
@@ -96,28 +92,37 @@ const CategorySection = () => {
         </div>
       </div>
 
-      {/* Grid Layout */}
+      {/* Swiper Slider */}
       <motion.div
-        className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 w-full px-4"
+        className="w-full px-4"
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        {MENU_ITEMS.slice(
-          currentPage * itemsPerPage,
-          (currentPage + 1) * itemsPerPage
-        ).map((item, index) => (
-          <MenuItem
-            key={index}
-            img={item.img}
-            title={item.title}
-            path={item.path} // Pass the path prop
-          />
-        ))}
+        <Swiper
+          spaceBetween={16} // Space between slides
+          slidesPerView={2} // Default to 2 slides per view
+          breakpoints={{
+            640: { slidesPerView: 3 }, // 3 slides on small screens
+            768: { slidesPerView: 4 }, // 4 slides on medium screens
+            1024: { slidesPerView: 5 }, // 5 slides on large screens
+          }}
+          onSwiper={(swiper) => {
+            swiperRef.current = swiper;
+            setIsBeginning(swiper.isBeginning);
+            setIsEnd(swiper.isEnd);
+          }}
+          onSlideChange={handleSlideChange}
+        >
+          {MENU_ITEMS.map((item, index) => (
+            <SwiperSlide key={index}>
+              <MenuItem img={item.img} title={item.title} path={item.path} />
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </motion.div>
     </div>
   );
 };
-
 
 export default CategorySection;

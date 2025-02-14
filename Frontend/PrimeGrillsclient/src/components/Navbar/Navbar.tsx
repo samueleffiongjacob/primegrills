@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FiChevronDown } from "react-icons/fi";
-import { User } from 'lucide-react';
+import { User } from "lucide-react";
 
 // INTERNAL IMPORTS
 import { CartIcon } from "../CartIcon";
@@ -40,7 +40,7 @@ const NavLink = ({ to, children, onClick, isParentActive }) => {
 };
 
 const Navbar = () => {
-  const [activeModal, setActiveModal] = useState<'login' | 'signup' | null>(null);
+  const [activeModal, setActiveModal] = useState<"login" | "signup" | null>(null);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Track user login state
@@ -48,11 +48,11 @@ const Navbar = () => {
 
   // Sample profile data
   const profile: UserProfile = {
-    username: "JohnD",
-    name: "John Doe",
-    email: "john.doe@example.com",
-    phone: "+82 10-1234-5678",
-    memberSince: "January 2024"
+    username: isLoggedIn ? "JohnD" : "", // Only show username if logged in
+    name: isLoggedIn ? "John Doe" : "", // Only show name if logged in
+    email: isLoggedIn ? "john.doe@example.com" : "", // Only show email if logged in
+    phone: isLoggedIn ? "+82 10-1234-5678" : "", // Only show phone if logged in
+    memberSince: isLoggedIn ? "January 2024" : "", // Only show member since if logged in
   };
 
   const toggleProfile = () => {
@@ -60,19 +60,24 @@ const Navbar = () => {
   };
 
   const handleLogin = (email: string, password: string) => {
-    console.log('Logging in with:', email, password);
+    console.log("Logging in with:", email, password);
     setIsLoggedIn(true); // Set user as logged in
     setActiveModal(null); // Close the modal
   };
 
   const handleSignUp = (email: string, password: string) => {
-    console.log('Signing up with:', email, password);
+    console.log("Signing up with:", email, password);
     setIsLoggedIn(true); // Set user as logged in
     setActiveModal(null); // Close the modal
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false); // Set user as logged out
+    setIsProfileOpen(false); // Close the profile panel
+  };
+
+  const handleLoginFromPanel = () => {
+    setActiveModal("login"); // Open the login modal
     setIsProfileOpen(false); // Close the profile panel
   };
 
@@ -88,10 +93,10 @@ const Navbar = () => {
         { title: "Pastries", path: "/menu/pastries" },
         { title: "Bars/Drinks", path: "/menu/drinks" },
         { title: "Grills", path: "/menu/grills" },
-      ]
+      ],
     },
     { title: "Services", path: "/services" },
-    { title: "Offers", path: "/offers" }
+    { title: "Offers", path: "/offers" },
   ];
 
   return (
@@ -107,7 +112,9 @@ const Navbar = () => {
           <nav className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => {
               // Check if any of the subItems are active
-              const isParentActive = item.subItems?.some(subItem => location.pathname === subItem.path);
+              const isParentActive = item.subItems?.some(
+                (subItem) => location.pathname === subItem.path
+              );
 
               return (
                 <div
@@ -119,13 +126,17 @@ const Navbar = () => {
                     to={item.path}
                     onClick={() => {
                       if (item.title.toLowerCase() === "offers") {
-                        document.getElementById("offers")?.scrollIntoView({ behavior: "smooth" });
+                        document
+                          .getElementById("offers")
+                          ?.scrollIntoView({ behavior: "smooth" });
                       }
                     }}
                     isParentActive={isParentActive} // Pass whether any subItem is active
                   >
                     {item.title}
-                    {item.subItems && <FiChevronDown className="w-4 text-[#EE7F61] h-4 ml-1" />}
+                    {item.subItems && (
+                      <FiChevronDown className="w-4 text-[#EE7F61] h-4 ml-1" />
+                    )}
                   </NavLink>
 
                   {/* Dropdown for Menu */}
@@ -136,14 +147,19 @@ const Navbar = () => {
                       onMouseLeave={() => setHoveredItem(null)}
                     >
                       {item.subItems.map((subItem) => {
-                        const isSubItemActive = location.pathname === subItem.path;
+                        const isSubItemActive =
+                          location.pathname === subItem.path;
 
                         return (
                           <Link
                             key={subItem.title}
                             to={subItem.path}
                             className={`block px-4 py-2 transition-colors 
-                              ${isSubItemActive ? "text-[#EE7F61]" : "text-gray-700 hover:bg-gray-100"}`}
+                              ${
+                                isSubItemActive
+                                  ? "text-[#EE7F61]"
+                                  : "text-gray-700 hover:bg-gray-100"
+                              }`}
                           >
                             {subItem.title}
                           </Link>
@@ -163,7 +179,7 @@ const Navbar = () => {
 
             {/* Conditionally render Login Button or Profile Icon */}
             {!isLoggedIn ? (
-              <Button title="Login" onClick={() => setActiveModal('login')} />
+              <Button title="Login" onClick={() => setActiveModal("login")} />
             ) : (
               <button
                 onClick={toggleProfile}
@@ -180,6 +196,8 @@ const Navbar = () => {
             onClose={() => setIsProfileOpen(false)}
             profile={profile}
             onLogout={handleLogout}
+            onLogin={handleLoginFromPanel} // Pass login handler
+            isLoggedIn={isLoggedIn} // Pass login state
           />
 
           {/* Mobile Right Section */}
@@ -192,16 +210,16 @@ const Navbar = () => {
 
       {/* Modals */}
       <LoginModal
-        isOpen={activeModal === 'login'}
+        isOpen={activeModal === "login"}
         onClose={() => setActiveModal(null)}
         onLogin={handleLogin}
-        onToggleSignUp={() => setActiveModal('signup')}
+        onToggleSignUp={() => setActiveModal("signup")}
       />
       <SignUpModal
-        isOpen={activeModal === 'signup'}
+        isOpen={activeModal === "signup"}
         onClose={() => setActiveModal(null)}
         onSignUp={handleSignUp}
-        onToggleLogin={() => setActiveModal('login')}
+        onToggleLogin={() => setActiveModal("login")}
       />
     </header>
   );

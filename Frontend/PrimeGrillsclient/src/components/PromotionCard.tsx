@@ -85,7 +85,7 @@ const PromotionCard: React.FC<PromotionProps> = ({ promotionItems }) => {
             <motion.img
               src={promo.image}
               alt="Promotion"
-              className="w-40 md:w-52 md:h-52 h-40 lg:h-52 object-contain md:right-10 absolute -top-10 -right-2"
+              className="w-24 md:w-52 md:h-52 h-24 lg:h-52 object-contain md:right-10 absolute -top-10 -right-2"
               animate={{
                 y: [0, -10, 0],
                 scale: [1, 1.02, 1],

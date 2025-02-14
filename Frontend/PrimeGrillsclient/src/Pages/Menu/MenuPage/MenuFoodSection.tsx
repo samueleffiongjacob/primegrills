@@ -73,7 +73,7 @@ const [selectedMeal, setSelectedMeal] =  useState<{
     <div className="flex flex-col justify-self-center px-4 mx-auto mt-12 md:mt-24 w-full">
       {/* Header Section */}
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-3xl font-bold md:ml-4 text-black">Food</h1>
+        <h1 className="text-3xl font-bold ml-4 text-black">Food</h1>
         <div className="flex gap-2">
           <button
             onClick={() => swiperRef.current?.slidePrev()}

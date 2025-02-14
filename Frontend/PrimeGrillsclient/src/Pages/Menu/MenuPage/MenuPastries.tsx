@@ -12,48 +12,38 @@ import Popular from "../../../components/Popular";
 import pizza from "../../../assets/images/pizza.png";
 import desert from "../../../assets/images/desert.png";
 import product4 from "../../../assets/images/product4.png";
-import menuimg3 from "../../../assets/images/menuimg3.png";
-import menuimg1 from "../../../assets/images/menuimg1.png";
+import menuimage3 from "../../../assets/images/menuimg3.png";
+import menuimage1 from "../../../assets/images/menuimg1.png";
 import MealDetailsModal from "../../../components/MealDetailsModal";
 
-const MenuPopularSection = () => {
-
-    const [selectedMeal, setSelectedMeal] =  useState<{
-        id: number;
-        name: string;
-        price: number;
-        image: string;
-        description: string;
-        items: string[];
-    } | null>(null);
-    
+const MenuPastriesSection = () => {
   // Sample data
-  const Popular_ITEMS = [
-    { id: 1, image: pizza, name: "Pizza", price: 10000,
+  const Pastries_ITEMS = [
+    { id: 1, image: menuimage3, name: "Smoothie", price: 10000,
     description: "A delicious and spicy Shawarma wrap.",
     items: ["Chicken slices", "Pita bread", "Garlic sauce"]
     },
-    { id: 2, image: desert, name: "Desert", price: 10000 ,
+    { id: 2, image: menuimage3, name: "Wine", price: 10000 ,
         description: "A delicious and spicy Shawarma wrap.",
     items: ["Chicken slices", "Pita bread", "Garlic sauce"]
     },
-    { id: 3, image: product4, name: "Chicken", price: 10000 ,
+    { id: 3, image: menuimage3, name: "Coffee", price: 10000 ,
         description: "A delicious and spicy Shawarma wrap.",
     items: ["Chicken slices", "Pita bread", "Garlic sauce"]
     },
-    { id: 4, image: menuimg3, name: "Barbecue", price: 10000,
+    { id: 4, image: menuimage3, name: "Tea", price: 10000,
         description: "A delicious and spicy Shawarma wrap.",
     items: ["Chicken slices", "Pita bread", "Garlic sauce"]
      },
-    { id: 5, image: menuimg1, name: "Grilled Fish", price: 10000 ,
+    { id: 5, image: menuimage1, name: "Grilled Fish", price: 10000 ,
         description: "A delicious and spicy Shawarma wrap.",
     items: ["Chicken slices", "Pita bread", "Garlic sauce"]
     },
-    { id: 6, image: menuimg1, name: "Grilled Fish", price: 10000,
+    { id: 6, image: menuimage1, name: "Grilled Fish", price: 10000,
         description: "A delicious and spicy Shawarma wrap.",
     items: ["Chicken slices", "Pita bread", "Garlic sauce"]
      },
-    { id: 7, image: menuimg1, name: "Grilled Fish", price: 10000,
+    { id: 7, image: menuimage1, name: "Grilled Fish", price: 10000,
         description: "A delicious and spicy Shawarma wrap.",
     items: ["Chicken slices", "Pita bread", "Garlic sauce"]
      },
@@ -70,11 +60,20 @@ const MenuPopularSection = () => {
     }
   };
 
+const [selectedMeal, setSelectedMeal] =  useState<{
+    id: number;
+    name: string;
+    price: number;
+    image: string;
+    description: string;
+    items: string[];
+} | null>(null);
+
   return (
-    <div className="flex flex-col justify-self-center px-4 mx-auto mt-6 w-full">
+    <div className="flex flex-col justify-self-center px-4 mx-auto mt-12 md:mt-24 w-full">
       {/* Header Section */}
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-3xl font-bold ml-4 text-black">Popular</h1>
+        <h1 className="text-3xl font-bold ml-4 text-black">Pastries</h1>
         <div className="flex gap-2">
           <button
             onClick={() => swiperRef.current?.slidePrev()}
@@ -119,15 +118,15 @@ const MenuPopularSection = () => {
             1024: { slidesPerView: 5, spaceBetween: 30 }, // 5 slides on large screens
           }}
         >
-          {Popular_ITEMS.map((item) => (
+          {Pastries_ITEMS.map((item) => (
             <SwiperSlide key={item.id} onClick={() => setSelectedMeal(item)}>
               <Popular id={item.id} img={item.image} title={item.name} price={item.price} />
             </SwiperSlide>
           ))}
         </Swiper>
       </motion.div>
-      {/* Meal Details Modal */}
-      <MealDetailsModal
+       {/* Meal Details Modal */}
+       <MealDetailsModal 
         isOpen={!!selectedMeal} 
         meal={selectedMeal} 
         onClose={() => setSelectedMeal(null)} 
@@ -136,4 +135,4 @@ const MenuPopularSection = () => {
   );
 };
 
-export default MenuPopularSection;
+export default MenuPastriesSection;

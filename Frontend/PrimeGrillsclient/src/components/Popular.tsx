@@ -17,7 +17,8 @@ const Popular: React.FC<PopularProps> = ({ id, img, title, price }) => {
   const quantity = item ? item.quantity : 0;
 
   // Handle the plus button click
-  const handleIncreaseQuantity = () => {
+  const handleIncreaseQuantity = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Stop event propagation
     if (!item) {
       // If the item is not in the cart, add it first
       dispatch({
@@ -28,6 +29,12 @@ const Popular: React.FC<PopularProps> = ({ id, img, title, price }) => {
       // If the item is already in the cart, increase its quantity
       dispatch({ type: "INCREASE_QUANTITY", payload: id });
     }
+  };
+
+  // Handle the minus button click
+  const handleDecreaseQuantity = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Stop event propagation
+    dispatch({ type: "DECREASE_QUANTITY", payload: id });
   };
 
   return (
@@ -52,7 +59,7 @@ const Popular: React.FC<PopularProps> = ({ id, img, title, price }) => {
       {/* Quantity Controls */}
       <div className="flex items-center justify-between bg-gray-100 rounded-lg p-2 mt-3">
         <button
-          onClick={() => dispatch({ type: "DECREASE_QUANTITY", payload: id })}
+          onClick={handleDecreaseQuantity} // Use the updated handler
           className="text-lg font-bold text-gray-700 px-3 py-1 rounded-lg bg-gray-200 hover:bg-gray-300"
           disabled={quantity === 0}
         >
@@ -60,7 +67,7 @@ const Popular: React.FC<PopularProps> = ({ id, img, title, price }) => {
         </button>
         <span className="text-lg font-semibold text-gray-700">{quantity}</span>
         <button
-          onClick={handleIncreaseQuantity}
+          onClick={handleIncreaseQuantity} // Use the updated handler
           className="text-lg font-bold text-white px-3 py-1 rounded-lg bg-orange-500 hover:bg-orange-600"
         >
           +

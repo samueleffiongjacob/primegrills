@@ -13,8 +13,9 @@ import PopularMealsPage from '../Pages/Menu/PopularlMealsPage.js';
 import SpecialDishesPage from '../Pages/Menu/SpecialDishesPage.js';
 import OffersPage from '../Pages/Offers.js';
 // import Blog from '../pages/blog';
-import MenuPage from '../Pages/Menu/MenuPage/MenuPage.js';
+import Menu from '../Pages/Menu/MenuPage/Menu.js';
 import BottomNavigation from '../components/BottomNavigation.js';
+import FeedbackPage from '../Pages/FeedbackPage.js';
 
 
 const Navigations = () => {
@@ -39,7 +40,8 @@ const Navigations = () => {
             <Route path='/cart' element={< CartPage />} />
             <Route path="/" element={<LandingPage />} /> 
             <Route path="/" element={<LandingPage />} />
-            <Route path="/menu" element={<MenuPage />} />
+            <Route path="/menu" element={<Menu />} />
+            <Route path="/feedback" element={<FeedbackPage />} />
         </Routes>
         
 

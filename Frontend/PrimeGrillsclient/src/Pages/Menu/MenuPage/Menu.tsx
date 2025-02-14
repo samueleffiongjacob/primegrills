@@ -3,12 +3,12 @@ import MenuPopularSection from "./MenuPopularSection";
 import PromotionSection from "./PromotionSection";
 import CategorySection from "./CategorySection";
 import MenuFoodSection from "./MenuFoodSection";
+import MenuDrinksSection from "./MenuDrinksSection";
+import MenuPastriesSection from "./MenuPastries";
 
 
 
-const MenuPage = () => {
-    
-
+const Menu = () => {
     return(
         <div className="container justify-self-center">
             <div className="">
@@ -19,9 +19,13 @@ const MenuPage = () => {
                 <MenuPopularSection />
                 {/* Food */}
                 <MenuFoodSection />
+                {/* Drinks */}
+                <MenuDrinksSection />
+                {/* Pastries */}
+                <MenuPastriesSection />
             </div>
         </div>
     )
 }
 
-export default MenuPage;
+export default Menu;
