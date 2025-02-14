@@ -2,16 +2,16 @@ import { motion } from 'framer-motion';
 
 // INTERNAL IMPORTS
 import Button from "../Navbar/button";
-import Card from "../OurStory/Card";
+import Card from "./Card";
 import { headerVariants, slideVariants } from "../../utils/utils";
 
 const Story =() => {
     return (
         <div>
-            <div id="services" className=" p-2 justify-self-center container mt-30 grid grid-cols-1 md:grid-cols-2 lg:px-18 px-5 gap-8 ">
+            <div id="services" className=" p-2 justify-self-center container  grid grid-cols-1 md:grid-cols-2 lg:px-32 px-12 gap-8 ">
 
                 {/* Left column */}
-                <motion.div className=" text-left flex flex-col p-2 mr-5"
+                <motion.div className="text-center md:text-left flex flex-col p-2 mr-5"
                     initial="hidden"
                     whileInView="visible"
                     viewport={{ once: true, margin: "-100px" }}
@@ -35,7 +35,7 @@ const Story =() => {
                     experiences and offer exceptional services,
                     blending culinary artisanry with warm hospitality.
                     </p>
-                    <Button className="" title="Explore" />
+                    <Button title="Explore" />
                 </motion.div>
                 
                 {/* Right column */}

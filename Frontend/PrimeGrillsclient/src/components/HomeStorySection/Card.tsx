@@ -59,7 +59,7 @@ const Card = () => {
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6"> 
       {CardSection.map((card, index) => (
         <motion.div key={index} className="bg-white rounded-2xl m-3 border-t border-t-gray-300 shadow-gray-400 shadow-lg p-2 flex flex-col items-center
-         text-[#EE7F61] py-3"
+         text-[#EE7F61] py-3 lg:py-5"
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}

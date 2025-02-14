@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { motion } from 'framer-motion';
-import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import { Navigation, Pagination} from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Swiper as SwiperType } from 'swiper/types';
 import 'swiper/css';
@@ -12,6 +12,7 @@ import 'swiper/css/pagination';
 import Product from "./product";
 import { MENU_ITEMS } from './productDetails';
 import { headerVariants, slideVariants } from '../../utils/utils';
+import MealDetailsModal from '../MealDetailsModal';
 
 const ProductMenu: React.FC = () => {
     const swiperRef = useRef<SwiperType | null>(null);
@@ -24,22 +25,35 @@ const ProductMenu: React.FC = () => {
             setIsEnd(swiperRef.current.isEnd);
         }
     };
+
+    const [selectedMeal, setSelectedMeal] =  useState<{
+        id: number,
+        image: string;
+        name: string;
+        description: string;
+        price: number;
+        rating: string; 
+        items: string[];
+      } | null>(null);
+
     return (
-        <div className="min-h-screen mt-32 flex flex-col lg:px-32 px-5">
+        <div id='offers' className="mx-auto mt-32 mb-18 flex flex-col lg:px-32 px-12">
             <motion.div
+                className='mb-3'
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, margin: "-100px" }}
                 variants={headerVariants}
             >
                 <h1 
-                    className="bg-[#EE7F61] bg-clip-text text-transparent font-semibold text-sm px-2 text-left"
+                    className="bg-[#EE7F61] bg-clip-text text-transparent font-semibold text-sm px-2 lg:text-left
+                    text-center"
                     style={{ letterSpacing: '0.4em' }}
                 >
                     SPECIAL DISHES
                 </h1>
                 
-                <p className="text-4xl font-bold text-left px-2">
+                <p className="md:text-4xl text-2xl font-bold lg:text-left text-center px-2">
                     Standout Dishes <br/> From Our Menu
                 </p>
             </motion.div>
@@ -91,8 +105,7 @@ const ProductMenu: React.FC = () => {
                         setIsEnd(swiper.isEnd);
                     }}
                     onSlideChange={handleSlideChange}
-                    modules={[Navigation, Pagination, Autoplay]}
-                    autoplay={{ delay: 3000, disableOnInteraction: false, pauseOnMouseEnter: true }}
+                    modules={[Navigation, Pagination]}
                     spaceBetween={32}
                     slidesPerView={1}
                     breakpoints={{
@@ -103,29 +116,28 @@ const ProductMenu: React.FC = () => {
                 >
                     {MENU_ITEMS.map((item, index) => (
                         <SwiperSlide key={item.id} className="flex items-center justify-center">
-                            <motion.div 
-                                className="w-full max-w-sm"
-                                initial={{ opacity: 0, y: 50 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ 
-                                    delay: index * 0.1,
-                                    duration: 0.5,
-                                    ease: "easeOut"
-                                }}
-                            >
+                            <div className="w-full max-w-sm mx-auto"
+                            onClick={() => setSelectedMeal(item)}>
                                 <Product
                                     img={item.image}
-                                    title={item.title}
+                                    title={item.name}
                                     description={item.description}
                                     price={item.price}
                                     rating={item.rating}
                                 />
-                            </motion.div>
+                            </div>
                         </SwiperSlide>
                     ))}
                 </Swiper>
             </motion.div>
+
+                    
+            {/* Meal Details Modal */}
+            <MealDetailsModal 
+                isOpen={!!selectedMeal} 
+                meal={selectedMeal} 
+                onClose={() => setSelectedMeal(null)} 
+            />
         </div>
     );
 };

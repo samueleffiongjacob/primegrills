@@ -1,13 +1,13 @@
-import Hero from "../components/HeroSection/Hero.tsx";
-import Menu from "../components/MenuDesktop/Category.tsx";
-import Story from "../components/OurStory/OurStory.tsx";
-import ProductMenu from "../components/product/ProductMenu.tsx";
-import Testimonials from "../components/Testimonials/Testimonials.tsx";
+import Hero from "../components/HomeHeroSection/Hero.tsx";
+import Menu from "../components/HomeCategorySection/Category.tsx";
+import Story from "../components/HomeStorySection/OurStory.tsx";
+import ProductMenu from "../components/HomeSpecialSection/ProductMenu.tsx";
+import Testimonials from "../components/HomeTestimonialSection/Testimonials.tsx";
 
 
 const PrimePages = () => {
     return (
-        <div className="">
+        <div className="max-w-[1440px] mx-auto">
             <div className="">
                 <Hero />
             </div>

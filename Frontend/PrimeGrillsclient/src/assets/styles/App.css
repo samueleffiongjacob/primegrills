@@ -1,11 +1,3 @@
-/* Custom Pagination Dots for Landing Page */
-.custom-pagination .swiper-pagination-bullet {
-    width: 12px;
-    height: 12px;
-    background-color: #ccc;
-    opacity: 1;
-}
-
-.custom-pagination .swiper-pagination-bullet-active {
-    background-color: #EE7F61;
+body {
+    background-color: #F4F1F1;
 }

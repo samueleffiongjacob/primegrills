@@ -1,85 +1,104 @@
+<<<<<<< HEAD
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { FiChevronDown } from "react-icons/fi";
+import { User } from 'lucide-react';
+
+// INTERNAL IMPORTS
+import { CartIcon } from "../CartIcon";
+=======
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { IoIosArrowDown } from "react-icons/io";
 import { AiOutlineClose, AiOutlineMenuUnfold } from "react-icons/ai";
 import { FiSearch } from "react-icons/fi";
+>>>>>>> a9ee3de45b1d76fd91f86a8f5a397c71e4c67ffb
 import logo from "../../assets/images/primeLogo.png";
-import bin from "../../assets/images/bin.png";
 import Button from "./button";
-import LoginModal from "../Auth/Login";
-import SignUpModal from "../Auth/SignUp";
+import LoginModal from "../User/Login";
+import SignUpModal from "../User/SignUp";
+import ProfileSidePanel from "../User/ProfileSidePanel";
+import { SearchBar } from "./SearchBar";
 
-const NavLink = ({ to, children, onClick }) => (
-  <Link
-    to={to}
-    onClick={onClick}
-    className="group flex items-center gap-1 hover:text-[#EE7F61] transition-colors duration-300 relative"
-  >
-    {children}
-    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#EE7F61] transition-all duration-300 group-hover:w-full" />
-  </Link>
-);
+interface UserProfile {
+  username: string;
+  name: string;
+  email: string;
+  phone: string;
+  memberSince: string;
+}
 
-const SearchBar = ({ className = "" }) => (
-  <div className={`relative ${className}`}>
-    <input
-      type="search"
-      placeholder="Search menu items..."
-      className="w-full py-2 px-4 pr-10 text-gray-700 bg-white border border-[#EE7F61] rounded-full 
-                focus:outline-none focus:ring-2 focus:ring-[#EE7F61] focus:ring-opacity-50
-                placeholder:text-gray-400 text-sm"
-    />
-    <FiSearch className="absolute right-3 top-1/2 -translate-y-1/2 text-[#EE7F61] w-5 h-5" />
-  </div>
-);
-
-const CartIcon = () => (
-  <div className="relative cursor-pointer group">
-    <img src={bin} alt="Shopping Cart" className="w-10 h-10" />
-    <span className="absolute -top-1 -right-1 bg-[#EE7F61] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-      8
-    </span>
-    <div className="hidden group-hover:block absolute right-0 mt-2 w-64 bg-white shadow-lg rounded-lg p-4 z-50">
-      <p className="text-sm text-gray-600">Your cart items will appear here</p>
-    </div>
-  </div>
-);
+const NavLink = ({ to, children, onClick, isParentActive }) => {
+  const location = useLocation(); // Get current URL
+  const isActive = location.pathname === to || isParentActive; // Check if link is active or parent is active
+  return (
+    <Link
+      to={to}
+      onClick={onClick}
+      className={`group flex items-center gap-1 transition-colors duration-300 relative 
+        ${isActive ? "text-[#EE7F61]" : "hover:text-[#EE7F61]"}`}
+    >
+      {children}
+      <span
+        className={`absolute bottom-0 left-0 h-0.5 bg-[#EE7F61] transition-all duration-300 
+          ${isActive ? "w-full" : "w-0 group-hover:w-full"}`}
+      />
+    </Link>
+  );
+};
 
 const Navbar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState(null);
   const [activeModal, setActiveModal] = useState<'login' | 'signup' | null>(null);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Track user login state
+  const location = useLocation(); // Get current URL
 
-  // handle login
+  // Sample profile data
+  const profile: UserProfile = {
+    username: "JohnD",
+    name: "John Doe",
+    email: "john.doe@example.com",
+    phone: "+82 10-1234-5678",
+    memberSince: "January 2024"
+  };
+
+  const toggleProfile = () => {
+    setIsProfileOpen(!isProfileOpen);
+  };
+
   const handleLogin = (email: string, password: string) => {
     console.log('Logging in with:', email, password);
-    setActiveModal(null); // Close the modal after login
+    setIsLoggedIn(true); // Set user as logged in
+    setActiveModal(null); // Close the modal
   };
 
-  // handle sign up
   const handleSignUp = (email: string, password: string) => {
     console.log('Signing up with:', email, password);
-    setActiveModal(null); // Close the modal after signup
+    setIsLoggedIn(true); // Set user as logged in
+    setActiveModal(null); // Close the modal
   };
 
-
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-  const closeMenu = () => setIsMenuOpen(false);
+  const handleLogout = () => {
+    setIsLoggedIn(false); // Set user as logged out
+    setIsProfileOpen(false); // Close the profile panel
+  };
 
   const navItems = [
-    { title: "Home", path: "/home" },
+    { title: "Home", path: "/" },
     {
       title: "Menu Category",
-      path: "/menu",
-      hasDropdown: true,
-      dropdownItems: ["Breakfast", "Lunch", "Dinner", "Specials"]
+      subItems: [
+        { title: "All Menu", path: "/menu/all" },
+        { title: "Special Dishes", path: "/menu/special" },
+        { title: "Popular Dishes", path: "/menu/popular" },
+        { title: "Food", path: "/menu/food" },
+        { title: "Pastries", path: "/menu/pastries" },
+        { title: "Bars/Drinks", path: "/menu/drinks" },
+        { title: "Grills", path: "/menu/grills" },
+      ]
     },
-    {
-      title: "Services",
-      path: "/services",
-      hasDropdown: true,
-      dropdownItems: ["Catering", "Private Events", "Delivery"]
-    },
+    { title: "Services", path: "/services" },
     { title: "Offers", path: "/offers" }
   ];
 
@@ -94,87 +113,104 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => (
-              <div key={item.path} className="relative">
-                <NavLink to={item.path}>
-                  <span>{item.title}</span>
-                  {item.hasDropdown && (
-                    <IoIosArrowDown className="text-[#EE7F61] ml-1" />
+            {navItems.map((item) => {
+              // Check if any of the subItems are active
+              const isParentActive = item.subItems?.some(subItem => location.pathname === subItem.path);
+
+              return (
+                <div
+                  key={item.title}
+                  className="relative group"
+                  onMouseEnter={() => setHoveredItem(item.title)}
+                >
+                  <NavLink
+                    to={item.path}
+                    onClick={() => {
+                      if (item.title.toLowerCase() === "offers") {
+                        document.getElementById("offers")?.scrollIntoView({ behavior: "smooth" });
+                      }
+                    }}
+                    isParentActive={isParentActive} // Pass whether any subItem is active
+                  >
+                    {item.title}
+                    {item.subItems && <FiChevronDown className="w-4 text-[#EE7F61] h-4 ml-1" />}
+                  </NavLink>
+
+                  {/* Dropdown for Menu */}
+                  {item.subItems && hoveredItem === item.title && (
+                    <div
+                      className="absolute left-0 top-full mt-2 w-48 bg-white shadow-lg rounded-md opacity-100 visible transition-opacity duration-300"
+                      onMouseEnter={() => setHoveredItem(item.title)}
+                      onMouseLeave={() => setHoveredItem(null)}
+                    >
+                      {item.subItems.map((subItem) => {
+                        const isSubItemActive = location.pathname === subItem.path;
+
+                        return (
+                          <Link
+                            key={subItem.title}
+                            to={subItem.path}
+                            className={`block px-4 py-2 transition-colors 
+                              ${isSubItemActive ? "text-[#EE7F61]" : "text-gray-700 hover:bg-gray-100"}`}
+                          >
+                            {subItem.title}
+                          </Link>
+                        );
+                      })}
+                    </div>
                   )}
-                </NavLink>
-                {item.hasDropdown && activeDropdown === item.title && (
-                  <div className="absolute top-full left-0 mt-2 w-48 bg-white shadow-lg rounded-lg py-2 z-50">
-                    {item.dropdownItems.map((dropItem) => (
-                      <Link
-                        key={dropItem}
-                        to="#"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        {dropItem}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
+                </div>
+              );
+            })}
           </nav>
 
           {/* Desktop Right Section */}
           <div className="hidden md:flex items-center space-x-6">
             <SearchBar className="w-48" />
             <CartIcon />
-            <Button title="Login" onClick={() => setActiveModal('login')} />
-          </div>
-      
-        {/* LoginModal */}
-        <LoginModal
-          isOpen={activeModal === 'login'}
-          onClose={() => setActiveModal(null)}
-          onLogin={handleLogin}
-          onToggleSignUp={() => setActiveModal('signup')} // Toggle to SignUpModal
-        />
 
-        {/* SignUpModal */}
-        <SignUpModal
-          isOpen={activeModal === 'signup'}
-          onClose={() => setActiveModal(null)}
-          onSignUp={handleSignUp}
-          onToggleLogin={() => setActiveModal('login')} // Toggle to LoginModal
-        />
-
-          {/* Mobile Menu Button */}
-          <button
-            onClick={toggleMenu}
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100"
-          >
-            {isMenuOpen ? (
-              <AiOutlineClose className="w-6 h-6" />
+            {/* Conditionally render Login Button or Profile Icon */}
+            {!isLoggedIn ? (
+              <Button title="Login" onClick={() => setActiveModal('login')} />
             ) : (
-              <AiOutlineMenuUnfold className="w-6 h-6" />
+              <button
+                onClick={toggleProfile}
+                className="p-2 hover:bg-gray-100 rounded-full"
+              >
+                <User className="w-6 h-6 text-gray-700" />
+              </button>
             )}
-          </button>
-        </div>
-      </div>
+          </div>
 
-      {/* Mobile Menu */}
-      <div
-        className={`md:hidden fixed inset-0 bg-white z-40 transform transition-transform duration-300 ease-in-out ${
-          isMenuOpen ? "translate-x-0" : "translate-x-full"
-        }`}
-      >
-        <div className="flex flex-col h-full pt-20 px-4 pb-6 space-y-6">
-          {navItems.map((item) => (
-            <NavLink key={item.path} to={item.path} onClick={closeMenu}>
-              {item.title}
-            </NavLink>
-          ))}
-          <SearchBar />
-          <CartIcon />
-          <div className="mt-auto">
-            <Button title="Login" />
+          {/* Profile Side Panel */}
+          <ProfileSidePanel
+            isOpen={isProfileOpen}
+            onClose={() => setIsProfileOpen(false)}
+            profile={profile}
+            onLogout={handleLogout} // Pass logout handler to the side panel
+          />
+
+          {/* Mobile Right Section */}
+          <div className="flex md:hidden items-center space-x-4">
+            <SearchBar className="w-48" />
+            <CartIcon />
           </div>
         </div>
       </div>
+
+      {/* Modals */}
+      <LoginModal
+        isOpen={activeModal === 'login'}
+        onClose={() => setActiveModal(null)}
+        onLogin={handleLogin}
+        onToggleSignUp={() => setActiveModal('signup')}
+      />
+      <SignUpModal
+        isOpen={activeModal === 'signup'}
+        onClose={() => setActiveModal(null)}
+        onSignUp={handleSignUp}
+        onToggleLogin={() => setActiveModal('login')}
+      />
     </header>
   );
 };

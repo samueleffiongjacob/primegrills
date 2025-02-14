@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { FcGoogle } from 'react-icons/fc';
 import { FaFacebook, FaApple, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { MdEmail } from 'react-icons/md';
-import { NavLink } from 'react-router-dom';
+
+// INTERNAL IMPORTS
+import { loginUser } from '../../api/auth';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -11,15 +13,24 @@ interface LoginModalProps {
   onToggleSignUp: () => void; // Function to toggle to the SignUpModal
 }
 
-const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onToggleSignUp,}) => {
+const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onToggleSignUp }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [staySignedIn, setStaySignedIn] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onLogin(email, password);
+
+    if (!email || !password) return alert("All fields are required");
+    if (password.length < 6) return alert("Password must be at least 6 characters");
+
+    const response = await loginUser(email, password);
+    if (response.message) {
+      alert(response.message);
+    } else {
+      onLogin(email, password);
+    }
   };
 
   if (!isOpen) return null;
@@ -38,16 +49,16 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onTog
         {/* Login Form */}
         <div className="space-y-6">
           <h1 className="text-2xl font-semibold text-center">Sign In</h1>
-          
+
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Email Input */}
+            {/* Email or Username Input */}
             <div className="relative">
               <MdEmail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
-                type="email"
+                type="text"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="E-mail"
+                placeholder="Email or Username"
                 className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-400"
               />
             </div>
@@ -90,7 +101,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onTog
             {/* Sign In Button */}
             <button
               type="submit"
-              className="w-full py-3 bg-orange-400 text-white rounded-xl hover:bg-orange-500 transition-colors"
+              onClick={onClose}
+              className="w-full py-3 bg-[#EE7F61] text-white rounded-xl hover:bg-orange-500 transition-colors"
             >
               Sign In
             </button>
@@ -123,7 +135,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onTog
             </button>
           </div>
         </div>
-      </div> 
+      </div>
     </div>
   );
 };
