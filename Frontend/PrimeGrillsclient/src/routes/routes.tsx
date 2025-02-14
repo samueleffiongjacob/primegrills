@@ -1,8 +1,17 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LandingPage from "../Pages/LandingPage"
 import Navbar from "../components/Navbar/Navbar"
-// import Signin from "../components/Login/login";
 import Footer from "../components/Footer/Footer.js"
+import CartPage from '../Pages/Checkout/CartPage.js';
+import Services from '../Pages/ServicesPage.js';
+import AllMenuPage from '../Pages/Menu/AllMenuPage.js';
+import PastriesPage from '../Pages/Menu/PastriesPage.js';
+import BarsPage from '../Pages/Menu/BarsPage.js';
+import FoodPage from '../Pages/Menu/FoodPage.js';
+import GrillsPage from '../Pages/Menu/GrillsPage.js';
+import PopularMealsPage from '../Pages/Menu/PopularlMealsPage.js';
+import SpecialDishesPage from '../Pages/Menu/SpecialDishesPage.js';
+import OffersPage from '../Pages/Offers.js';
 // import Blog from '../pages/blog';
 
 const Navigations = () => {
@@ -13,8 +22,19 @@ const Navigations = () => {
 
         {/* pages */}
         <Routes>
-             {/* <Route path="/" element={<Signin />} />  */}
-            <Route path="/" element={<LandingPage />} />
+            {/* Desktop specific */}
+            <Route path='/services' element={< Services/>} />
+
+            <Route path='/menu/all' element={< AllMenuPage/>} />
+            <Route path='/menu/pastries' element={< PastriesPage/>} />
+            <Route path='/menu/drinks' element={< BarsPage/>} />
+            <Route path='/menu/food' element={< FoodPage/>} />
+            <Route path='/menu/grills' element={< GrillsPage/>} />
+            <Route path='/menu/popular' element={< PopularMealsPage/>} />
+            <Route path='/menu/special' element={< SpecialDishesPage/>} />
+            <Route path='/offers' element={< OffersPage/>} />
+            <Route path='/cart' element={< CartPage />} />
+            <Route path="/" element={<LandingPage />} /> 
         </Routes>
 
         {/* footer */}

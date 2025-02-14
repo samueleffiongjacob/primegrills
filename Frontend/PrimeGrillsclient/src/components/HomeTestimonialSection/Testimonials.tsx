@@ -17,7 +17,7 @@ const Testimonials = () => {
     const swiperRef = useRef<SwiperType | null>(null);
 
     return (
-        <div className="lg:mb-32  flex flex-col pt-4 relative px-5">
+        <div className="lg:my-32  flex flex-col pt-4 relative px-12">
             {/* Swiper Component */}
             <motion.div className="relative pb-16"
               initial="hidden"
@@ -38,11 +38,11 @@ const Testimonials = () => {
                         1024: { slidesPerView: 1, spaceBetween: 30 },
                     }}
                     loop={true}
-                    pagination={{
+                    /* pagination={{
                         clickable: true,
                         bulletActiveClass: 'swiper-pagination-bullet-active',
                         bulletClass: 'swiper-pagination-bullet',
-                    }}
+                    }} */
                     className="w-full pb-16"
                 >
                     {testimonials.map((testimonial, index) => (

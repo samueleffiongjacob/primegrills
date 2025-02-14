@@ -2,8 +2,7 @@
 interface MenuProps {
     img: string;
     title: string;
-    value: string;
-   
+    value: string;  
 }
 
 const MenuCard: React.FC<MenuProps> =  ({

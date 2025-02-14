@@ -1,8 +1,9 @@
 import { useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { motion } from 'framer-motion';
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import { Navigation, Pagination } from "swiper/modules";
 import { Swiper as SwiperType } from "swiper/types";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -27,7 +28,7 @@ const Menu = () => {
     };
 
     return (
-        <div id="menuCategory" className="my-32 justify-center flex flex-col lg:px-32 px-5">
+        <div id="menuCategory" className="my-32 justify-center flex flex-col lg:px-32 px-12">
             {/* Header and title */}
             <motion.div
                 initial="hidden"
@@ -43,7 +44,7 @@ const Menu = () => {
                 >
                     CUSTOMER FAVORITE
                 </h1>
-                <p className="text-4xl font-bold text-center">Popular Categories</p>
+                <p className="md:text-4xl text-2xl font-bold text-center">Popular Categories</p>
             </motion.div>
 
             {/* Navigation Buttons */}
@@ -97,10 +98,8 @@ const Menu = () => {
                         setIsEnd(swiper.isEnd);
                     }}
                     onSlideChange={handleSlideChange}
-                    modules={[Navigation, Pagination, Autoplay]}
+                    modules={[Navigation, Pagination]}
                     spaceBetween={32}
-                    autoplay={{ delay: 3000, disableOnInteraction: false, pauseOnMouseEnter: true }}
-                    slidesPerView={1}
                     breakpoints={{
                         640: {slidesPerView: 2, spaceBetween: 20},
                         1024: { slidesPerView: 4, spaceBetween: 30},
@@ -109,23 +108,15 @@ const Menu = () => {
                 >
                     {MENU_CARD_ITEMS.map((item, index) => (
                         <SwiperSlide key={item.id} className="p-2">
-                            <motion.div 
-                                className="w-full max-w-sm"
-                                initial={{ opacity: 0, y: 50 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ 
-                                    delay: index * 0.1,
-                                    duration: 0.5,
-                                    ease: "easeOut"
-                                }}
-                            >
-                                <MenuCard
-                                    img={item.img}
-                                    title={item.title}
-                                    value={item.value}
-                                />
-                            </motion.div>
+                            <div className="w-full max-w-sm mx-auto" >
+                                <Link to={item.path}>
+                                    <MenuCard
+                                        img={item.img}
+                                        title={item.title}
+                                        value={item.value}
+                                    />
+                                </Link>
+                            </div>
                         </SwiperSlide>
                     ))}
                 </Swiper>

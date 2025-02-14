@@ -1,0 +1,239 @@
+import React, { useState } from 'react';
+import { FcGoogle } from 'react-icons/fc';
+import { FaFacebook, FaApple } from 'react-icons/fa';
+
+// INTERNAL IMPORTS
+import { signUpUser } from '../../api/auth';
+
+interface SignUpModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSignUp: (email: string, password: string) => void;
+  onToggleLogin: () => void;
+}
+
+const SignUpModal: React.FC<SignUpModalProps> = ({
+  isOpen,
+  onClose,
+  onSignUp,
+  onToggleLogin,
+}) => {
+  const [username, setUsername] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [address, setAddress] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  // Error State
+  const [errors, setErrors] = useState<{
+    username?: string;
+    fullName?: string;
+    email?: string;
+    phoneNumber?: string;
+    address?: string;
+    password?: string;
+    confirmPassword?: string;
+  }>({});
+
+  const validateForm = () => {
+    let newErrors: {
+      username?: string;
+      fullName?: string;
+      email?: string;
+      phoneNumber?: string;
+      address?: string;
+      password?: string;
+      confirmPassword?: string;
+    } = {};
+
+    if (!username) newErrors.username = "Username is required";
+    if (!fullName) newErrors.fullName = "Full name is required";
+    if (!email) newErrors.email = "Email is required";
+    else if (!/\S+@\S+\.\S+/.test(email)) newErrors.email = "Invalid email format";
+    if (!phoneNumber) newErrors.phoneNumber = "Phone number is required";
+    if (!address) newErrors.address = "Address is required";
+    if (!password) newErrors.password = "Password is required";
+    else if (password.length < 6) newErrors.password = "Password must be at least 6 characters";
+    if (!confirmPassword) newErrors.confirmPassword = "Confirm password is required";
+    else if (password !== confirmPassword) newErrors.confirmPassword = "Passwords do not match";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    const response = await signUpUser({
+      username,
+      fullName,
+      email,
+      phoneNumber,
+      address,
+      password,
+    });
+
+    if (response.message) {
+      setErrors({ email: response.message }); // Handle API errors
+    } else {
+      onSignUp(email, password);
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-opacity-100 backdrop-blur-xs flex items-center justify-center z-50">
+      <div className="bg-gray-100 rounded-2xl p-6 w-full max-w-md relative">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 cursor-pointer text-gray-500 hover:text-[#EE7F61]"
+        >
+          ✕
+        </button>
+
+        <div className="space-y-6">
+          <h1 className="text-2xl font-semibold text-center">Sign Up</h1>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Username */}
+            <div className='md:flex md:justify-between'>
+            <div>
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Username"
+                className={`w-[80%] px-4 py-1.5 rounded-xl border ${
+                  errors.username ? 'border-red-500' : 'border-gray-200'
+                } focus:outline-none focus:ring-2 focus:ring-orange-400`}
+              />
+              {errors.username && <p className="text-red-500 text-sm ">{errors.username}</p>}
+            </div>
+
+            {/* Full Name */}
+            <div>
+              <input
+                type="text"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                placeholder="Full Name"
+                className={`w-full px-4 py-1.5 rounded-xl border ${
+                  errors.fullName ? 'border-red-500' : 'border-gray-200'
+                } focus:outline-none focus:ring-2 focus:ring-orange-400`}
+              />
+              {errors.fullName && <p className="text-red-500 text-sm">{errors.fullName}</p>}
+            </div>
+            </div>
+
+            {/* Email */}
+            <div>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
+                className={`w-full px-4 py-1.5 rounded-xl border ${
+                  errors.email ? 'border-red-500' : 'border-gray-200'
+                } focus:outline-none focus:ring-2 focus:ring-orange-400`}
+              />
+              {errors.email && <p className="text-red-500 text-sm ">{errors.email}</p>}
+            </div>
+
+            {/* Phone Number */}
+            <div>
+              <input
+                type="tel"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                placeholder="Phone Number"
+                className={`w-full px-4 py-1.5 rounded-xl border ${
+                  errors.phoneNumber ? 'border-red-500' : 'border-gray-200'
+                } focus:outline-none focus:ring-2 focus:ring-orange-400`}
+              />
+              {errors.phoneNumber && <p className="text-red-500 text-sm">{errors.phoneNumber}</p>}
+            </div>
+
+            {/* Address */}
+            <div>
+              <input
+                type="text"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                placeholder="Address"
+                className={`w-full px-4 py-1.5 rounded-xl border ${
+                  errors.address ? 'border-red-500' : 'border-gray-200'
+                } focus:outline-none focus:ring-2 focus:ring-orange-400`}
+              />
+              {errors.address && <p className="text-red-500 text-sm ">{errors.address}</p>}
+            </div>
+
+            {/* Password */}
+            <div>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+                className={`w-full px-4 py-1.5 rounded-xl border ${
+                  errors.password ? 'border-red-500' : 'border-gray-200'
+                } focus:outline-none focus:ring-2 focus:ring-orange-400`}
+              />
+              {errors.password && <p className="text-red-500 text-sm ">{errors.password}</p>}
+            </div>
+
+            {/* Confirm Password */}
+            <div>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Confirm Password"
+                className={`w-full px-4 py-1.5 rounded-xl border ${
+                  errors.confirmPassword ? 'border-red-500' : 'border-gray-200'
+                } focus:outline-none focus:ring-2 focus:ring-orange-400`}
+              />
+              {errors.confirmPassword && <p className="text-red-500 text-sm ">{errors.confirmPassword}</p>}
+            </div>
+
+            <button
+              type="submit"
+              className="w-full py-3 bg-[#EE7F61] text-white rounded-xl hover:bg-orange-500 transition-colors"
+            >
+              Sign Up
+            </button>
+          </form>
+
+          <div className="text-center text-sm text-gray-500 -mt-2">Or Continue with</div>
+
+          <div className="flex justify-center -mt-3 space-x-4">
+            <button className="p-3 border border-gray-200 rounded-xl hover:bg-gray-50">
+              <FcGoogle className="w-6 h-6" />
+            </button>
+            <button className="p-3 border border-gray-200 rounded-xl hover:bg-gray-50">
+              <FaFacebook className="w-6 h-6 text-blue-600" />
+            </button>
+            <button className="p-3 border border-gray-200 rounded-xl hover:bg-gray-50">
+              <FaApple className="w-6 h-6" />
+            </button>
+          </div>
+
+          <div className="text-center text-sm -mt-3">
+            <span className="text-gray-500">Already have an Account? </span>
+            <button
+              onClick={onToggleLogin}
+              className="text-orange-500 hover:text-orange-600"
+            >
+              Login
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default SignUpModal;
