@@ -1,5 +1,5 @@
 import Hero from "../components/HeroSection/Hero.tsx";
-import Menu from "../components/Menu/Category.tsx";
+import Menu from "../components/MenuDesktop/Category.tsx";
 import Story from "../components/OurStory/OurStory.tsx";
 import ProductMenu from "../components/product/ProductMenu.tsx";
 import Testimonials from "../components/Testimonials/Testimonials.tsx";

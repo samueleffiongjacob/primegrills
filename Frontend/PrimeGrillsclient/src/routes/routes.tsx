@@ -3,6 +3,7 @@ import LandingPage from "../Pages/LandingPage"
 import Navbar from "../components/Navbar/Navbar"
 import Footer from "../components/Footer/Footer.js"
 import MenuPage from '../Pages/MenuPage.js';
+import BottomNavigation from '../components/BottomNavigation.js';
 
 
 const Navigations = () => {
@@ -16,9 +17,11 @@ const Navigations = () => {
             <Route path="/" element={<LandingPage />} />
             <Route path="/menu" element={<MenuPage />} />
         </Routes>
+        
 
         {/* footer */}
         <Footer /> 
+        <BottomNavigation />
       </Router>
     );
   };
