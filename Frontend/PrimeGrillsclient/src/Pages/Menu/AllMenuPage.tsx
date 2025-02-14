@@ -4,6 +4,7 @@ import { FaPlus, FaMinus } from "react-icons/fa";
 import Button from "../../components/Navbar/button";
 import MealDetailsModal from "../../components/MealDetailsModal";
 import { motion } from 'framer-motion';
+import PromotionSection from "./MenuPage/PromotionSection";
 
 const menuItems = [
   { id: 1,
@@ -70,20 +71,21 @@ const AllMenuPage: React.FC = () => {
 
   return (
     <div className="min-h-screen p-6">
-      <h1 className="text-2xl font-semibold text-orange-600 my-6 mx-5">All Menu</h1>
+      <PromotionSection />
+      <h1 className="text-3xl font-bold text-black md:ml-8 my-6 mx-5">All Menu</h1>
       
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-8">
+      <div className="md:px-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-8">
         {menuItems.map((item, index) => (
           <motion.div 
             key={index} 
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="bg-[#7e7c7c] rounded-xl py-2 flex flex-col items-center cursor-pointer"
+            className="bg-gray-300 rounded-xl py-2 flex flex-col items-center cursor-pointer"
             onClick={() => setSelectedMeal(item)}
           >
             <img src={item.image} alt={item.name} className="w-20 md:w-32 h-20 object-cover rounded-full" />
-            <p className="text-white font-semibold mt-2">{item.name}</p>
-            <p className="text-orange-200 text-lg font-bold">₦{item.price}</p>
+            <p className="text-black font-semibold mt-2">{item.name}</p>
+            <p className="text-orange-600 text-lg font-bold">₦{item.price}</p>
           </motion.div>
         ))}
       </div>

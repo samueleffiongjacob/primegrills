@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import Button from "../Navbar/button";
 import Card from "./Card";
 import { headerVariants, slideVariants } from "../../utils/utils";
+import { Link } from 'react-router-dom';
 
 const Story =() => {
     return (
@@ -35,7 +36,10 @@ const Story =() => {
                     experiences and offer exceptional services,
                     blending culinary artisanry with warm hospitality.
                     </p>
-                    <Button title="Explore" />
+                    <Link to={'/menu'}>
+                        <Button title="Explore" />
+                    </Link>
+                    
                 </motion.div>
                 
                 {/* Right column */}

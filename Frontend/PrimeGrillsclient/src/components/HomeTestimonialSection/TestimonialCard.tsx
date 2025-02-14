@@ -29,9 +29,10 @@ const TestimonialCard = ({
                     <img src={customerImage} alt="Customer" className="relative rounded-lg mr-2 w-72 md:w-80 h-auto" />
                     
                     {/* Badge */}
-                    <div className="absolute -bottom-3 left-[60%] md:left-[50%] lg:left-[32%] transform -translate-x-1/2 md:translate-x-0 bg-white flex items-center px-4 py-2 rounded-lg shadow-md">
-                        <h2 className="text-black font-bold mr-2">Our best chef</h2>
-                        <span className="text-xl">😍</span>
+                    <div className="absolute -bottom-3 left-[60%] md:left-[50%] lg:left-[32%] transform -translate-x-1/2 md:translate-x-0
+                     bg-white flex items-center px-2 md:px-4 py-2 rounded-lg shadow-md">
+                        <h2 className="text-black text-xs md:text-lg font-bold mr-2">Our best chef</h2>
+                        <span className="text-xs md:text-xl">😍</span>
                     </div>
                 </div>
 

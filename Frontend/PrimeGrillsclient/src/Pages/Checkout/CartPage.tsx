@@ -2,10 +2,6 @@ import { useCart } from "../../context/CartContext";
 import CartItemCard from "./CartItemCard";
 import Button from "../../components/Navbar/button";
 import { useNavigate } from 'react-router-dom';
-import product1 from "../../assets/images/product1.png";
-import product2 from "../../assets/images/product2.png";
-import product3 from "../../assets/images/product3.png";
-import { FaShoppingCart } from "react-icons/fa";
 
 const CartPage = () => {
   const { cartItems, dispatch } = useCart();

@@ -13,7 +13,7 @@ import PopularMealsPage from '../Pages/Menu/PopularlMealsPage.js';
 import SpecialDishesPage from '../Pages/Menu/SpecialDishesPage.js';
 import OffersPage from '../Pages/Offers.js';
 // import Blog from '../pages/blog';
-import MenuPage from '../Pages/MenuPage.js';
+import MenuPage from '../Pages/Menu/MenuPage/MenuPage.js';
 import BottomNavigation from '../components/BottomNavigation.js';
 
 

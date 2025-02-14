@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {motion} from 'framer-motion';
 import menuimg2 from '../../assets/images/menuimg2.png';
 import MealDetailsModal from "../../components/MealDetailsModal";
+import PromotionSection from "./MenuPage/PromotionSection";
 
 const menuItems = [
   { id: 40,
@@ -68,9 +69,10 @@ const PastriesPage: React.FC = () => {
 
   return (
     <div className="min-h-screen p-6">
-      <h1 className="text-2xl font-semibold text-orange-600 my-6 mx-5">Pastries</h1>
+      <PromotionSection />
+      <h1 className="text-3xl font-bold text-black md:ml-8 my-6 mx-5">Pastries</h1>
       
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-8">
+      <div className="md:px-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-8">
         {menuItems.map((item, index) => (
           <motion.div 
             key={index} 

@@ -7,6 +7,7 @@ import menuimg2 from '../../assets/images/menuimg2.png';
 import MealDetailsModal from "../../components/MealDetailsModal";
 import { MENU_ITEMS } from "../../components/HomeSpecialSection/productDetails";
 import Product from "../../components/HomeSpecialSection/product";
+import PromotionSection from "./MenuPage/PromotionSection";
 
 const SpecialDishesPage: React.FC = () => {
   const [selectedMeal, setSelectedMeal] =  useState<{
@@ -21,7 +22,8 @@ const SpecialDishesPage: React.FC = () => {
 
   return (
     <div className="min-h-screen p-6">
-      <h1 className="text-2xl font-bold text-orange-600 my-6 mx-5">Special Dishes</h1>
+      <PromotionSection />
+      <h1 className="text-3xl font-bold text-black md:ml-8 my-6 mx-5">Special Dishes</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
         {MENU_ITEMS.map((item, index) => (
