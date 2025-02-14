@@ -17,7 +17,7 @@ const BottomNavigation: React.FC = () => {
   ];
 
   return (
-    <nav className="md:hidden sticky w-full bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200">
+    <nav className=" sticky w-full bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200">
       <div className="flex justify-around items-center py-2">
         {bottomNav.map((item) => (
           <NavLink
