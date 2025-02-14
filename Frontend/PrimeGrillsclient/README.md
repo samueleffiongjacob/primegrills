@@ -98,7 +98,7 @@ The app is built modularly, ensuring maintainability, scalability, and performan
     - `Chekout.tsx`: The checkout page component.
   - **`FeedbackPage.tsx`**: The feedback page component.
   - **`LandingPage.tsx`**: The landing page component.
-  - **`Menu/`**: Contains components for the menu section.
+  - **`Menu/`**: Contains menu-related pages.
     - `AllMenuPage.tsx`: Displays all menu items.
     - `BarsPage.tsx`: Displays bar-related items.
     - `FoodPage.tsx`: Displays food-related items.
