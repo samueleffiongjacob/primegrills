@@ -13,6 +13,9 @@ import PopularMealsPage from '../Pages/Menu/PopularlMealsPage.js';
 import SpecialDishesPage from '../Pages/Menu/SpecialDishesPage.js';
 import OffersPage from '../Pages/Offers.js';
 // import Blog from '../pages/blog';
+import MenuPage from '../Pages/MenuPage.js';
+import BottomNavigation from '../components/BottomNavigation.js';
+
 
 const Navigations = () => {
     return (
@@ -35,10 +38,14 @@ const Navigations = () => {
             <Route path='/offers' element={< OffersPage/>} />
             <Route path='/cart' element={< CartPage />} />
             <Route path="/" element={<LandingPage />} /> 
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/menu" element={<MenuPage />} />
         </Routes>
+        
 
         {/* footer */}
         <Footer /> 
+        <BottomNavigation />
       </Router>
     );
   };
