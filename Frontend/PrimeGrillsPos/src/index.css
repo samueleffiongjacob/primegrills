@@ -1,4 +1,26 @@
-:root {
+@import 'tailwindcss';
+
+@theme {
+  --color-primary: #EE7F61;
+  --color-background: #555555B5;
+  --color-secondary: #D9D9D9;
+
+
+}
+
+.hide-scrollbar {
+  @apply overflow-auto;
+
+  &::-webkit-scrollbar {
+    width: 0px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -65,4 +87,4 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
-}
+} */
