@@ -3,7 +3,7 @@ import testimonial from '../../assets/images/testimonial.png';
 
 export const testimonials = [
     {
-        customerImage: testimonial,
+        customerImage: customer,
         testimonialText:
             'I had the pleasure of dining at Prime and Grills this evening, and the experience was intriguing as every bite was an example of a sumptuous meal. Thank you so much Prime and Grills for being outstanding.',
         customerName: 'John Doe',
@@ -11,7 +11,7 @@ export const testimonials = [
         reviewCount: 90700,
     },
     {
-        customerImage: testimonial,
+        customerImage: customer,
         testimonialText:
             'The food was absolutely delicious! The ambiance was perfect, and the service was top-notch. Highly recommend!',
         customerName: 'Jane Smith',
@@ -27,7 +27,7 @@ export const testimonials = [
         reviewCount: 85000,
     },
     {
-        customerImage: testimonial,
+        customerImage: customer,
         testimonialText:
             'Prime and Grills never disappoints. The flavors are always on point, and the presentation is stunning.',
         customerName: 'Bob Brown',

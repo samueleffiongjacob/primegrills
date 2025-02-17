@@ -86,7 +86,7 @@ const Navbar = () => {
     {
       title: "Menu Category",
       subItems: [
-        { title: "Menu", path: "/menu" },
+        { title: "Menu", path: "/menu-category" },
         { title: "All Menu", path: "/menu/all" },
         { title: "Special Dishes", path: "/menu/special" },
         { title: "Popular Dishes", path: "/menu/popular" },

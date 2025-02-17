@@ -42,7 +42,7 @@ const Navigations = () => {
             <Route path='/checkout' element={< CheckoutPage />} />
             <Route path="/" element={<LandingPage />} /> 
             <Route path="/" element={<LandingPage />} />
-            <Route path="/menu" element={<Menu />} />
+            <Route path="/menu-category" element={<Menu />} />
             <Route path="/feedback" element={<FeedbackPage />} />
         </Routes>
         
