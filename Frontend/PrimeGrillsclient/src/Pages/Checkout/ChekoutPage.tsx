@@ -69,6 +69,30 @@ const CheckoutPage: React.FC = () => {
     <div className="max-w-4xl mx-auto p-6 md:p-10 bg-white shadow-md rounded-lg">
       <h1 className="text-2xl font-bold mb-6">Checkout</h1>
       
+       {/* Cart Preview */}
+       <div className="mb-6 p-4 border rounded-md bg-gray-50">
+        <h2 className="text-lg font-semibold mb-3">Cart Summary</h2>
+        {cartItems.length > 0 ? (
+          <ul className="space-y-2">
+            {cartItems.slice(0, 3).map((item, index) => (
+              <li key={index} className="flex justify-between text-sm">
+                <span>{item.name} x{item.quantity}</span>
+                <span>₦{(item.price * item.quantity).toLocaleString()}</span>
+              </li>
+            ))}
+            {cartItems.length > 3 && <p className="text-sm text-gray-600">+ {cartItems.length - 3} more items</p>}
+          </ul>
+        ) : (
+          <p className="text-gray-600">Your cart is empty.</p>
+        )}
+        <button
+          onClick={() => navigate('/cart')}
+          className="mt-3 text-[#EE7F61] text-sm font-medium hover:underline"
+        >
+          Modify Cart
+        </button>
+      </div>
+
       {/* Delivery Method */}
       <div className="mb-6">
         <h2 className="text-lg font-semibold mb-3">Delivery Method</h2>
