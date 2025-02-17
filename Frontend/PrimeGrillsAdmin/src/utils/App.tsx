@@ -1,11 +1,20 @@
-import '../assets/styles//App.css'
+import Navigations from '../routes/routes'
+import '../assets/styles/App.css'
+
+
+import '../assets/styles/App.css'
 
 function App() {
+ 
+
   return (
-    <>
-      <p className='text-3xl font-bold underline bg-green-700'>HELLO WORLD </p>
-    </>
+      <div>
+        <Navigations />
+      </div>
+      
+    
   )
 }
 
 export default App
+

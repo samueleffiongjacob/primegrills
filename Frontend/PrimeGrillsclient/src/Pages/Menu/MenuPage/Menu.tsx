@@ -10,7 +10,7 @@ import MenuPastriesSection from "./MenuPastries";
 
 const Menu = () => {
     return(
-        <div className="container justify-self-center">
+        <div className="container lg:px-12 justify-self-center">
             <div className="">
                 <CategorySection />
                 {/* Promotion */}

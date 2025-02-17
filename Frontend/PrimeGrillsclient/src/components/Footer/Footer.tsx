@@ -44,7 +44,7 @@ const Footer = () => {
   return (
     <footer className="mt-32 py-12 mx-2 px-6 bg-white">
       <div className="container  lg:w-[86%] mx-auto max-w-7xl">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Brand Column */}
           <div className="space-y-6 lg:pl-10">
             <img
@@ -52,7 +52,7 @@ const Footer = () => {
               alt="Prime and Grills Logo"
               className="h-14 w-auto"
             />
-            <p className="text-gray-600 font-semibold w-[250px] lg:w-[180px]  -mt-3 text-sm leading-relaxed">
+            <p className="text-gray-600 font-semibold w-[180px]  -mt-3 text-sm leading-relaxed">
               Savor The Artistry Where Every Dish is a Culinary Masterpiece
             </p>
           </div>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import test from '../assets/images/test4.jpeg';
 
 interface OfferItem {
   id: number;
@@ -51,7 +52,7 @@ const OfferCard: React.FC<{ offer: OfferItem }> = ({ offer }) => {
     <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
       <div className="relative">
         <img 
-          src={offer.image || "/api/placeholder/400/300"} 
+          src={test} 
           alt={offer.name}
           className="w-full h-48 object-cover" 
         />

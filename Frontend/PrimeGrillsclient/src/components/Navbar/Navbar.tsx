@@ -86,6 +86,7 @@ const Navbar = () => {
     {
       title: "Menu Category",
       subItems: [
+        { title: "Menu", path: "/menu-category" },
         { title: "All Menu", path: "/menu/all" },
         { title: "Special Dishes", path: "/menu/special" },
         { title: "Popular Dishes", path: "/menu/popular" },
@@ -97,6 +98,7 @@ const Navbar = () => {
     },
     { title: "Services", path: "/services" },
     { title: "Offers", path: "/offers" },
+    { title: "Feedback", path: "/feedback" },
   ];
 
   return (

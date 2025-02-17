@@ -70,7 +70,7 @@ const AllMenuPage: React.FC = () => {
   } | null>(null);
 
   return (
-    <div className="min-h-screen p-6">
+    <div className="min-h-screen p-6 lg:px-12">
       <PromotionSection />
       <h1 className="text-3xl font-bold text-black md:ml-8 my-6 mx-5">All Menu</h1>
       
@@ -80,7 +80,7 @@ const AllMenuPage: React.FC = () => {
             key={index} 
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="bg-gray-300 rounded-xl py-2 flex flex-col items-center cursor-pointer"
+            className="bg-gray-300 rounded-xl py-4 flex flex-col items-center cursor-pointer"
             onClick={() => setSelectedMeal(item)}
           >
             <img src={item.image} alt={item.name} className="w-20 md:w-32 h-20 object-cover rounded-full" />

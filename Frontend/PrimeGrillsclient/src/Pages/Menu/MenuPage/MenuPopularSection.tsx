@@ -71,7 +71,7 @@ const MenuPopularSection = () => {
   };
 
   return (
-    <div className="flex flex-col justify-self-center px-4 mx-auto mt-6 w-full">
+    <div className="flex flex-col justify-self-center  px-4 mx-auto mt-6 w-full">
       {/* Header Section */}
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-3xl font-bold ml-4 text-black">Popular</h1>
