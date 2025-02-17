@@ -40,7 +40,7 @@ const OrderTemplate = () => {
 
   return (
     <>
-      <Card className="min-w-100 min-h-[calc(100vh-7.5rem)] max-w-md m-auto bg-[#171943] text-white bottom-0">
+      <Card className="min-w-100 min-h-[calc(100vh-7.5rem)] max-w-md m-auto bg-[#171943] text-white bottom-0 p-4">
         <CardHeader>
           <CardTitle className="text-xl font-bold text-center top-0 ">Order 1</CardTitle>
           <div className="flex gap-4 justify-center mt-4">
@@ -60,9 +60,9 @@ const OrderTemplate = () => {
             </Button>
           </div>
         </CardHeader>
-        <CardContent className="float-end">
+        <CardContent className="float-end mt-auto">
           <div className="space-y-4 flex flex-col justify-center">
-            <div className="space-y-2 min-h-[5rem] max-h-[10rem] overflow-y-auto hide-scrollbar">
+            <div className="space-y-2 min-h-[5rem] max-h-[15rem] overflow-y-auto hide-scrollbar">
               {orders.map((item) => (
                 <div
                   key={item.id}

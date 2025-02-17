@@ -7,6 +7,7 @@ interface MenuItem {
     price: number;
     category: string;
     description?: string;
+    image?: string;
 }
 
 interface OrderItem extends MenuItem {
@@ -23,6 +24,8 @@ interface MenuContextType {
     addToOrder: (item: OrderItem) => void;
     removeFromOrder: (id: number) => void;
     updateOrderQuantity: (id: number, quantity: number) => void;
+    filteredItems: MenuItem[];
+    setFilteredItems: (items: MenuItem[]) => void;
 }
 
 // Create the context
@@ -32,6 +35,7 @@ const MenuContext = createContext<MenuContextType | undefined>(undefined);
 export function MenuProvider({ children }: { children: ReactNode }) {
     const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
     const [orders, setOrders] = useState<OrderItem[]>([]);
+    const [filteredItems, setFilteredItems] = useState<MenuItem[]>([]);
 
     const addMenuItem = (item: MenuItem) => {
         setMenuItems([...menuItems, item]);
@@ -81,6 +85,8 @@ export function MenuProvider({ children }: { children: ReactNode }) {
         addToOrder,
         removeFromOrder,
         updateOrderQuantity,
+        filteredItems,
+        setFilteredItems,
     };
 
     return (

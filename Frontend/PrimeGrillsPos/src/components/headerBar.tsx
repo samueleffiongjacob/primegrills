@@ -1,5 +1,6 @@
-
+import { useContext } from 'react';
 import { MdOutlineNotificationsNone } from 'react-icons/md';
+import { SearchContext } from '../context/SearchContext';
 import primeLogo from '@assets/images/primeLogo.png';
 import test1 from '@assets/images/test1.jpeg'
 
@@ -15,7 +16,12 @@ function HeaderBar() {
     day: 'numeric'
   };
 
+  const { searchQuery, setSearchQuery } = useContext(SearchContext);
   const today = new Date().toLocaleDateString('en-US', dateOptions);
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
 
   return (
     <>
@@ -27,7 +33,8 @@ function HeaderBar() {
 
             <input 
             type="search" 
-
+            value={searchQuery}
+            onChange={handleSearch}
             placeholder="Search for Food, Drinks, Snacks, etc." 
             className="w-1/2 h-20 border-4 active:border-primary bg-secondary border-primary rounded-4xl px-2" />
 
