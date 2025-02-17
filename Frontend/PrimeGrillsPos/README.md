@@ -8,6 +8,7 @@ A modern Point of Sale system for restaurant management built with React, TypeSc
 ## 📋 Overview
 
 PrimeGrills POS is a dual-interface system:
+
 - 💼 **Merchant Interface**: For staff to manage orders and transactions
 - 👥 **Customer Display**: Real-time order tracking for customers
 
@@ -25,18 +26,21 @@ graph TD
 ## 🚀 Features
 
 ### Order Management
+
 - ➕ Real-time item selection and quantity management
 - 💰 Dynamic price calculation with tax and discounts
 - 🔄 Order type switching (Dine-in/Takeaway)
 - 🛒 Split-screen order display
 
 ### Menu System
+
 - 📱 Category-based menu organization
 - 🖼️ Visual menu with product images
 - 💲 Price display and formatting
 - ✨ Interactive item selection
 
 ### Payment Processing
+
 - 💳 Order total calculation
 - 🧾 Tax and discount handling
 - 📊 Order status tracking
@@ -47,21 +51,21 @@ graph TD
 ```bash
 PrimeGrillsPOS/
 │── src/
-    |-- assets/
-        |-- images/
-        |-- styles/
+│   │-- assets/
+│   │    |-- images/
+│   │    |-- styles/
 │   ├── components/
 │   │   ├── OrderTemplate.tsx      # Order management components
-        |-- FoodItems.tsx
-        |-- Menus.tsx
-        |-- headerBar.tsx
+│        |-- FoodItems.tsx
+│        |-- Menus.tsx
+│        |-- headerBar.tsx
 │   │   ├── ClientOrderTemplate.tsx     # Customer view
-        |-- ClientMenus.tsx
+│        |-- ClientMenus.tsx
 │   │   ├── Menus/             # Menu display components
 │   │   ├── UI/                 # Reusable UI component
-            |-- Button.tsx
-            |-- Card.tsx
-            |              
+│            |-- Button.tsx
+│            |-- Card.tsx
+│                 
 │   ├── Pages/
 │   │   ├── MainFrame.tsx      # Main layout
 │   │   ├── Orders.tsx         # Order history
@@ -80,6 +84,7 @@ PrimeGrillsPOS/
 ## 🛠️ Technical Implementation
 
 ### WebSocket Integration
+
 ```typescript
 const ws = new WebSocket('ws://your-server-url');
 ws.onmessage = (event) => {
@@ -89,6 +94,7 @@ ws.onmessage = (event) => {
 ```
 
 ### Order Processing Flow
+
 1. Item Selection → Cart Addition
 2. Quantity Adjustment
 3. Tax/Discount Application
@@ -99,17 +105,20 @@ ws.onmessage = (event) => {
 ## 🎯 Core Components
 
 ### OrderTemplate
+
 - Manages active order state
 - Handles item additions/removals
 - Calculates totals
 - Processes payments
 
 ### ClientOrderTemplate
+
 - Displays real-time order updates
 - Shows running total
 - Indicates processing status
 
 ### Menus
+
 - Displays available items
 - Shows prices and images
 - Indicates item availability
@@ -117,6 +126,7 @@ ws.onmessage = (event) => {
 ## 🚗 Getting Started
 
 1. **Clone & Install**
+
 ```bash
 git clone <repository-url>
 cd PrimeGrillsPOS
@@ -124,6 +134,7 @@ npm install
 ```
 
 2. **Environment Setup**
+
 ```bash
 cp .env.example .env
 # Configure environment variables:
@@ -132,11 +143,13 @@ VITE_WS_URL=your-websocket-url
 ```
 
 3. **Development**
+
 ```bash
 npm run dev
 ```
 
 4. **Build & Deploy**
+
 ```bash
 npm run build
 npm run preview
@@ -145,6 +158,7 @@ npm run preview
 ## 🔧 Configuration
 
 ### Environment Variables
+
 ```env
 VITE_API_URL=http://api.example.com
 VITE_WS_URL=ws://websocket.example.com
@@ -153,6 +167,7 @@ VITE_DEFAULT_CURRENCY=NGN
 ```
 
 ### WebSocket Events
+
 - `order.update`: Order changes
 - `menu.update`: Menu availability
 - `payment.status`: Payment processing
@@ -172,9 +187,8 @@ VITE_DEFAULT_CURRENCY=NGN
 
 ## 🗺️ Routes Structure
 
-- http://localhost:5173/
-- http://localhost:5173/clientview
-
+- <http://localhost:5173/>
+- <http://localhost:5173/clientview>
 
 ## 🤝 Contributing
 
@@ -187,6 +201,7 @@ VITE_DEFAULT_CURRENCY=NGN
 ## 📚 Documentation
 
 Additional documentation:
+
 - [API Reference](docs/api.md)
 - [WebSocket Protocol](docs/websocket.md)
 - [UI Components](docs/components.md)
@@ -195,6 +210,7 @@ Additional documentation:
 ## 🐛 Issue Reporting
 
 Report bugs via GitHub issues with:
+
 - Expected behavior
 - Actual behavior
 - Steps to reproduce
@@ -202,5 +218,3 @@ Report bugs via GitHub issues with:
 
 ---
 Built with ❤️ using React + TypeScript + Vite
-
-
