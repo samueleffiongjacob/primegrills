@@ -52,7 +52,7 @@ const Footer = () => {
               alt="Prime and Grills Logo"
               className="h-14 w-auto"
             />
-            <p className="text-gray-600 font-semibold w-[250px] lg:w-[180px]  -mt-3 text-sm leading-relaxed">
+            <p className="text-gray-600 font-semibold w-[180px]  -mt-3 text-sm leading-relaxed">
               Savor The Artistry Where Every Dish is a Culinary Masterpiece
             </p>
           </div>
