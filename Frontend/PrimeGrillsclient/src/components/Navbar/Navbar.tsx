@@ -1,18 +1,10 @@
-<<<<<<< HEAD
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FiChevronDown } from "react-icons/fi";
 import { User } from 'lucide-react';
 
 // INTERNAL IMPORTS
 import { CartIcon } from "../CartIcon";
-=======
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { IoIosArrowDown } from "react-icons/io";
-import { AiOutlineClose, AiOutlineMenuUnfold } from "react-icons/ai";
-import { FiSearch } from "react-icons/fi";
->>>>>>> a9ee3de45b1d76fd91f86a8f5a397c71e4c67ffb
 import logo from "../../assets/images/primeLogo.png";
 import Button from "./button";
 import LoginModal from "../User/Login";
