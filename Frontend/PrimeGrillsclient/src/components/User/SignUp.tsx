@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FcGoogle } from 'react-icons/fc';
-import { FaFacebook, FaApple } from 'react-icons/fa';
+import { FaFacebook, FaApple, FaUser, FaUserCircle, FaEnvelope, FaPhone, FaMapMarkerAlt, FaLock } from 'react-icons/fa';
 
 // INTERNAL IMPORTS
 import { signUpUser } from '../../api/auth';
@@ -77,7 +77,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
     });
 
     if (response.message) {
-      setErrors({ email: response.message }); // Handle API errors
+      setErrors({ email: response.message });
     } else {
       onSignUp(email, password);
     }
@@ -87,7 +87,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-opacity-100 backdrop-blur-xs flex items-center justify-center z-50">
-      <div className="bg-gray-100 rounded-2xl p-6 w-full max-w-md relative">
+      <div className="bg-gray-100 rounded-2xl p-6 w-full max-w-md max-h-screen overflow-y-auto relative">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 cursor-pointer text-gray-500 hover:text-[#EE7F61]"
@@ -95,62 +95,64 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
           ✕
         </button>
 
-        <div className="space-y-6">
+        <div className="space-y-6 p-4">
           <h1 className="text-2xl font-semibold text-center">Sign Up</h1>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Username */}
-            <div className='md:flex md:justify-between'>
-            <div>
-              <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Username"
-                className={`w-[80%] px-4 py-1.5 rounded-xl border ${
-                  errors.username ? 'border-red-500' : 'border-gray-200'
-                } focus:outline-none focus:ring-2 focus:ring-orange-400`}
-              />
-              {errors.username && <p className="text-red-500 text-sm ">{errors.username}</p>}
-            </div>
-
             {/* Full Name */}
-            <div>
+            <div className="relative">
+              <FaUserCircle className="absolute left-3 top-2.5 text-gray-400" />
               <input
                 type="text"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder="Full Name"
-                className={`w-full px-4 py-1.5 rounded-xl border ${
+                className={`w-full pl-10 pr-4 py-1.5 rounded-xl border ${
                   errors.fullName ? 'border-red-500' : 'border-gray-200'
                 } focus:outline-none focus:ring-2 focus:ring-orange-400`}
               />
               {errors.fullName && <p className="text-red-500 text-sm">{errors.fullName}</p>}
             </div>
+
+            {/* Username */}
+            <div className="relative">
+              <FaUser className="absolute left-3 top-2.5 text-gray-400" />
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Username"
+                className={`w-full pl-10 pr-4 py-1.5 rounded-xl border ${
+                  errors.username ? 'border-red-500' : 'border-gray-200'
+                } focus:outline-none focus:ring-2 focus:ring-orange-400`}
+              />
+              {errors.username && <p className="text-red-500 text-sm">{errors.username}</p>}
             </div>
 
             {/* Email */}
-            <div>
+            <div className="relative">
+              <FaEnvelope className="absolute left-3 top-2.5 text-gray-400" />
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email"
-                className={`w-full px-4 py-1.5 rounded-xl border ${
+                className={`w-full pl-10 pr-4 py-1.5 rounded-xl border ${
                   errors.email ? 'border-red-500' : 'border-gray-200'
                 } focus:outline-none focus:ring-2 focus:ring-orange-400`}
               />
-              {errors.email && <p className="text-red-500 text-sm ">{errors.email}</p>}
+              {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
             </div>
 
             {/* Phone Number */}
-            <div>
+            <div className="relative">
+              <FaPhone className="absolute left-3 top-2.5 text-gray-400" />
               <input
                 type="tel"
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
                 placeholder="Phone Number"
-                className={`w-full px-4 py-1.5 rounded-xl border ${
+                className={`w-full pl-10 pr-4 py-1.5 rounded-xl border ${
                   errors.phoneNumber ? 'border-red-500' : 'border-gray-200'
                 } focus:outline-none focus:ring-2 focus:ring-orange-400`}
               />
@@ -158,45 +160,48 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
             </div>
 
             {/* Address */}
-            <div>
+            <div className="relative">
+              <FaMapMarkerAlt className="absolute left-3 top-2.5 text-gray-400" />
               <input
                 type="text"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 placeholder="Address"
-                className={`w-full px-4 py-1.5 rounded-xl border ${
+                className={`w-full pl-10 pr-4 py-1.5 rounded-xl border ${
                   errors.address ? 'border-red-500' : 'border-gray-200'
                 } focus:outline-none focus:ring-2 focus:ring-orange-400`}
               />
-              {errors.address && <p className="text-red-500 text-sm ">{errors.address}</p>}
+              {errors.address && <p className="text-red-500 text-sm">{errors.address}</p>}
             </div>
 
             {/* Password */}
-            <div>
+            <div className="relative">
+              <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">🔒</span>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"
-                className={`w-full px-4 py-1.5 rounded-xl border ${
+                className={`w-full pl-10 pr-4 py-1.5 rounded-xl border ${
                   errors.password ? 'border-red-500' : 'border-gray-200'
                 } focus:outline-none focus:ring-2 focus:ring-orange-400`}
               />
-              {errors.password && <p className="text-red-500 text-sm ">{errors.password}</p>}
+              {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
             </div>
 
             {/* Confirm Password */}
-            <div>
+            <div className="relative">
+              <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">🔒</span>
               <input
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Confirm Password"
-                className={`w-full px-4 py-1.5 rounded-xl border ${
+                className={`w-full pl-10 pr-4 py-1.5 rounded-xl border ${
                   errors.confirmPassword ? 'border-red-500' : 'border-gray-200'
                 } focus:outline-none focus:ring-2 focus:ring-orange-400`}
               />
-              {errors.confirmPassword && <p className="text-red-500 text-sm ">{errors.confirmPassword}</p>}
+              {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword}</p>}
             </div>
 
             <button
