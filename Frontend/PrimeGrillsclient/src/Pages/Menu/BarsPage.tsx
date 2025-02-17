@@ -68,7 +68,7 @@ const BarsPage: React.FC = () => {
   } | null>(null);
 
   return (
-    <div className="min-h-screen p-6">
+    <div className="min-h-screen p-6 lg:px-12">
       <PromotionSection />
       <h1 className="text-3xl font-bold md:ml-8 text-black my-6 mx-5">Bars/Drinks</h1>
       

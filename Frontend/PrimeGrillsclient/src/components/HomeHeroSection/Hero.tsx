@@ -1,5 +1,6 @@
 
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 // INTERNAL IMPORTS
 import Button from "../Navbar/button.tsx";
@@ -44,7 +45,9 @@ const Hero = () => {
             {/* Buttons */}
             <div className="flex flex-col md:flex-row justify-center lg:justify-start items-center md:items-start
              gap-6 md:gap-16 relative top-8 md:top-12 mx-auto">
+              <Link to={'/menu'}>
               <Button title="Order Now" />
+              </Link>
               <h4 className="flex items-center gap-4 text-lg font-medium text-gray-800">
                 Watch Video
                 <span

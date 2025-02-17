@@ -16,6 +16,7 @@ import OffersPage from '../Pages/Offers.js';
 import Menu from '../Pages/Menu/MenuPage/Menu.js';
 import BottomNavigation from '../components/BottomNavigation.js';
 import FeedbackPage from '../Pages/FeedbackPage.js';
+import CheckoutPage from '../Pages/Checkout/ChekoutPage.js';
 
 
 const Navigations = () => {
@@ -38,6 +39,7 @@ const Navigations = () => {
             <Route path='/menu/special' element={< SpecialDishesPage/>} />
             <Route path='/offers' element={< OffersPage/>} />
             <Route path='/cart' element={< CartPage />} />
+            <Route path='/checkout' element={< CheckoutPage />} />
             <Route path="/" element={<LandingPage />} /> 
             <Route path="/" element={<LandingPage />} />
             <Route path="/menu" element={<Menu />} />
