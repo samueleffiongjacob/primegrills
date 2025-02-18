@@ -15,7 +15,8 @@ type CartAction =
   | { type: "ADD_ITEM"; payload: CartItem }
   | { type: "REMOVE_ITEM"; payload: number }
   | { type: "INCREASE_QUANTITY"; payload: number }
-  | { type: "DECREASE_QUANTITY"; payload: number };
+  | { type: "DECREASE_QUANTITY"; payload: number }
+  | { type: "CLEAR_CART" };
 
 interface CartState {
   cartItems: CartItem[];
@@ -25,6 +26,7 @@ interface CartState {
 const initialState: CartState = {
   cartItems: [],
 };
+
 
 // Reducer function
 const cartReducer = (state: CartState, action: CartAction): CartState => {
@@ -60,6 +62,9 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
           .filter((item) => item.quantity > 0), // Remove item if quantity reaches 0
       };
 
+    case "CLEAR_CART":
+      return { cartItems: [] };
+
     default:
       return state;
   }
@@ -69,13 +74,22 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
 const CartContext = createContext<{
   cartItems: CartItem[];
   dispatch: React.Dispatch<CartAction>;
-}>({ cartItems: [], dispatch: () => {} });
+  clearCart: () => void;  
+}>({ 
+  cartItems: [],
+  dispatch: () => {},
+  clearCart: () => {}
+});
 
 // Provider component
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(cartReducer, initialState);
 
-  return <CartContext.Provider value={{ cartItems: state.cartItems, dispatch }}>{children}</CartContext.Provider>;
+  const clearCart = () => {
+    dispatch({ type: "CLEAR_CART" });
+  };
+
+  return <CartContext.Provider value={{ cartItems: state.cartItems, dispatch, clearCart }}>{children}</CartContext.Provider>;
 };
 
 // Hook to use cart context

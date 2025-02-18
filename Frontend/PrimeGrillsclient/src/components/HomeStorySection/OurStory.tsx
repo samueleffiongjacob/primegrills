@@ -36,7 +36,7 @@ const Story =() => {
                     experiences and offer exceptional services,
                     blending culinary artisanry with warm hospitality.
                     </p>
-                    <Link to={'/menu'}>
+                    <Link to={'/menu-category'}>
                         <Button title="Explore" />
                     </Link>
                     

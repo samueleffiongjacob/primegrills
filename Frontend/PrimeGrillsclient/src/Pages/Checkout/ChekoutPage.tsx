@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { useCart } from "../../context/CartContext";
 import { useNavigate } from 'react-router-dom';
+import CardPaymentForm from '../../components/CardPayment';
+import BankTransferPayment from '../../components/BankTransfer';
+import ConfirmationModal from '../../components/ConfirmationModal';
+import ThankYouPage from '../../components/ThankYouPage';
 
 interface DeliveryAddress {
   street: string;
@@ -10,14 +14,16 @@ interface DeliveryAddress {
 }
 
 const CheckoutPage: React.FC = () => {
-  const { cartItems } = useCart();
+  const { cartItems, clearCart } = useCart();
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const navigate = useNavigate();
 
   const [deliveryMethod, setDeliveryMethod] = useState<'pickup' | 'delivery'>('pickup');
   const [paymentMethod, setPaymentMethod] = useState('card');
   const [discountCode, setDiscountCode] = useState('');
   const [showAddressForm, setShowAddressForm] = useState(false);
-  
+  const [showThankYou, setShowThankYou] = useState(false);
+
   const [savedAddress, setSavedAddress] = useState<DeliveryAddress>({
     street: '123 Sample Street',
     city: 'Lagos',
@@ -35,6 +41,13 @@ const CheckoutPage: React.FC = () => {
   const totalAmount = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   const deliveryFee = deliveryMethod === 'delivery' ? 1000 : 0;
   const finalAmount = totalAmount + deliveryFee;
+
+  const orderDetails = {
+    trackingId: `TRK${Math.floor(Math.random() * 100000)}`,
+    amount: finalAmount,
+    deliveryMethod,
+    address: deliveryMethod === 'delivery' ? savedAddress : null,
+  };
 
   const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -65,12 +78,33 @@ const CheckoutPage: React.FC = () => {
     });
   };
 
+  const handleCloseConfirmation = () => {
+    clearCart();
+    setShowConfirmation(false);
+    setShowThankYou(true);
+  };
+  
+  const handleReturnHome = () => {
+    setShowThankYou(false);
+    navigate('/'); // Or wherever your home page is
+  };
+
+    // Check if we should show the thank you page
+    if (showThankYou) {
+      return (
+        <ThankYouPage
+          customerName={orderDetails?.customerName || 'Dear Customer'}
+          onGoHome={handleReturnHome}
+        />
+      );
+    }
+
   return (
     <div className="max-w-4xl mx-auto p-6 md:p-10 bg-white shadow-md rounded-lg">
       <h1 className="text-2xl font-bold mb-6">Checkout</h1>
       
-       {/* Cart Preview */}
-       <div className="mb-6 p-4 border rounded-md bg-gray-50">
+      {/* Cart Preview */}
+      <div className="mb-6 p-4 border rounded-md bg-gray-50">
         <h2 className="text-lg font-semibold mb-3">Cart Summary</h2>
         {cartItems.length > 0 ? (
           <ul className="space-y-2">
@@ -194,8 +228,6 @@ const CheckoutPage: React.FC = () => {
         >
           <option value="card">Pay with Card</option>
           <option value="transfer">Pay with Bank Transfer</option>
-          <option value="opay">Opay</option>
-          <option value="palmpay">PalmPay</option>
         </select>
       </div>
 
@@ -233,12 +265,14 @@ const CheckoutPage: React.FC = () => {
       </div>
 
       {/* Confirm Order Button */}
-      <button 
+      {/* <button 
         onClick={handlePayment} 
         className="w-full bg-[#EE7F61] text-white py-3 rounded-md font-semibold hover:opacity-90"
       >
         Confirm Order
-      </button>
+      </button> */}
+      {paymentMethod === 'card' ? <CardPaymentForm onPaymentSuccess={() => setShowConfirmation(true)} /> : <BankTransferPayment onPaymentSuccess={() => setShowConfirmation(true)} />}
+      <ConfirmationModal isOpen={showConfirmation} orderDetails={orderDetails} onClose={handleCloseConfirmation} />
     </div>
   );
 };
