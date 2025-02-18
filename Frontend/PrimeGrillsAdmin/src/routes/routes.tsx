@@ -13,7 +13,7 @@ import Category from '../components/category/category';
 const Navigations= () => {
   return (
     <Router>
-      <div className="flex min-h-screen">
+      <div className="flex max-h-screen bg-gray-100">
         {/* Sidebar always visible */}
         <Sidebar />
 
@@ -22,9 +22,9 @@ const Navigations= () => {
           <Header />
 
           {/* Main content area */}
-          <main className="bg-[#D9D9D9] flex-1 p-6">
+          <main className=" max-h-screen ">
             <Routes>
-              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/" element={<Dashboard />} />
               <Route path="/menu" element={<MenuDashboard />} />
               <Route path="/user" element={<Staff />} />
               <Route path="/products" element={<ProductDashboard />} />

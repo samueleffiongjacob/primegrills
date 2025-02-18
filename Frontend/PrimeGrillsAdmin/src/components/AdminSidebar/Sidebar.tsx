@@ -20,7 +20,7 @@ const SidebarLink = ({ to, children, icon: Icon }) => {
   return (
     <Link
       to={to}
-      className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-colors duration-300 ${
+      className={`flex items-center  gap-3 px-4 py-2 rounded-lg transition-colors duration-300 ${
         isActive ? "text-[#EE7F61] bg-[#2C2F55]" : "hover:text-[#EE7F61]"
       }`}
     >
@@ -32,7 +32,7 @@ const SidebarLink = ({ to, children, icon: Icon }) => {
 };
 
 const navItems = [
-  { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+  { to: "/", icon: LayoutDashboard, label: "Dashboard" },
   { to: "/menu", icon: Menu, label: "Menu" },
   { to: "/products", icon: Package, label: "Products" },
   { to: "/user", icon: User, label: "User" },
@@ -46,13 +46,13 @@ const navItems = [
 
 const Sidebar = () => {
   return (
-    <aside className="w-[250px] bg-[#171943] text-white p-6">
+    <aside className="w-[250px] overflow-y-auto max-h-screen scroll-smooth bg-[#171943] text-white p-6">
       <div className="mb-8">
         <img
           src={logo}
           alt="Prime Grills & Cafe"
-          width={120}
-          height={60}
+          width={100}
+          height={40}
           className="mx-auto"
         />
       </div>
