@@ -6,6 +6,7 @@ import ClientFrame from './Pages/ClientFrame';
 import { SearchProvider } from './context/SearchContext';
 import { MenuProvider } from './context/MenuContext';
 import Settings from "@components/Settings";
+import TransactionsTable from "@components/TransactionTable";
 
 function App() {
   
@@ -19,10 +20,9 @@ function App() {
               
               <Route path='menus' element={<MenuPage />} />
               <Route path='settings' element={<Settings />} />
+              <Route path='orders' element={<TransactionsTable />} />
               {/*
-              <Route path='orders' element={<Orders />} />
               <Route path='dashboard' element={<Dashboard />} />
-               
               <Route path='*' element={<NotFound />} /> */}
               
             </Route>

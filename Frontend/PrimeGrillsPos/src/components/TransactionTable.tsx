@@ -15,13 +15,100 @@ interface TableRow {
     expiry: string;
 }
 
-const TABLE_HEAD = ["Transaction", "Amount", "Date", "Status", "Account", ""];
+const TABLE_HEAD = ["S/N","Transaction", "Amount", "Date", "Status", "Account", ""];
 
-const TABLE_ROWS: TableRow[] = [
-    // ... your existing data
+const TABLE_ROWS: (TableRow & { id: number })[] = [
+    {
+        id: 1,
+        img: "https://docs.material-tailwind.com/img/logos/logo-spotify.svg",
+        name: "Spotify",
+        amount: "$2,500",
+        date: "Wed 3:00pm",
+        status: "paid",
+        account: "visa",
+        accountNumber: "1234",
+        expiry: "06/2026",
+    },
+    {
+        id: 2,
+        img: "https://docs.material-tailwind.com/img/logos/logo-amazon.svg",
+        name: "Amazon",
+        amount: "$5,000",
+        date: "Wed 1:00pm",
+        status: "paid",
+        account: "master-card",
+        accountNumber: "1234",
+        expiry: "06/2026",
+    },
+    {
+        id: 3,
+        img: "https://docs.material-tailwind.com/img/logos/logo-pinterest.svg",
+        name: "Pinterest",
+        amount: "$3,400",
+        date: "Mon 7:40pm",
+        status: "pending",
+        account: "master-card",
+        accountNumber: "1234",
+        expiry: "06/2026",
+    },
+    {
+        id: 4,
+        img: "https://docs.material-tailwind.com/img/logos/logo-google.svg",
+        name: "Google",
+        amount: "$1,000",
+        date: "Wed 5:00pm",
+        status: "paid",
+        account: "visa",
+        accountNumber: "1234",
+        expiry: "06/2026",
+    },
+    {
+        id: 5,
+        img: "https://docs.material-tailwind.com/img/logos/logo-netflix.svg",
+        name: "Netflix",
+        amount: "$14,000",
+        date: "Wed 3:30am",
+        status: "cancelled",
+        account: "visa",
+        accountNumber: "1234",
+        expiry: "06/2026",
+    },
+    {
+        id: 6,
+        img: "https://docs.material-tailwind.com/img/logos/logo-apple.svg",
+        name: "Apple",
+        amount: "$9,990",
+        date: "Thu 12:30pm",
+        status: "paid",
+        account: "master-card",
+        accountNumber: "5678",
+        expiry: "08/2025",
+    },
+    {
+        id: 7,
+        img: "https://docs.material-tailwind.com/img/logos/logo-microsoft.svg",
+        name: "Microsoft",
+        amount: "$12,500",
+        date: "Fri 9:00am",
+        status: "pending",
+        account: "visa",
+        accountNumber: "9012",
+        expiry: "03/2024",
+    },
+    {
+        id: 8,
+        img: "https://docs.material-tailwind.com/img/logos/logo-adobe.svg",
+        name: "Adobe",
+        amount: "$8,400",
+        date: "Sat 4:15pm",
+        status: "paid",
+        account: "master-card",
+        accountNumber: "3456",
+        expiry: "11/2025",
+    }
 ];
 
-export function TransactionsTable() {
+function TransactionsTable() {
     return (
         <div className="bg-white rounded-xl shadow-lg p-6">
             {/* Header Section */}
@@ -29,10 +116,10 @@ export function TransactionsTable() {
                 <div className="mb-4 flex flex-col justify-between gap-8 md:flex-row md:items-center">
                     <div>
                         <h5 className="text-xl font-semibold text-gray-800">
-                            Recent Transactions
+                            Recent Orders and Transactions
                         </h5>
                         <p className="text-gray-600 mt-1">
-                            These are details about the last transactions
+                            These are details about the last transactions of Order
                         </p>
                     </div>
                     <div className="flex w-full shrink-0 gap-2 md:w-max">
@@ -69,6 +156,9 @@ export function TransactionsTable() {
                     <tbody>
                         {TABLE_ROWS.map((row, index) => (
                             <tr key={row.name} className={index !== TABLE_ROWS.length - 1 ? "border-b border-gray-200" : ""}>
+                                <td className="p-4">
+                                    <span className="text-gray-700 font-bold">{row.id}</span>
+                                </td>
                                 <td className="p-4">
                                     <div className="flex items-center gap-4">
                                         <img
@@ -147,3 +237,5 @@ export function TransactionsTable() {
         </div>
     );
 }
+
+export default TransactionsTable;
