@@ -29,7 +29,7 @@ const ThankYouPage = ({ customerName = 'valued customer', onGoHome }) => {
           className="flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-700 text-white font-semibold py-3 px-6 rounded-full w-full transition duration-300 ease-in-out"
         >
           <Home size={18} />
-          Return to Menu
+          Return to Home
         </button>
         
         <p className="mt-6 text-sm text-gray-500">
