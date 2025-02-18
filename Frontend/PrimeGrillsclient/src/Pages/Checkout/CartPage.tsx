@@ -14,7 +14,7 @@ const CartPage = () => {
     return (
       <div className="text-center mt-32">
         <h2 className="text-2xl font-bold mb-8">Your cart is empty</h2>
-        <Button title="Go to Menu" onClick={() => navigate("/menu")} />
+        <Button title="Go to Menu" onClick={() => navigate("/menu-category")} />
       </div>
     );
   }

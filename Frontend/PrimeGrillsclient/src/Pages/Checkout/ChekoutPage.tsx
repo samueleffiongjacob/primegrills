@@ -14,7 +14,7 @@ interface DeliveryAddress {
 }
 
 const CheckoutPage: React.FC = () => {
-  const { cartItems } = useCart();
+  const { cartItems, clearCart } = useCart();
   const [showConfirmation, setShowConfirmation] = useState(false);
   const navigate = useNavigate();
 
@@ -79,6 +79,7 @@ const CheckoutPage: React.FC = () => {
   };
 
   const handleCloseConfirmation = () => {
+    clearCart();
     setShowConfirmation(false);
     setShowThankYou(true);
   };
