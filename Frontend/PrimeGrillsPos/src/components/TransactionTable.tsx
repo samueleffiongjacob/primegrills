@@ -3,6 +3,8 @@ import {
     ArrowDownTrayIcon,
     MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
+import { OrderModal } from "./OrderModal";
+import { useState } from "react";
 
 interface TableRow {
     img: string;
@@ -15,13 +17,26 @@ interface TableRow {
     expiry: string;
 }
 
+interface Order {
+    id: string;
+    customerName: string;
+    date: string;
+    items: Array<{
+      name: string;
+      quantity: number;
+      price: number;
+    }>;
+    total: number;
+    status: string;
+  };
+
 const TABLE_HEAD = ["S/N","Transaction", "Amount", "Date", "Status", "Account", ""];
 
 const TABLE_ROWS: (TableRow & { id: number })[] = [
     {
-        id: 1,
-        img: "https://docs.material-tailwind.com/img/logos/logo-spotify.svg",
-        name: "Spotify",
+        id: 101,
+        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-3.jpg",
+        name: "John Michael",
         amount: "$2,500",
         date: "Wed 3:00pm",
         status: "paid",
@@ -30,9 +45,9 @@ const TABLE_ROWS: (TableRow & { id: number })[] = [
         expiry: "06/2026",
     },
     {
-        id: 2,
-        img: "https://docs.material-tailwind.com/img/logos/logo-amazon.svg",
-        name: "Amazon",
+        id: 102,
+        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-2.jpg",
+        name: "Alexa Liras",
         amount: "$5,000",
         date: "Wed 1:00pm",
         status: "paid",
@@ -41,9 +56,9 @@ const TABLE_ROWS: (TableRow & { id: number })[] = [
         expiry: "06/2026",
     },
     {
-        id: 3,
-        img: "https://docs.material-tailwind.com/img/logos/logo-pinterest.svg",
-        name: "Pinterest",
+        id: 103,
+        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-4.jpg",
+        name: "Michael Levi",
         amount: "$3,400",
         date: "Mon 7:40pm",
         status: "pending",
@@ -52,9 +67,9 @@ const TABLE_ROWS: (TableRow & { id: number })[] = [
         expiry: "06/2026",
     },
     {
-        id: 4,
-        img: "https://docs.material-tailwind.com/img/logos/logo-google.svg",
-        name: "Google",
+        id: 104,
+        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-1.jpg",
+        name: "Laurent Perrier",
         amount: "$1,000",
         date: "Wed 5:00pm",
         status: "paid",
@@ -63,9 +78,9 @@ const TABLE_ROWS: (TableRow & { id: number })[] = [
         expiry: "06/2026",
     },
     {
-        id: 5,
-        img: "https://docs.material-tailwind.com/img/logos/logo-netflix.svg",
-        name: "Netflix",
+        id: 105,
+        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-5.jpg",
+        name: "Richard Gran",
         amount: "$14,000",
         date: "Wed 3:30am",
         status: "cancelled",
@@ -74,9 +89,9 @@ const TABLE_ROWS: (TableRow & { id: number })[] = [
         expiry: "06/2026",
     },
     {
-        id: 6,
-        img: "https://docs.material-tailwind.com/img/logos/logo-apple.svg",
-        name: "Apple",
+        id: 106,
+        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-3.jpg",
+        name: "John Michael",
         amount: "$9,990",
         date: "Thu 12:30pm",
         status: "paid",
@@ -85,9 +100,9 @@ const TABLE_ROWS: (TableRow & { id: number })[] = [
         expiry: "08/2025",
     },
     {
-        id: 7,
-        img: "https://docs.material-tailwind.com/img/logos/logo-microsoft.svg",
-        name: "Microsoft",
+        id: 107,
+        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-4.jpg",
+        name: "Michael Levi",
         amount: "$12,500",
         date: "Fri 9:00am",
         status: "pending",
@@ -96,9 +111,9 @@ const TABLE_ROWS: (TableRow & { id: number })[] = [
         expiry: "03/2024",
     },
     {
-        id: 8,
-        img: "https://docs.material-tailwind.com/img/logos/logo-adobe.svg",
-        name: "Adobe",
+        id: 108,
+        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-5.jpg",
+        name: "Richard Gran",
         amount: "$8,400",
         date: "Sat 4:15pm",
         status: "paid",
@@ -109,10 +124,13 @@ const TABLE_ROWS: (TableRow & { id: number })[] = [
 ];
 
 function TransactionsTable() {
+    const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+    const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+
     return (
-        <div className="bg-white rounded-xl shadow-lg p-6">
+        <div className="bg-white h-[calc(100hv-7.5rem)] w-full ml-4 flex flex-col rounded-xl shadow-lg">
             {/* Header Section */}
-            <div className="mb-6">
+            <div className="p-6 pb-0">
                 <div className="mb-4 flex flex-col justify-between gap-8 md:flex-row md:items-center">
                     <div>
                         <h5 className="text-xl font-semibold text-gray-800">
@@ -139,101 +157,119 @@ function TransactionsTable() {
                 </div>
             </div>
 
-            {/* Table Section */}
-            <div className="overflow-x-auto">
-                <table className="w-full min-w-max table-auto">
-                    <thead>
-                        <tr>
-                            {TABLE_HEAD.map((head) => (
-                                <th key={head} className="border-y border-gray-200 bg-gray-50 p-4 text-left">
-                                    <span className="text-sm font-semibold text-gray-600">
-                                        {head}
-                                    </span>
-                                </th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {TABLE_ROWS.map((row, index) => (
-                            <tr key={row.name} className={index !== TABLE_ROWS.length - 1 ? "border-b border-gray-200" : ""}>
-                                <td className="p-4">
-                                    <span className="text-gray-700 font-bold">{row.id}</span>
-                                </td>
-                                <td className="p-4">
-                                    <div className="flex items-center gap-4">
-                                        <img
-                                            src={row.img}
-                                            alt={row.name}
-                                            className="h-10 w-10 rounded-full object-contain p-1 border border-gray-200"
-                                        />
-                                        <span className="font-semibold text-gray-800">{row.name}</span>
-                                    </div>
-                                </td>
-                                <td className="p-4">
-                                    <span className="text-gray-700">{row.amount}</span>
-                                </td>
-                                <td className="p-4">
-                                    <span className="text-gray-700">{row.date}</span>
-                                </td>
-                                <td className="p-4">
-                                    <span className={`px-3 py-1 rounded-full text-xs font-medium
-                                        ${row.status === 'paid' ? 'bg-green-100 text-green-800' : 
-                                            row.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
-                                            'bg-red-100 text-red-800'}`}>
-                                        {row.status}
-                                    </span>
-                                </td>
-                                <td className="p-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className="h-9 w-12 rounded-md border border-gray-200 p-1">
-                                            <img
-                                                src={row.account === "visa" 
-                                                    ? "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/logos/visa.png"
-                                                    : "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/logos/mastercard.png"
-                                                }
-                                                alt={row.account}
-                                                className="h-full w-full object-contain"
-                                            />
-                                        </div>
-                                        <div>
-                                            <p className="text-sm text-gray-700 capitalize">
-                                                {row.account.split("-").join(" ")} {row.accountNumber}
-                                            </p>
-                                            <p className="text-xs text-gray-500">{row.expiry}</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td className="p-4">
-                                    <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                                        <PencilIcon className="h-4 w-4 text-gray-600" />
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+            {/* Table Section - Now with proper scrolling */}
+            <div className="flex-1 overflow-hidden px-6">
+                <div className="w-full h-full overflow-x-auto">
+                    <div className="overflow-y-auto h-[calc(100vh-280px)]"> {/* Adjust 280px based on your header/footer height */}
+                        <table className="w-full min-w-max table-auto">
+                            <thead className="sticky top-0 bg-white z-10">
+                                <tr>
+                                    {TABLE_HEAD.map((head) => (
+                                        <th key={head} className="border-y border-gray-200 bg-gray-50 p-4 text-left">
+                                            <span className="text-lg font-semibold text-gray-600">
+                                                {head}
+                                            </span>
+                                        </th>
+                                    ))}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {TABLE_ROWS.map((row, index) => (
+                                    <tr key={row.name} className={index !== TABLE_ROWS.length - 1 ? "border-b border-gray-200" : ""}>
+                                        <td className="p-4">
+                                            <span className="text-gray-700 font-bold">{row.id}</span>
+                                        </td>
+                                        <td className="p-4">
+                                            <div className="flex items-center gap-4">
+                                                <img
+                                                    src={row.img}
+                                                    alt={row.name}
+                                                    className="h-10 w-10 rounded-full object-contain p-1 border border-gray-200"
+                                                />
+                                                <span className="font-semibold text-gray-800">{row.name}</span>
+                                            </div>
+                                        </td>
+                                        <td className="p-4">
+                                            <span className="text-gray-700">{row.amount}</span>
+                                        </td>
+                                        <td className="p-4">
+                                            <span className="text-gray-700">{row.date}</span>
+                                        </td>
+                                        <td className="p-4">
+                                            <span className={`px-3 py-1 rounded-full text-xs font-medium
+                                                ${row.status === 'paid' ? 'bg-green-100 text-green-800' : 
+                                                    row.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
+                                                    'bg-red-100 text-red-800'}`}>
+                                                {row.status}
+                                            </span>
+                                        </td>
+                                        <td className="p-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className="h-9 w-12 rounded-md border border-gray-200 p-1">
+                                                    <img
+                                                        src={row.account === "visa" 
+                                                            ? "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/logos/visa.png"
+                                                            : "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/logos/mastercard.png"
+                                                        }
+                                                        alt={row.account}
+                                                        className="h-full w-full object-contain"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <p className="text-sm text-gray-700 capitalize">
+                                                        {row.account.split("-").join(" ")} {row.accountNumber}
+                                                    </p>
+                                                    <p className="text-xs text-gray-500">{row.expiry}</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="p-4">
+                                            <button
+                                            onClick={() => {
+                                                setSelectedOrder(null);
+                                                setIsOrderModalOpen(true);
+                                            }} 
+                                            className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                                                <PencilIcon className="h-4 w-4 text-gray-600" />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
 
-            {/* Footer/Pagination */}
-            <div className="flex items-center justify-between border-t border-gray-200 p-4 mt-4">
-                <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm">
-                    Previous
-                </button>
-                <div className="flex items-center gap-2">
-                    {[1, 2, 3, '...', 8, 9, 10].map((page, index) => (
-                        <button
-                            key={index}
-                            className={`w-8 h-8 flex items-center justify-center rounded-full
-                                ${page === 1 ? 'bg-blue-500 text-white' : 'hover:bg-gray-100 text-gray-600'}`}
-                        >
-                            {page}
-                        </button>
-                    ))}
+            {/* Footer/Pagination - Now sticky at bottom */}
+            <div className="sticky bottom-0 bg-white border-t border-gray-200 p-4 mt-auto">
+                <div className="flex items-center justify-between">
+                    <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm">
+                        Previous
+                    </button>
+                    <div className="flex items-center gap-2">
+                        {[1, 2, 3, '...', 8, 9, 10].map((page, index) => (
+                            <button
+                                key={index}
+                                className={`w-8 h-8 flex items-center justify-center rounded-full
+                                    ${page === 1 ? 'bg-blue-500 text-white' : 'hover:bg-gray-100 text-gray-600'}`}
+                            >
+                                {page}
+                            </button>
+                        ))}
+                    </div>
+                    <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm">
+                        Next
+                    </button>
                 </div>
-                <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm">
-                    Next
-                </button>
             </div>
+            
+            {/* Order Modal */}
+            {isOrderModalOpen && (<OrderModal
+                isOpen={isOrderModalOpen}
+                onClose={() => setIsOrderModalOpen(false)}
+                order={selectedOrder}
+            />)}
         </div>
     );
 }
