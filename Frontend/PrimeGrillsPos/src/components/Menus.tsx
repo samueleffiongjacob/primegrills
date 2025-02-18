@@ -1,30 +1,29 @@
 import { useEffect, useState, useContext } from 'react'
-import { ChevronLeft, ChevronRight, Home, Grid, List } from 'lucide-react'
-import { Card, CardContent } from './UI/Card';
+import { Grid, List } from 'lucide-react'
+import { Card} from './UI/Card';
 import { useMenu } from '../context/MenuContext';
 import { SearchContext } from '../context/SearchContext';
 import product3 from '@assets/images/product3.png';
 import product2 from '@assets/images/product2.png';
 import product1 from '@assets/images/product1.png';
-import menu1 from '@assets/images/menuimg1.png';
-import menu2 from '@assets/images/menuimg2.png';
-import menu3 from '@assets/images/menuimg3.png';
+// import menu1 from '@assets/images/menuimg1.png';
+// import menu2 from '@assets/images/menuimg2.png';
+// import menu3 from '@assets/images/menuimg3.png';
 
 function Menus() {
-    const [selectedCategory, setSelectedCategory] = useState('All Menu');
     const [selectedItems, setSelectedItems] = useState<number[]>([]);
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
     const { addToOrder, removeFromOrder, orders } = useMenu();
     const { searchQuery } = useContext(SearchContext);
 
-    const categories = [
-        { id: 1, name: 'All Menu', icon: <Home className="w-6 h-6" /> },
-        { id: 2, name: 'Nigerian', image: menu1 },
-        { id: 3, name: 'Pizza', image: menu2 },
-        { id: 4, name: 'Pastries', image: menu3 },
-        { id: 5, name: 'Grills', image: menu1 },
-        { id: 6, name: 'Bar', image: menu2 },
-    ];
+    // const categories = [
+    //     { id: 1, name: 'All Menu', icon: <Home className="w-6 h-6" /> },
+    //     { id: 2, name: 'Nigerian', image: menu1 },
+    //     { id: 3, name: 'Pizza', image: menu2 },
+    //     { id: 4, name: 'Pastries', image: menu3 },
+    //     { id: 5, name: 'Grills', image: menu1 },
+    //     { id: 6, name: 'Bar', image: menu2 },
+    // ];
 
     const menuItemsList = [
         { id: 1, name: 'Pastries', price: 8000, image: product1, category: 'Pastries' },
@@ -51,7 +50,7 @@ function Menus() {
                 addToOrder({
                     ...item,
                     quantity: 1,
-                    category: item.category || selectedCategory
+                    category: item.category // || selectedCategory
                 });
                 return [...prev, item.id];
             }
@@ -61,9 +60,9 @@ function Menus() {
     const filterMenuItems = () => {
         let filtered = menuItemsList;
         
-        if (selectedCategory !== 'All Menu') {
-            filtered = filtered.filter((item) => item.category === selectedCategory);
-        }
+        // if (selectedCategory !== 'All Menu') {
+        //     filtered = filtered.filter((item) => item.category === selectedCategory);
+        // }
 
         if (searchQuery) {
             filtered = filtered.filter((item) => 
@@ -77,7 +76,8 @@ function Menus() {
 
     useEffect(() => {
         filterMenuItems();
-    }, [searchQuery, selectedCategory]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchQuery]);
 
     useEffect(() => {
         setSelectedItems(prev => {

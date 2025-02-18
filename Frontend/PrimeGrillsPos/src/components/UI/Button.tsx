@@ -6,6 +6,7 @@ interface ButtonProps {
     disabled?: boolean;
     className?: string;
     variant?: 'primary' | 'secondary' | 'ghost' | 'outline' | 'danger';
+    type?: 'button' | 'submit' | 'reset';
 }
 
 const getVariantClasses = (variant: ButtonProps['variant']) => {
@@ -24,13 +25,21 @@ const getVariantClasses = (variant: ButtonProps['variant']) => {
     }
 };
 
-export const Button: React.FC<ButtonProps> = ({ onClick, children, disabled = false, className = '', variant = 'primary' }) => {
+export const Button: React.FC<ButtonProps> = ({ 
+    onClick, 
+    children, 
+    disabled = false, 
+    className = '', 
+    variant = 'primary',
+    type = 'button'
+}) => {
     const variantClasses = getVariantClasses(variant);
 
     return (
         <button 
             onClick={onClick} 
             disabled={disabled} 
+            type={type}
             className={`px-4 py-2 rounded ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${variantClasses} ${className}`}
         >
             {children}

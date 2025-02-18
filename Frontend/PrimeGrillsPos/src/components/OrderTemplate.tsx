@@ -13,7 +13,7 @@ const OrderTemplate = () => {
   const [discount, setDiscount] = useState(20);
   const [Isprocess, setIsprocess] = useState(false);
 
-  const { orders, addToOrder, removeFromOrder, updateOrderQuantity } = useMenu();
+  const { orders, removeFromOrder, updateOrderQuantity } = useMenu();
 
   const calculateSubtotal = () => {
     return orders.reduce((sum, item) => sum + item.price * item.quantity, 0);
