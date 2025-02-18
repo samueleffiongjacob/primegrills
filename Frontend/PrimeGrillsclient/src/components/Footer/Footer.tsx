@@ -37,7 +37,7 @@ const Footer = () => {
   const mainMenu = [
     { label: 'Home', href: '/' },
     { label: 'Offer', href: '/offers' },
-    { label: 'Menu', href: '/menu' },
+    { label: 'Menu', href: '/menu-category' },
     { label: 'Reservation', href: '/reservation' }
   ];
 

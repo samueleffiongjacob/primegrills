@@ -1,5 +1,6 @@
 import {motion} from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 // import { FaArrowDown, FaCaretDown } from 'react-icons/fa';
 
 // INTERNAL IMPORTS
@@ -36,9 +37,7 @@ const Hero =() => {
                     >
                         <p className="text-md text-center relative top-8 mb-5 lg:text-start leading-tight">Where Each Bite Weaves a Story of Culinary <br/> Mastery and Passionate Craftmanship</p>
                         <div className="flex flex-row relative top-12 mt-5 gap-16">
-                            <Link to={'/menu'}>
-                                <Button  title="Order Now" />
-                            </Link>
+                                <Button  title="Order Now" onClick={() => navigate("/menu")} />
                             <h4 className="flex  items-center gap-4 text-lg font-medium text-gray-800">
                                 Watch Video
                                 <span
