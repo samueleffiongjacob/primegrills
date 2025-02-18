@@ -33,7 +33,7 @@ const ThankYouPage = ({ customerName = 'valued customer', onGoHome }) => {
         </button>
         
         <p className="mt-6 text-sm text-gray-500">
-          Have questions about your order? Contact us at support@youreatery.com
+          Have questions about your order? Contact us at support@primegrills.com
         </p>
       </div>
     </div>
