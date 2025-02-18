@@ -7,7 +7,7 @@ export const Card: React.FC<{
 }> = ({ children, className, onClick }) => {
     return (
         <div 
-            className={`p-4 flex flex-col justify-center ${className}`}
+            className={` flex flex-col justify-center ${className}`}
             onClick={onClick}
         >
             {children}
@@ -22,7 +22,7 @@ interface CardHeaderProps {
 
 export const CardHeader: React.FC<CardHeaderProps> = ({ children, className }) => {
     return (
-        <div className={` p-4 ${className}`}>
+        <div className={` p-0 ${className}`}>
             {children}
         </div>
     );
@@ -48,7 +48,7 @@ interface CardContentProps {
 
 export const CardContent: React.FC<CardContentProps> = ({ children, className }) => {
     return (
-        <div className={`p-4 ${className}`}>
+        <div className={`p-0 ${className}`}>
             {children}
         </div>
     );
