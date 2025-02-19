@@ -1,122 +1,121 @@
-import { useState, useRef, ChangeEvent } from 'react';
-import { Card, CardContent } from './UI/Card';
-import { Button } from './UI/Button';
-import axios from 'axios';
-import { toast } from 'react-hot-toast';
+import React from 'react';
+import { UserCircleIcon, BellIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
 
-interface UserProfile {
-  name: string;
-  email: string;
-  image: string;
-}
-
-export default function Settings() {
-  const [profile, setProfile] = useState<UserProfile>({
-    name: '',
-    email: '',
-    image: ''
-  });
-  const [loading, setLoading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const formData = new FormData();
-      formData.append('image', file);
-      
-      try {
-        setLoading(true);
-        const response = await axios.post('/api/upload-image', formData);
-        setProfile(prev => ({ ...prev, image: response.data.imageUrl }));
-        toast.success('Image uploaded successfully');
-      } catch (error) {
-        toast.error('Failed to upload image' + error);
-      } finally {
-        setLoading(false);
-      }
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      setLoading(true);
-      await axios.put('/api/users/profile', profile);
-      toast.success('Profile updated successfully');
-    } catch (error) {
-      toast.error('Failed to update profile' + error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+const Settings: React.FC = () => {
   return (
-    <div className="max-w-2xl mx-auto p-4">
-      <Card>
-        <CardContent>
-          <h2 className="text-2xl font-bold mb-6">Profile Settings</h2>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="flex items-center justify-center mb-6">
-              <div className="relative">
-                <img
-                  src={profile.image || '/default-avatar.png'}
-                  alt="Profile"
-                  className="w-32 h-32 rounded-full object-cover"
-                />
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full hover:bg-primary-dark"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
-                  </svg>
+    <div className="h-[calc(100vh-7.5rem)] w-full mr-4 overflow-hidden">
+      <div className="h-full p-6 bg-gray-50">
+        {/* Settings Container */}
+        <div className="bg-white rounded-xl shadow-lg h-full overflow-hidden">
+          {/* Settings Header - Sticky */}
+          <div className="sticky top-0 bg-white z-10 px-6 pt-6 pb-4 border-b border-gray-200">
+            <h1 className="text-2xl font-bold text-gray-800">Settings</h1>
+            <p className="text-gray-600">Manage your account settings and preferences</p>
+          </div>
+
+          {/* Settings Content - Scrollable */}
+          <div className="overflow-y-auto h-[calc(100%-80px)] px-6">
+            {/* Settings Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 py-6">
+              {/* Profile Section */}
+              <div className="col-span-2 space-y-6">
+                <div className="bg-gray-50 p-6 rounded-lg">
+                  <div className="flex items-center gap-4 mb-6">
+                    <UserCircleIcon className="h-8 w-8 text-blue-500" />
+                    <h2 className="text-xl font-semibold text-gray-800">Profile Settings</h2>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-4">
+                      <img
+                        src="https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-3.jpg"
+                        alt="Profile"
+                        className="h-20 w-20 rounded-full object-cover border-4 border-white shadow-md"
+                      />
+                      <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors">
+                        Change Photo
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                        <input
+                          type="text"
+                          className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="John Doe"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input
+                          type="email"
+                          className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="john@example.com"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Security Section */}
+                <div className="bg-gray-50 p-6 rounded-lg">
+                  <div className="flex items-center gap-4 mb-6">
+                    <ShieldCheckIcon className="h-8 w-8 text-green-500" />
+                    <h2 className="text-xl font-semibold text-gray-800">Security</h2>
+                  </div>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+                      <input
+                        type="password"
+                        className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                      <input
+                        type="password"
+                        className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Sidebar Settings */}
+              <div className="space-y-6">
+                {/* Notifications */}
+                <div className="bg-gray-50 p-6 rounded-lg">
+                  <div className="flex items-center gap-4 mb-6">
+                    <BellIcon className="h-8 w-8 text-yellow-500" />
+                    <h2 className="text-xl font-semibold text-gray-800">Notifications</h2>
+                  </div>
+                  <div className="space-y-4">
+                    <label className="flex items-center space-x-3">
+                      <input type="checkbox" className="form-checkbox h-5 w-5 text-blue-500" />
+                      <span className="text-gray-700">Email Notifications</span>
+                    </label>
+                    <label className="flex items-center space-x-3">
+                      <input type="checkbox" className="form-checkbox h-5 w-5 text-blue-500" />
+                      <span className="text-gray-700">Push Notifications</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Save Button - Sticky at bottom */}
+            <div className="sticky bottom-0 bg-white py-4 mt-8 border-t border-gray-200">
+              <div className="flex justify-end">
+                <button className="px-6 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors">
+                  Save Changes
                 </button>
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleImageChange}
-                  className="hidden"
-                  accept="image/*"
-                />
               </div>
             </div>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Name</label>
-                <input
-                  type="text"
-                  value={profile.name}
-                  placeholder='Enter your name'
-                  onChange={e => setProfile(prev => ({ ...prev, name: e.target.value }))}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Email</label>
-                <input
-                  type="email"
-                  value={profile.email}
-                  placeholder='Enter your email'
-                  onChange={e => setProfile(prev => ({ ...prev, email: e.target.value }))}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
-                />
-              </div>
-            </div>
-
-            <Button
-                type="submit"
-              disabled={loading}
-              className="w-full"
-            >
-              {loading ? 'Updating...' : 'Save Changes'}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+          </div>
+        </div>
+      </div>
     </div>
   );
-}
+};
+
+export default Settings;
