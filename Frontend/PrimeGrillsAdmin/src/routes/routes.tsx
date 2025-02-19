@@ -8,6 +8,10 @@ import MenuDashboard from '../components/Menu/menu';
 import Staff from "../components/Staff/staff";
 import ProductDashboard from '../components/Product/product';
 import Category from '../components/category/category';
+import ReportIssue from '../components/Report/report';
+import ComplaintPolicy from '../components/Report/complaintPolicy';
+import Settings from '../components/Settings/settings';
+
 
 
 const Navigations= () => {
@@ -29,6 +33,9 @@ const Navigations= () => {
               <Route path="/user" element={<Staff />} />
               <Route path="/products" element={<ProductDashboard />} />
               <Route path="/category" element={<Category />} />
+              <Route path="/report" element={<ReportIssue />} />
+              <Route path="/complaintpolicy" element={<ComplaintPolicy />} />
+              <Route path="/settings" element={<Settings />} />
               {/* Add more routes as needed */}
             </Routes>
           </main>
