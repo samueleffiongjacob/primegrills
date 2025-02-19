@@ -3,6 +3,7 @@ import { Bell, ChevronDown } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import log from "../../assets/images/ladyimage.jpg";
 // import Avatar from "react-avatar";
+import LoginModal from "../Login";
 
 const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -35,7 +36,7 @@ const Header = () => {
               <ul className="py-2">
                 <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Profile</li>
                 <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Settings</li>
-                <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Logout</li>
+                <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Login</li>
               </ul>
             </div>
           )}

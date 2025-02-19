@@ -8,6 +8,7 @@ import MenuDashboard from '../components/Menu/menu';
 import Staff from "../components/Staff/staff";
 import ProductDashboard from '../components/Product/product';
 import Category from '../components/category/category';
+import User from '../components/User/user';
 
 
 const Navigations= () => {
@@ -26,7 +27,7 @@ const Navigations= () => {
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/menu" element={<MenuDashboard />} />
-              <Route path="/user" element={<Staff />} />
+              <Route path="/user" element={<User />} />
               <Route path="/products" element={<ProductDashboard />} />
               <Route path="/category" element={<Category />} />
               {/* Add more routes as needed */}

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import plus from "../../assets/images/plusSign.png";
 import pencil from "../../assets/images/pencil.png";
 import trash from "../../assets/images/trash.png";
-import ItemForm from '../ProductItemForm';
+import ItemForm from './ProductItemForm';
 
 interface Product {
   id: number;

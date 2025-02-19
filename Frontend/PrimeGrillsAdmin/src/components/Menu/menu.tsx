@@ -2,7 +2,7 @@ import { useState } from 'react';
 import plus from "../../assets/images/plusSign.png";
 import pencil from "../../assets/images/pencil.png";
 import trash from "../../assets/images/trash.png";
-import MenuItemForm from '../MenuItemForm';
+import MenuItemForm from './MenuItemForm';
 
 interface MenuItem {
   id: number;
@@ -74,7 +74,7 @@ const MenuDashboard = () => {
   };
 
   return (
-    <div className="flex max-h-[85vh] bg-gray-100">
+    <div className="flex max-h-[85vh]  bg-gray-100">
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
