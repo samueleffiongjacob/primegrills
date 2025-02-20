@@ -113,8 +113,8 @@ const ItemForm = ({
   const isProduct = formTitle.toLowerCase().includes('product');
   
   return (
-    <div className="fixed inset-0 backdrop-blur-xs bg-white bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg max-h-[80vh] shadow-xl p-10 w-full max-w-[70%] overflow-y-auto">
+    <div className="fixed inset-0 backdrop-blur-xs bg-[#171943]  bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-lg max-h-[80vh] border-orange-600 shadow-orange-600 shadow-sm  p-10 w-full max-w-[70%] overflow-y-auto">
         <h2 className="text-xl font-semibold mb-4">
           {currentItem ? `Edit ${formTitle}` : `Add New ${formTitle}`}
         </h2>
@@ -136,7 +136,7 @@ const ItemForm = ({
           
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Image URL
+              Image URL <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -144,12 +144,13 @@ const ItemForm = ({
               value={formData.image}
               onChange={handleInputChange}
               className="w-full p-2 border rounded focus:ring-2 focus:ring-[#EE7F61] focus:border-transparent"
+              required
             />
           </div>
           
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Description
+              Description <span className="text-red-500">*</span>
             </label>
             <textarea
               name="description"
@@ -157,12 +158,13 @@ const ItemForm = ({
               onChange={handleInputChange}
               className="w-full p-2 border rounded focus:ring-2 focus:ring-[#EE7F61] focus:border-transparent"
               rows={3}
+              required
             />
           </div>
           
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Price
+              Price <span className="text-red-500">*</span>
             </label>
             <input
               type="number"
@@ -172,6 +174,7 @@ const ItemForm = ({
               step="0.01"
               min="0"
               className="w-full p-2 border rounded focus:ring-2 focus:ring-[#EE7F61] focus:border-transparent"
+              required
             />
           </div>
           
@@ -179,7 +182,7 @@ const ItemForm = ({
             <>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Category
+                  Category <span className="text-red-500">*</span>
                 </label>
                 <select
                   name="category"
@@ -188,17 +191,17 @@ const ItemForm = ({
                   className="w-full p-2 border rounded focus:ring-2 focus:ring-[#EE7F61] focus:border-transparent"
                 >
                   <option value="">Select a category</option>
-                  <option value="Meat">Meat</option>
-                  <option value="Vegetable">Vegetable</option>
-                  <option value="Dairy">Dairy</option>
-                  <option value="Bakery">Bakery</option>
-                  <option value="Beverage">Beverage</option>
+                  <option value="Meat">Desert</option>
+                  <option value="Vegetable">Swallow</option>
+                  <option value="Dairy">Grilled</option>
+                  <option value="Bakery">Local</option>
+                  <option value="Beverage">Continental</option>
                 </select>
               </div>
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Status
+                  Status <span className="text-red-500">*</span>
                 </label>
                 <select
                   name="status"
@@ -215,7 +218,7 @@ const ItemForm = ({
           
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Items in {isProduct ? 'Product' : 'Meal'}
+              Items in {isProduct ? 'Product' : 'Meal'} <span className="text-red-500">*</span>
             </label>
             <div className="flex gap-2 mb-2">
               <input
@@ -224,6 +227,7 @@ const ItemForm = ({
                 onChange={(e) => setItemInput(e.target.value)}
                 className="flex-1 p-2 border rounded focus:ring-2 focus:ring-[#EE7F61] focus:border-transparent"
                 placeholder="Add an item"
+                required
               />
               <button
                 type="button"

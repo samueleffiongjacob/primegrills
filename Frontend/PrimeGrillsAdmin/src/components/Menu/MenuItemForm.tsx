@@ -92,8 +92,8 @@ const MenuItemForm = ({ isVisible, currentItem, onClose, onSubmit }: MenuItemFor
   if (!isVisible) return null;
   
   return (
-    <div className="fixed inset-0 backdrop-blur-xs bg-white bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg max-h-[80vh] shadow-xl p-10 w-full max-w-[70%] overflow-y-auto">
+    <div className="fixed inset-0 backdrop-blur-xs bg-[#171943]  bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-lg max-h-[80vh] border-orange-600 shadow-orange-600 shadow-sm  p-10 w-full max-w-[70%] overflow-y-auto">
         <h2 className="text-xl font-semibold mb-4">
           {currentItem ? 'Edit Menu Item' : 'Add New Menu Item'}
         </h2>
@@ -115,7 +115,7 @@ const MenuItemForm = ({ isVisible, currentItem, onClose, onSubmit }: MenuItemFor
           
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Image URL
+              Image URL <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -123,12 +123,13 @@ const MenuItemForm = ({ isVisible, currentItem, onClose, onSubmit }: MenuItemFor
               value={formData.image}
               onChange={handleInputChange}
               className="w-full p-2 border rounded focus:ring-2 focus:ring-[#EE7F61] focus:border-transparent"
-            />
+              required
+           />
           </div>
           
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Description
+              Description <span className="text-red-500">*</span>
             </label>
             <textarea
               name="description"
@@ -141,7 +142,7 @@ const MenuItemForm = ({ isVisible, currentItem, onClose, onSubmit }: MenuItemFor
           
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Price
+              Price <span className="text-red-500">*</span>
             </label>
             <input
               type="number"
@@ -151,12 +152,13 @@ const MenuItemForm = ({ isVisible, currentItem, onClose, onSubmit }: MenuItemFor
               step="0.01"
               min="0"
               className="w-full p-2 border rounded focus:ring-2 focus:ring-[#EE7F61] focus:border-transparent"
+              required
             />
           </div>
           
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Items in Meal
+              Items in Meal <span className="text-red-500">*</span>
             </label>
             <div className="flex gap-2 mb-2">
               <input
@@ -165,6 +167,7 @@ const MenuItemForm = ({ isVisible, currentItem, onClose, onSubmit }: MenuItemFor
                 onChange={(e) => setItemInput(e.target.value)}
                 className="flex-1 p-2 border rounded focus:ring-2 focus:ring-[#EE7F61] focus:border-transparent"
                 placeholder="Add an item"
+                required
               />
               <button
                 type="button"

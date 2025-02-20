@@ -4,6 +4,7 @@ import { MdEmail } from 'react-icons/md';
 
 // INTERNAL IMPORTS
 import { loginStaff } from '../api/auth';
+import { useAuth } from '../context/authContext';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -12,6 +13,7 @@ interface LoginModalProps {
 }
 
 const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin}) => {
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -22,30 +24,50 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin}) => {
     if (!email || !password) return alert("All fields are required");
     if (password.length < 6) return alert("Password must be at least 6 characters");
 
-    const response = await loginStaff(email, password);
-    if (response.message) {
-      alert(response.message);
+    //sample login
+    onLogin(email, password);
+    alert('Login Success')
+
+     /* try {
+      const response = await loginStaff(email, password);
+      if (!response.success) {
+        alert(response.message);
+        return;
     } else {
+      // Use the login function from AuthContext
+      login(email, {
+        status: "Active",
+      });
+
+      // store session token 
+      if (response.token) {
+      localStorage.setItem('authToken', response.token);
+      }
+
       onLogin(email, password);
     }
+  } catch (error) {
+    console.error("Login failed:", error);
+    alert("Login failed. Please try again.");
+  } */
   };
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-opacity-100 backdrop-blur-xs flex items-center justify-center z-50">
-      <div className="bg-gray-100 rounded-2xl p-6 w-full max-w-md relative">
+      <div className="bg-[#171943] rounded-2xl p-6 w-full max-w-lg relative">
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 cursor-pointer text-gray-500 hover:text-[#EE7F61]"
+          className="absolute top-4 right-4 cursor-pointer text-gray-100 hover:text-[#EE7F61]"
         >
           ✕
         </button>
 
         {/* Login Form */}
         <div className="space-y-6">
-          <h1 className="text-2xl font-semibold text-center">Log In</h1>
+          <h1 className="text-2xl text-[#EE7F61] font-semibold text-center">Log In</h1>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Email or Username Input */}
@@ -56,7 +78,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin}) => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email or Username"
-                className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                className="w-full pl-12 text-white pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-400"
               />
             </div>
 
@@ -68,7 +90,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin}) => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"
-                className="w-full pl-12 pr-12 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                className="w-full pl-12 pr-12 py-3 text-white rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-400"
               />
               <button
                 type="button"
@@ -82,7 +104,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin}) => {
             {/* Log In Button */}
             <button
               type="submit"
-              onClick={onClose}
+              onClick={handleSubmit}
               className="w-full py-3 bg-[#EE7F61] text-white rounded-xl hover:bg-orange-500 transition-colors"
             >
               Log In

@@ -3,6 +3,7 @@ import plus from "../../assets/images/plusSign.png";
 import pencil from "../../assets/images/pencil.png";
 import trash from "../../assets/images/trash.png";
 import ItemForm from './ProductItemForm';
+import { useAuth } from '../../context/authContext';
 
 interface Product {
   id: number;
@@ -17,15 +18,32 @@ interface Product {
 }
 
 const ProductDashboard = () => {
+  // auth context
+  const { user: currentUser} = useAuth();
+  // sample data
   const [productItems, setProductItems] = useState<Product[]>([
-    { id: 1, name: "Chicken Pepperoni", barcode: "BC12345", category: "Meat", status: "Active" },
-    { id: 2, name: "Grilled Chicken", barcode: "BC67890", category: "Meat", status: "Active" },
-    { id: 3, name: "Grilled Chicken", barcode: "BC67891", category: "Meat", status: "Active" },
-    { id: 4, name: "Grilled Chicken", barcode: "BC67892", category: "Meat", status: "Inactive" },
-    { id: 5, name: "Grilled Chicken", barcode: "BC67893", category: "Meat", status: "Active" },
-    { id: 6, name: "Grilled Chicken", barcode: "BC67894", category: "Meat", status: "Active" },
-    { id: 7, name: "Grilled Chicken", barcode: "BC67895", category: "Meat", status: "Inactive" },
-    { id: 8, name: "Grilled Chicken", barcode: "BC67896", category: "Meat", status: "Active" },
+    { id: 1, name: "Chicken Pepperoni", barcode: "BC12345", category: "Desert", status: "Active" },
+    { id: 2, name: "Grilled Chicken", barcode: "BC67890", category: "Pastries", status: "Active" },
+    { id: 3, name: "Grilled Chicken", barcode: "BC67891", category: "Grilled", status: "Active" },
+    { id: 4, name: "Grilled Chicken", barcode: "BC67892", category: "Swallows", status: "Inactive" },
+    { id: 5, name: "Grilled Chicken", barcode: "BC67893", category: "Locals", status: "Active" },
+    { id: 6, name: "Grilled Chicken", barcode: "BC67894", category: "Continental", status: "Active" },
+    { id: 7, name: "Grilled Chicken", barcode: "BC67895", category: "Wine", status: "Inactive" },
+    { id: 8, name: "Grilled Chicken", barcode: "BC67896", category: "Softdrink", status: "Active" },
+    { id: 2, name: "Grilled Chicken", barcode: "BC67890", category: "Pastries", status: "Active" },
+    { id: 3, name: "Grilled Chicken", barcode: "BC67891", category: "Grilled", status: "Active" },
+    { id: 4, name: "Grilled Chicken", barcode: "BC67892", category: "Swallows", status: "Inactive" },
+    { id: 5, name: "Grilled Chicken", barcode: "BC67893", category: "Locals", status: "Active" },
+    { id: 6, name: "Grilled Chicken", barcode: "BC67894", category: "Continental", status: "Active" },
+    { id: 7, name: "Grilled Chicken", barcode: "BC67895", category: "Wine", status: "Inactive" },
+    { id: 8, name: "Grilled Chicken", barcode: "BC67896", category: "Softdrink", status: "Active" },
+    { id: 2, name: "Grilled Chicken", barcode: "BC67890", category: "Pastries", status: "Active" },
+    { id: 3, name: "Grilled Chicken", barcode: "BC67891", category: "Grilled", status: "Active" },
+    { id: 4, name: "Grilled Chicken", barcode: "BC67892", category: "Swallows", status: "Inactive" },
+    { id: 5, name: "Grilled Chicken", barcode: "BC67893", category: "Locals", status: "Active" },
+    { id: 6, name: "Grilled Chicken", barcode: "BC67894", category: "Continental", status: "Active" },
+    { id: 7, name: "Grilled Chicken", barcode: "BC67895", category: "Wine", status: "Inactive" },
+    { id: 8, name: "Grilled Chicken", barcode: "BC67896", category: "Softdrink", status: "Active" },
   ]);
   
   const [isFormVisible, setIsFormVisible] = useState(false);
@@ -72,20 +90,26 @@ const ProductDashboard = () => {
     return (
       <button
         onClick={() => setIsFormVisible(true)}
-        className="px-2 py-2 rounded hover:bg-gray-300 shadow-md hover:shadow-lg transition-all duration-300"
+        className="px-1 py-1 rounded hover:bg-gray-300 shadow-md hover:shadow-lg transition-all duration-300"
       >
-        <img src={plus} alt="Add Icon" className="h-10 w-10" />
+        <img src={plus} alt="Add Icon" className="h-8 w-8" />
       </button>
     );
   };
 
   return (
+    <div className='min-h-[85vh]'>
     <div className="flex max-h-[85vh] bg-gray-100">
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
         <header className="py-5 bg-white border-b flex items-center justify-between px-6">
           <h1 className="text-xl font-semibold">Products</h1>
+          {currentUser && (
+            <div className="text-sm">
+              Logged in as: {currentUser.email} ({currentUser.status})
+            </div>
+          )}
         </header>
 
         {/* Content Area */}
@@ -99,13 +123,13 @@ const ProductDashboard = () => {
               <input
                 type="number"
                 placeholder="100"
-                className="w-24 p-2 border rounded-lg border-[#EE7F61] bg-gray-300"
+                className="w-24 pl-3 border rounded-lg border-[#EE7F61] bg-gray-300"
                 defaultValue="100"
               />
               <input
                 type="search"
                 placeholder="Search"
-                className="w-72 p-1 pl-3 border rounded-lg border-[#EE7F61] bg-gray-300 text-black"
+                className="w-72 pl-3 border rounded-lg border-[#EE7F61] bg-gray-300 text-black"
               />
             </div>
           </div>
@@ -176,6 +200,7 @@ const ProductDashboard = () => {
         onSubmit={handleFormSubmit}
         formTitle="Product" // This makes the form adapt to products
       />
+    </div>
     </div>
   );
 };
