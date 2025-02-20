@@ -13,7 +13,7 @@ const StatsCard = ({ title, value, linkText, bgStyle }: StatsCardProps) => {
   const renderImage = (title: string) => {
     if (title === "Weekly Balance") {
       return (
-        <div className="absolute right-4 top-1/2 transform -translate-y-1/2 w-20 h-20">
+        <div className="absolute right-6 top-1/2 transform -translate-y-1/2 w-20 h-20">
           <img src={money1} alt={title} className="w-full h-full object-contain" />
         </div>
       );
@@ -21,7 +21,7 @@ const StatsCard = ({ title, value, linkText, bgStyle }: StatsCardProps) => {
 
     if (title === "Orders In Line") {
       return (
-        <div className="absolute right-10 top-1/2 transform -translate-y-1/2 flex items-center justify-center">
+        <div className="absolute right-6 top-1/2 transform -translate-y-1/2 flex items-center">
           <img
             src={money2}
             alt={`${title} Rotated`}
@@ -34,7 +34,7 @@ const StatsCard = ({ title, value, linkText, bgStyle }: StatsCardProps) => {
 
     if (title === "New Clients") {
       return (
-        <div className="absolute right-4 bottom-19 w-20 h-30 z-50">
+        <div className="absolute right-4 bottom-4 w-20 h-20 z-50">
           <img src={client} alt={title} className="w-full h-full object-contain" />
         </div>
       );
@@ -45,7 +45,7 @@ const StatsCard = ({ title, value, linkText, bgStyle }: StatsCardProps) => {
 
   return (
     <div
-      className="rounded-3xl p-6 relative z-10 mt-5 shadow-md"
+      className="rounded-3xl p-6 relative z-10 mt-5 shadow-md overflow-hidden"
       style={bgStyle}
     >
       <div className="relative z-10">
@@ -83,13 +83,13 @@ const StatsGrid = () => {
       value: "800",
       linkText: "View Entire List",
       bgStyle: {
-        background:"linear-gradient(96.61deg, #909777 14.1%, #2F3127 116.23%)",
+        background: "linear-gradient(96.61deg, #909777 14.1%, #2F3127 116.23%)",
       },
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 py-2 px-3">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 py-4 px-6">
       {stats.map((stat, index) => (
         <StatsCard
           key={index}
