@@ -4,6 +4,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 
 // Define the user type
 export interface User {
+  id: number;
   email: string;
   status: "Active" | "Inactive";
   // Add any other user properties you need

@@ -13,6 +13,7 @@ import ComplaintPolicy from '../components/Report/complaintPolicy';
 import Settings from '../components/Settings/settings';
 import User from '../components/User/user';
 import { ProtectedRoute } from '../components/ProtectedRoute';
+import MessagesPage from '../pages/messages';
 
 const Navigations= () => {
   return (
@@ -35,6 +36,7 @@ const Navigations= () => {
               <Route path="/category" element={<ProtectedRoute><Category /></ProtectedRoute>} />
               <Route path="/report" element={<ProtectedRoute><ReportIssue /></ProtectedRoute>} />
               <Route path="/complaintpolicy" element={<ProtectedRoute><ComplaintPolicy /></ProtectedRoute>} />
+              <Route path="/message" element={<ProtectedRoute><MessagesPage /></ProtectedRoute>} />
               <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
               {/* Add more routes as needed */}
             </Routes>

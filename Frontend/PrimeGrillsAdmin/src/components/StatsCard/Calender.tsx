@@ -1,7 +1,7 @@
 const Calendar = () => {
   return (
     <div className="bg-[#343434] max-h-[400px] h-full mb-2 rounded-4xl pt-8 p-6 flex flex-col">
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-4 mx-4">
         <h2 className="text-white text-xl font-semibold">Calendar</h2>
         <button className="text-white text-xl font-semibold hover:underline">View</button>
       </div>
