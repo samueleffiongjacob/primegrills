@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, Home, IterationCcw } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Home, } from 'lucide-react'
 import { useEffect, useState, useContext } from 'react'
 import { Card, CardContent } from './UI/Card';
 import product3 from '@assets/images/product3.png';
@@ -110,7 +110,7 @@ useEffect(() => {
             >
             <ChevronLeft className="w-6 h-6 text-gray-600" />
             </button>
-            <div className="flex gap-4 overflow-x-auto w-[calc(100%-60%)] pb-4 hide-scrollbar-x scroll-container">
+            <div className="flex gap-4 overflow-x-auto w-full pb-4 hide-scrollbar-x scroll-container">
             {categories.map((category) => (
             <button
             key={category.id}

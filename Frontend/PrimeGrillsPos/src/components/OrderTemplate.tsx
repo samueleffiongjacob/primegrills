@@ -13,7 +13,7 @@ const OrderTemplate = () => {
   const [discount, setDiscount] = useState(20);
   const [Isprocess, setIsprocess] = useState(false);
 
-  const { orders, addToOrder, removeFromOrder, updateOrderQuantity } = useMenu();
+  const { orders, removeFromOrder, updateOrderQuantity } = useMenu();
 
   const calculateSubtotal = () => {
     return orders.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -42,7 +42,7 @@ const OrderTemplate = () => {
     <>
       <Card className="min-w-100 min-h-[calc(100vh-7.5rem)] max-w-md m-auto bg-[#171943] text-white bottom-0 p-4">
         <CardHeader>
-          <CardTitle className="text-xl font-bold text-center top-0 ">Order 1</CardTitle>
+          <CardTitle className="text-xl font-bold text-center top-0 ">Order OR-1425</CardTitle>
           <div className="flex gap-4 justify-center mt-4">
             <Button
               variant={orderType === 'dineIn' ? 'primary' : 'ghost'}

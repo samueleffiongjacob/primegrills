@@ -1,274 +1,328 @@
 import { PencilIcon } from "@heroicons/react/24/solid";
 import {
-  ArrowDownTrayIcon,
-  MagnifyingGlassIcon,
+    ArrowDownTrayIcon,
+    MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
-import {
-  Card,
-  CardHeader,
-  Typography,
-  Button,
-  CardBody,
-  Chip,
-  CardFooter,
-  Avatar,
-  IconButton,
-  Tooltip,
-  Input,
-} from "@material-tailwind/react";
- 
-const TABLE_HEAD = ["Transaction", "Amount", "Date", "Status", "Account", ""];
- 
-const TABLE_ROWS = [
-  {
-    img: "https://docs.material-tailwind.com/img/logos/logo-spotify.svg",
-    name: "Spotify",
-    amount: "$2,500",
-    date: "Wed 3:00pm",
-    status: "paid",
-    account: "visa",
-    accountNumber: "1234",
-    expiry: "06/2026",
-  },
-  {
-    img: "https://docs.material-tailwind.com/img/logos/logo-amazon.svg",
-    name: "Amazon",
-    amount: "$5,000",
-    date: "Wed 1:00pm",
-    status: "paid",
-    account: "master-card",
-    accountNumber: "1234",
-    expiry: "06/2026",
-  },
-  {
-    img: "https://docs.material-tailwind.com/img/logos/logo-pinterest.svg",
-    name: "Pinterest",
-    amount: "$3,400",
-    date: "Mon 7:40pm",
-    status: "pending",
-    account: "master-card",
-    accountNumber: "1234",
-    expiry: "06/2026",
-  },
-  {
-    img: "https://docs.material-tailwind.com/img/logos/logo-google.svg",
-    name: "Google",
-    amount: "$1,000",
-    date: "Wed 5:00pm",
-    status: "paid",
-    account: "visa",
-    accountNumber: "1234",
-    expiry: "06/2026",
-  },
-  {
-    img: "https://docs.material-tailwind.com/img/logos/logo-netflix.svg",
-    name: "netflix",
-    amount: "$14,000",
-    date: "Wed 3:30am",
-    status: "cancelled",
-    account: "visa",
-    accountNumber: "1234",
-    expiry: "06/2026",
-  },
-];
- 
-export function TransactionsTable() {
-  return (
-    <Card className="h-full w-full">
-      <CardHeader floated={false} shadow={false} className="rounded-none">
-        <div className="mb-4 flex flex-col justify-between gap-8 md:flex-row md:items-center">
-          <div>
-            <Typography variant="h5" color="blue-gray">
-              Recent Transactions
-            </Typography>
-            <Typography color="gray" className="mt-1 font-normal">
-              These are details about the last transactions
-            </Typography>
-          </div>
-          <div className="flex w-full shrink-0 gap-2 md:w-max">
-            <div className="w-full md:w-72">
-              <Input
-                label="Search"
-                icon={<MagnifyingGlassIcon className="h-5 w-5" />}
-              />
-            </div>
-            <Button className="flex items-center gap-3" size="sm">
-              <ArrowDownTrayIcon strokeWidth={2} className="h-4 w-4" /> Download
-            </Button>
-          </div>
-        </div>
-      </CardHeader>
-      <CardBody className="overflow-scroll px-0">
-        <table className="w-full min-w-max table-auto text-left">
-          <thead>
-            <tr>
-              {TABLE_HEAD.map((head) => (
-                <th
-                  key={head}
-                  className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4"
-                >
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-normal leading-none opacity-70"
-                  >
-                    {head}
-                  </Typography>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {TABLE_ROWS.map(
-              (
-                {
-                  img,
-                  name,
-                  amount,
-                  date,
-                  status,
-                  account,
-                  accountNumber,
-                  expiry,
-                },
-                index,
-              ) => {
-                const isLast = index === TABLE_ROWS.length - 1;
-                const classes = isLast
-                  ? "p-4"
-                  : "p-4 border-b border-blue-gray-50";
- 
-                return (
-                  <tr key={name}>
-                    <td className={classes}>
-                      <div className="flex items-center gap-3">
-                        <Avatar
-                          src={img}
-                          alt={name}
-                          size="md"
-                          className="border border-blue-gray-50 bg-blue-gray-50/50 object-contain p-1"
-                        />
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-bold"
-                        >
-                          {name}
-                        </Typography>
-                      </div>
-                    </td>
-                    <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {amount}
-                      </Typography>
-                    </td>
-                    <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {date}
-                      </Typography>
-                    </td>
-                    <td className={classes}>
-                      <div className="w-max">
-                        <Chip
-                          size="sm"
-                          variant="ghost"
-                          value={status}
-                          color={
-                            status === "paid"
-                              ? "green"
-                              : status === "pending"
-                              ? "amber"
-                              : "red"
-                          }
-                        />
-                      </div>
-                    </td>
-                    <td className={classes}>
-                      <div className="flex items-center gap-3">
-                        <div className="h-9 w-12 rounded-md border border-blue-gray-50 p-1">
-                          <Avatar
-                            src={
-                              account === "visa"
-                                ? "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/logos/visa.png"
-                                : "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/logos/mastercard.png"
-                            }
-                            size="sm"
-                            alt={account}
-                            variant="square"
-                            className="h-full w-full object-contain p-1"
-                          />
-                        </div>
-                        <div className="flex flex-col">
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal capitalize"
-                          >
-                            {account.split("-").join(" ")} {accountNumber}
-                          </Typography>
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal opacity-70"
-                          >
-                            {expiry}
-                          </Typography>
-                        </div>
-                      </div>
-                    </td>
-                    <td className={classes}>
-                      <Tooltip content="Edit User">
-                        <IconButton variant="text">
-                          <PencilIcon className="h-4 w-4" />
-                        </IconButton>
-                      </Tooltip>
-                    </td>
-                  </tr>
-                );
-              },
-            )}
-          </tbody>
-        </table>
-      </CardBody>
-      <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
-        <Button variant="outlined" size="sm">
-          Previous
-        </Button>
-        <div className="flex items-center gap-2">
-          <IconButton variant="outlined" size="sm">
-            1
-          </IconButton>
-          <IconButton variant="text" size="sm">
-            2
-          </IconButton>
-          <IconButton variant="text" size="sm">
-            3
-          </IconButton>
-          <IconButton variant="text" size="sm">
-            ...
-          </IconButton>
-          <IconButton variant="text" size="sm">
-            8
-          </IconButton>
-          <IconButton variant="text" size="sm">
-            9
-          </IconButton>
-          <IconButton variant="text" size="sm">
-            10
-          </IconButton>
-        </div>
-        <Button variant="outlined" size="sm">
-          Next
-        </Button>
-      </CardFooter>
-    </Card>
-  );
+import { OrderModal } from "./OrderModal";
+import { useState } from "react";
+import { showToast } from '../utils/toast';
+
+interface TableRow {
+    img: string;
+    name: string;
+    amount: string;
+    date: string;
+    status: 'paid' | 'pending' | 'cancelled';
+    account: 'visa' | 'master-card';
+    accountNumber: string;
+    expiry: string;
 }
+
+interface Order {
+    id: string;
+    customerName: string;
+    date: string;
+    items: Array<{
+      name: string;
+      quantity: number;
+      price: number;
+    }>;
+    total: number;
+    status: string;
+  };
+
+const TABLE_HEAD = ["S/N","Transaction", "Amount", "Date", "Status", "Account", ""];
+
+const TABLE_ROWS: (TableRow & { id: number; items: Array<{ name: string; quantity: number; price: number }> })[] = [
+    {
+        id: 101,
+        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-3.jpg",
+        name: "John Michael",
+        amount: "₦2,500",
+        date: "Wed 3:00pm",
+        status: "paid",
+        account: "visa",
+        accountNumber: "1234",
+        expiry: "06/2026",
+        items: [
+            { name: "Burger", quantity: 2, price: 1000 },
+            { name: "Fries", quantity: 1, price: 500 }
+        ]
+    },
+    {
+        id: 102,
+        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-2.jpg",
+        name: "Alexa Liras", 
+        amount: "₦5,000",
+        date: "Wed 1:00pm",
+        status: "paid",
+        account: "master-card",
+        accountNumber: "1234",
+        expiry: "06/2026",
+        items: [
+            { name: "Pizza", quantity: 1, price: 3500 },
+            { name: "Soda", quantity: 3, price: 500 }
+        ]
+    },
+    {
+        id: 103,
+        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-4.jpg",
+        name: "Michael Levi",
+        amount: "₦3,400",
+        date: "Mon 7:40pm", 
+        status: "pending",
+        account: "master-card",
+        accountNumber: "1234",
+        expiry: "06/2026",
+        items: [
+            { name: "Chicken Wings", quantity: 2, price: 1700 }
+        ]
+    },
+    {
+        id: 104,
+        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-1.jpg",
+        name: "Laurent Perrier",
+        amount: "₦1,000",
+        date: "Wed 5:00pm",
+        status: "paid",
+        account: "visa",
+        accountNumber: "1234",
+        expiry: "06/2026",
+        items: [
+            { name: "Ice Cream", quantity: 2, price: 500 }
+        ]
+    },
+    {
+        id: 105,
+        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-5.jpg",
+        name: "Richard Gran",
+        amount: "₦14,000",
+        date: "Wed 3:30am",
+        status: "cancelled",
+        account: "visa", 
+        accountNumber: "1234",
+        expiry: "06/2026",
+        items: [
+            { name: "Steak", quantity: 2, price: 7000 }
+        ]
+    },
+    {
+        id: 106,
+        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-3.jpg",
+        name: "John Michael",
+        amount: "₦9,990",
+        date: "Thu 12:30pm",
+        status: "paid",
+        account: "master-card",
+        accountNumber: "5678",
+        expiry: "08/2025",
+        items: [
+            { name: "Family Pizza", quantity: 1, price: 7990 },
+            { name: "Garlic Bread", quantity: 2, price: 1000 }
+        ]
+    },
+    {
+        id: 107,
+        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-4.jpg",
+        name: "Michael Levi",
+        amount: "₦12,500",
+        date: "Fri 9:00am",
+        status: "pending",
+        account: "visa",
+        accountNumber: "9012",
+        expiry: "03/2024",
+        items: [
+            { name: "Seafood Platter", quantity: 1, price: 12500 }
+        ]
+    },
+    {
+        id: 108,
+        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-5.jpg",
+        name: "Richard Gran",
+        amount: "₦8,400",
+        date: "Sat 4:15pm",
+        status: "paid",
+        account: "master-card",
+        accountNumber: "3456",
+        expiry: "11/2025",
+        items: [
+            { name: "Pasta Special", quantity: 2, price: 3200 },
+            { name: "Salad", quantity: 2, price: 1000 }
+        ]
+    }
+];
+
+function TransactionsTable() {
+    const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+    const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+
+    const handleDownload = () => {
+        showToast.promise(
+          // Your download logic here
+          new Promise((resolve) => setTimeout(resolve, 2000)),
+          {
+            loading: 'Downloading report...',
+            success: 'Report downloaded successfully!',
+            error: 'Failed to download report',
+          }
+        );
+    };
+
+    const handleOrderEdit = (order: Order) => {
+        setSelectedOrder(order);
+        setIsOrderModalOpen(true);
+        showToast.success('Order opened for editing');
+    };
+
+    return (
+        <div className="bg-white h-[calc(100hv-7.5rem)] w-full ml-4 flex flex-col rounded-xl shadow-lg">
+            {/* Header Section */}
+            <div className="p-6 pb-0">
+                <div className="mb-4 flex flex-col justify-between gap-8 md:flex-row md:items-center">
+                    <div>
+                        <h5 className="text-xl font-semibold text-gray-800">
+                            Recent Orders and Transactions
+                        </h5>
+                        <p className="text-gray-600 mt-1">
+                            These are details about the last transactions of Order
+                        </p>
+                    </div>
+                    <div className="flex w-full shrink-0 gap-2 md:w-max">
+                        <div className="w-full md:w-72 relative">
+                            <input
+                                type="text"
+                                placeholder="Search"
+                                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            />
+                            <MagnifyingGlassIcon className="h-5 w-5 absolute right-3 top-2.5 text-gray-500" />
+                        </div>
+                        <button onClick={handleDownload} className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg">
+                            <ArrowDownTrayIcon className="h-4 w-4" />
+                            Download
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Table Section - Now with proper scrolling */}
+            <div className="flex-1 overflow-hidden px-6">
+                <div className="w-full h-full overflow-x-auto">
+                    <div className="overflow-y-auto h-[calc(100vh-280px)]"> {/* Adjust 280px based on your header/footer height */}
+                        <table className="w-full min-w-max table-auto">
+                            <thead className="sticky top-0 bg-white z-10">
+                                <tr>
+                                    {TABLE_HEAD.map((head) => (
+                                        <th key={head} className="border-y border-gray-200 bg-gray-50 p-4 text-left">
+                                            <span className="text-lg font-semibold text-gray-600">
+                                                {head}
+                                            </span>
+                                        </th>
+                                    ))}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {TABLE_ROWS.map((row, index) => (
+                                    <tr key={row.name} className={index !== TABLE_ROWS.length - 1 ? "border-b border-gray-200" : ""}>
+                                        <td className="p-4">
+                                            <span className="text-gray-700 font-bold">{row.id}</span>
+                                        </td>
+                                        <td className="p-4">
+                                            <div className="flex items-center gap-4">
+                                                <img
+                                                    src={row.img}
+                                                    alt={row.name}
+                                                    className="h-10 w-10 rounded-full object-contain p-1 border border-gray-200"
+                                                />
+                                                <span className="font-semibold text-gray-800">{row.name}</span>
+                                            </div>
+                                        </td>
+                                        <td className="p-4">
+                                            <span className="text-green-600 font-semibold">{row.amount}</span>
+                                        </td>
+                                        <td className="p-4">
+                                            <span className="text-gray-700">{row.date}</span>
+                                        </td>
+                                        <td className="p-4">
+                                            <span className={`px-3 py-1 rounded-full text-xs font-medium
+                                                ${row.status === 'paid' ? 'bg-green-100 text-green-800' : 
+                                                    row.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
+                                                    'bg-red-100 text-red-800'}`}>
+                                                {row.status}
+                                            </span>
+                                        </td>
+                                        <td className="p-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className="h-9 w-12 rounded-md border border-gray-200 p-1">
+                                                    <img
+                                                        src={row.account === "visa" 
+                                                            ? "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/logos/visa.png"
+                                                            : "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/logos/mastercard.png"
+                                                        }
+                                                        alt={row.account}
+                                                        className="h-full w-full object-contain"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <p className="text-sm text-gray-700 capitalize">
+                                                        {row.account.split("-").join(" ")} {row.accountNumber}
+                                                    </p>
+                                                    <p className="text-xs text-gray-500">{row.expiry}</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="p-4">
+                                            <button
+                                            onClick={() => handleOrderEdit({
+                                                id: row.id.toString(),
+                                                customerName: row.name,
+                                                date: row.date,
+                                                items: row.items,
+                                                total: parseFloat(row.amount.replace('₦', '')),
+                                                status: row.status
+                                            })}
+                                            className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                                                <PencilIcon className="h-4 w-4 text-gray-600" />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            {/* Footer/Pagination - Now sticky at bottom */}
+            <div className="sticky bottom-0 bg-white border-t border-gray-200 p-4 mt-auto">
+                <div className="flex items-center justify-between">
+                    <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm">
+                        Previous
+                    </button>
+                    <div className="flex items-center gap-2">
+                        {[1, 2, 3, '...', 8, 9, 10].map((page, index) => (
+                            <button
+                                key={index}
+                                className={`w-8 h-8 flex items-center justify-center rounded-full
+                                    ${page === 1 ? 'bg-blue-500 text-white' : 'hover:bg-gray-100 text-gray-600'}`}
+                            >
+                                {page}
+                            </button>
+                        ))}
+                    </div>
+                    <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm">
+                        Next
+                    </button>
+                </div>
+            </div>
+            
+            {/* Order Modal */}
+            {isOrderModalOpen && (<OrderModal
+                isOpen={isOrderModalOpen}
+                onClose={() => setIsOrderModalOpen(false)}
+                order={selectedOrder}
+            />)}
+        </div>
+    );
+}
+
+export default TransactionsTable;
