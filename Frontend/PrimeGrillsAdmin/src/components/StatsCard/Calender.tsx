@@ -1,33 +1,39 @@
 const Calendar = () => {
-    return (
-      <div className="bg-white rounded-4xl p-4 shadow">
+  return (
+    <div className="bg-[#343434] max-h-[400px] h-full mb-2 rounded-4xl pt-8 p-6 flex flex-col">
+      <div className="flex justify-between items-center mb-4 mx-4">
+        <h2 className="text-white text-xl font-semibold">Calendar</h2>
+        <button className="text-white text-xl font-semibold hover:underline">View</button>
+      </div>
+      <div className="bg-white rounded-4xl p-4 h-full shadow-lg flex flex-col">
         <div className="text-center mb-4">
           <h3 className="text-lg font-semibold text-gray-800">January 2025</h3>
         </div>
-        <div className="grid grid-cols-7 border border-gray-300 rounded-3xl">
+        
+        <div className="grid grid-cols-7 border border-gray-300 rounded-lg overflow-hidden flex-1">
           {/* Days of the week */}
           {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
             <div
               key={day}
-              className="border border-gray-300 bg-gray-100 text-gray-700 font-medium py-2"
+              className="bg-gray-200 text-gray-700 font-medium py-2 text-center border-b border-gray-300"
             >
               {day}
             </div>
           ))}
-  
+
           {/* Calendar days */}
           {Array.from({ length: 31 }, (_, i) => (
             <div
               key={i + 1}
-              className="border border-gray-300 aspect-square flex items-center justify-center text-gray-800 hover:bg-gray-50 cursor-pointer"
+              className="border border-gray-300 flex items-center justify-center text-gray-900 font-medium cursor-pointer hover:bg-gray-100 transition h-auto"
             >
               {i + 1}
             </div>
           ))}
         </div>
       </div>
-    );
-  };
-  
-  export default Calendar;
-  
+    </div>
+  );
+};
+
+export default Calendar;

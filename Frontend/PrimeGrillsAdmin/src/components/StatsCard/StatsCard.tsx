@@ -89,7 +89,7 @@ const StatsGrid = () => {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 py-2 px-3">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mx-4 py-2 px-3">
       {stats.map((stat, index) => (
         <StatsCard
           key={index}
