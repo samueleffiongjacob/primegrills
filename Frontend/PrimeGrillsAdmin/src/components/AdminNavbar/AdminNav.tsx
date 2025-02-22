@@ -45,7 +45,7 @@ const Header = () => {
   };
 
   return (
-    <header className="flex justify-end items-center max-w-full px-6 py-3 bg-[#171943] text-white">
+    <header className=" relative flex justify-end items-center max-w-full px-6 py-3 bg-[#171943] text-white">
       <div className="flex items-center gap-4">
         <Bell className="text-white" />
         <div className="relative">

@@ -18,7 +18,7 @@ import MessagesPage from '../pages/messages';
 const Navigations= () => {
   return (
     <Router>
-      <div className="flex bg-gray-100">
+      <div className="flex bg-gray-100 border-4 border-amber-300 h-screen">
         {/* Sidebar always visible */}
         <Sidebar />
 
