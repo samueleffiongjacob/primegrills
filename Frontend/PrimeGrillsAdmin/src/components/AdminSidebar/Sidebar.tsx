@@ -33,13 +33,12 @@ const SidebarLink = ({ to, children, icon: Icon }) => {
 
 const navItems = [
   { to: "/", icon: LayoutDashboard, label: "Dashboard" },
-  { to: "/menu", icon: Menu, label: "Menu" },
-  { to: "/products", icon: Package, label: "Products" },
+  { to: "/category", icon: Users, label: "Category" },
+  { to: "/menu", icon: Package, label: "Menu" },
   { to: "/user", icon: User, label: "User" },
   { to: "/message", icon: Mail, label: "Message" },
   { to: "/pos", icon: ShoppingCart, label: "POS" },
   { to: "/paypoints", icon: Calendar, label: "PayPoints" },
-  { to: "/category", icon: Users, label: "Category" },
   { to: "/settings", icon: Settings, label: "Settings" },
   { to: "/report", icon: FileBarChart, label: "Report" },
 ];

@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+@plugin "tailwindcss-animate";
+
+@custom-variant dark (&:is(.dark *));
+
 /* Add this to your styles.css file */
 
 /* For WebKit browsers like Chrome, Safari, and Edge */

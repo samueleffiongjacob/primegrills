@@ -3,7 +3,7 @@ import plus from "../../assets/images/plusSign.png";
 import pencil from "../../assets/images/pencil.png";
 import trash from "../../assets/images/trash.png";
 import CategoryForm from "./CategoryForm";
-import { useAuth } from "../../context/authContext";
+import meal from '../../assets/images/product2.png'
 
 const Category = () => {
       interface CategoryItems {
@@ -12,18 +12,16 @@ const Category = () => {
         image?: string;
       }
 
-    // auth context
-    const { user: currentUser} = useAuth();
     const [categoryItems, setCategoryItems] = useState<CategoryItems[]>(
       [
-        { id: 1, name:"Desert" },
-        { id: 2, name: "Pizza" },
-        { id: 3, name: "Swallows" },
-        { id: 4, name: "Locals" },
-        { id: 5, name: "Continental" },
-        { id: 6, name: "Wine" },
-        { id: 7, name:"Softdrink" },
-        { id: 8, name: "Grilled" },
+        { id: 1, name:"Desert", image: meal},
+        { id: 2, name: "Pizza", image: meal },
+        { id: 3, name: "Swallows", image: meal },
+        { id: 4, name: "Locals", image: meal },
+        { id: 5, name: "Continental", image: meal },
+        { id: 6, name: "Wine", image: meal },
+        { id: 7, name:"Softdrink", image: meal },
+        { id: 8, name: "Grilled", image: meal },
       ]
     );
     const [isFormVisible, setIsFormVisible] = useState(false);
@@ -82,11 +80,6 @@ const Category = () => {
         {/* Header */}
         <header className="h-[88px] bg-white border-b flex items-center justify-between px-6">
           <h1 className="text-xl font-semibold">Category</h1>
-          {currentUser && (
-            <div className="text-sm">
-              Logged in as: {currentUser.email} ({currentUser.status})
-            </div>
-          )}
         </header>
 
         {/* Content Area */}
@@ -118,6 +111,7 @@ const Category = () => {
                 <tr className="bg-[#EE7F61] text-white">
                   <th className="py-2 px-4 text-left">S/N</th>
                   <th className="py-2 px-4 text-left">Category Name</th>
+                  <th className="py-2 px-4 text-left">Image</th>
                   <th className="py-2 px-4 text-right"></th>
                 </tr>
               </thead>
@@ -131,6 +125,9 @@ const Category = () => {
                   >
                     <td className="py-2 px-4">{item.id}.</td>
                     <td className="py-2 px-4">{item.name}</td>
+                    <td className="py-2 px-4">
+                      <img src={item.image} alt={item.name} className="w-10 h-10" />
+                    </td>
                     <td className="py-2 px-4 text-right">
                       <div className="flex justify-end gap-2">
                         {/* Edit Button */}

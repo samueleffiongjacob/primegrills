@@ -2,39 +2,51 @@ import { useState } from 'react';
 import plus from "../../assets/images/plusSign.png";
 import pencil from "../../assets/images/pencil.png";
 import trash from "../../assets/images/trash.png";
-import MenuItemForm from './MenuItemForm';
-import { useAuth } from "../../context/authContext";
+import ItemForm from './ProductItemForm';
+import menuImg from '../../assets/images/menuimg2.png';
 
-interface MenuItem {
+interface Menu {
   id: number;
   name: string;
   image?: string;
   description?: string;
   price?: number;
   items?: string[];
+  barcode?: string;
+  category?: string;
+  quantity: number;
 }
 
 const MenuDashboard = () => {
-  // auth context
-  const { user: currentUser} = useAuth();
-  //sample data
-  const [menuItems, setMenuItems] = useState<MenuItem[]>([
-    { id: 1, name: "Chicken Pepperoni" },
-    { id: 2, name: "Grilled Chicken" },
-    { id: 3, name: "Grilled Chicken" },
-    { id: 4, name: "Grilled Chicken" },
-    { id: 5, name: "Grilled Chicken" },
-    { id: 6, name: "Grilled Chicken" },
-    { id: 7, name: "Grilled Chicken" },
-    { id: 8, name: "Grilled Chicken" },
-    { id: 9, name: "Grilled Chicken" },
-    { id: 10, name: "Grilled Chicken" },
+
+  // sample data
+  const [menuItems, setMenuItems] = useState<Menu[]>([
+    { id: 5, name: "Grilled Chicken", image: menuImg, category: "Locals", quantity: 1 },
+    { id: 6, name: "Grilled Chicken", image: menuImg, category: "Continental", quantity: 4 },
+    { id: 7, name: "Grilled Chicken", image: menuImg, category: "Wine", quantity: 0 },
+    { id: 8, name: "Grilled Chicken", image: menuImg, category: "Softdrink", quantity: 20 },
+    { id: 2, name: "Grilled Chicken", image: menuImg, category: "Pastries", quantity: 20 },
+    { id: 3, name: "Grilled Chicken", image: menuImg, category: "Grilled", quantity: 2 },
+    { id: 4, name: "Grilled Chicken", image: menuImg, category: "Swallows", quantity: 0 },
+    { id: 5, name: "Grilled Chicken", image: menuImg, category: "Locals", quantity: 20 },
+    { id: 6, name: "Grilled Chicken", image: menuImg, category: "Continental", quantity: 10 },
+    { id: 7, name: "Grilled Chicken", image: menuImg, category: "Wine", quantity: 0 },
+    { id: 8, name: "Grilled Chicken", image: menuImg, category: "Softdrink", quantity: 22 },
+    { id: 2, name: "Grilled Chicken", image: menuImg, category: "Pastries", quantity: 39 },
+    { id: 3, name: "Grilled Chicken", image: menuImg, category: "Grilled", quantity: 12 },
+    { id: 4, name: "Grilled Chicken", image: menuImg, category: "Swallows", quantity: 0 },
+    { id: 5, name: "Grilled Chicken", image: menuImg, category: "Locals", quantity: 0 },
+    { id: 6, name: "Grilled Chicken", image: menuImg, category: "Continental", quantity: 20 },
+    { id: 7, name: "Grilled Chicken", image: menuImg, category: "Wine", quantity: 0 },
+    { id: 8, name: "Grilled Chicken", image: menuImg, category: "Softdrink", quantity: 20 },
   ]);
-  
+
+  const getStatus = (quantity: number) => (quantity > 0 ? "Active" : "Inactive");
+
   const [isFormVisible, setIsFormVisible] = useState(false);
-  const [currentItem, setCurrentItem] = useState<MenuItem | null>(null);
+  const [currentItem, setCurrentItem] = useState<Menu | null>(null);
   
-  const handleFormSubmit = (formData: Omit<MenuItem, 'id'>) => {
+  const handleFormSubmit = (formData: Omit<Menu, 'id'>) => {
     if (currentItem) {
       // Edit existing item
       setMenuItems(menuItems.map(item => 
@@ -43,14 +55,19 @@ const MenuDashboard = () => {
     } else {
       // Add new item
       const newId = menuItems.length > 0 ? Math.max(...menuItems.map(item => item.id)) + 1 : 1;
-      setMenuItems([...menuItems, { id: newId, ...formData }]);
+      setMenuItems([...menuItems, { 
+        id: newId, 
+        ...formData, 
+        barcode: formData.barcode || `BC${Math.floor(Math.random() * 100000)}`, 
+        quantity: formData.quantity || 0 
+      }]);
     }
     
     // Reset and close form
     closeForm();
   };
   
-  const handleEdit = (item: MenuItem) => {
+  const handleEdit = (item: Menu) => {
     setCurrentItem(item);
     setIsFormVisible(true);
   };
@@ -78,22 +95,17 @@ const MenuDashboard = () => {
   };
 
   return (
-    <div className='min-h-[85vh]'>
-    <div className="flex max-h-[85vh]  bg-gray-100">
+    <div className=''>
+    <div className="flex max-h-[85vh] bg-gray-100">
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
         <header className="py-5 bg-white border-b flex items-center justify-between px-6">
-          <h1 className="text-xl font-semibold">Menu</h1>
-          {currentUser && (
-            <div className="text-sm">
-              Logged in as: {currentUser.email} ({currentUser.status})
-            </div>
-          )}
+          <h1 className="text-xl font-semibold">Products</h1>
         </header>
 
         {/* Content Area */}
-        <main className="flex-1 overflow-auto p-6 pb-0">
+        <main className="flex-1 overflow-auto p-6">
           {/* Toolbar */}
           <div className="mb-6 flex flex-wrap gap-4">
             {/* Add Button */}
@@ -109,18 +121,22 @@ const MenuDashboard = () => {
               <input
                 type="search"
                 placeholder="Search"
-                className="w-64 pl-3 border rounded-lg border-[#EE7F61] bg-gray-300 text-black"
+                className="w-72 pl-3 border rounded-lg border-[#EE7F61] bg-gray-300 text-black"
               />
             </div>
           </div>
 
-          {/* Menu Table */}
-          <div className="bg-white rounded-lg overflow-hidden shadow">
+          {/* Product Table */}
+          <div className="bg-white rounded-lg shadow overflow-hidden">
             <table className="table-auto w-full border-collapse">
               <thead>
-                <tr className="bg-[#EE7F61] text-white p-4">
+                <tr className="bg-[#EE7F61] text-white">
                   <th className="py-2 px-4 text-left">S/N</th>
                   <th className="py-2 px-4 text-left">Menu Name</th>
+                  <th className="py-2 px-4 text-left">Category</th>
+                  <th className="py-2 px-4 text-left">Image</th>
+                  <th className="py-2 px-4 text-left">Status</th>
+                  <th className="py-2 px-4 text-left">Qty</th>
                   <th className="py-2 px-4 text-right"></th>
                 </tr>
               </thead>
@@ -134,6 +150,20 @@ const MenuDashboard = () => {
                   >
                     <td className="py-2 px-4">{item.id}.</td>
                     <td className="py-2 px-4">{item.name}</td>
+                    <td className="py-2 px-4">{item.category}</td>
+                    <td className="py-2 px-4">
+                      <img src={item.image} className='w-10 h-10'/>
+                    </td>
+                    <td className="py-2 px-4">
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs ${
+                        item.quantity > 0 ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                      }`}
+                    >
+                      {getStatus(item.quantity)}
+                    </span>
+                    </td>
+                    <td className="py-2 px-4">{item.quantity}</td>
                     <td className="py-2 px-4 text-right">
                       <div className="flex justify-end gap-2">
                         {/* Edit Button */}
@@ -161,11 +191,12 @@ const MenuDashboard = () => {
       </div>
       
       {/* Form Modal Component */}
-      <MenuItemForm
+      <ItemForm
         isVisible={isFormVisible}
         currentItem={currentItem}
         onClose={closeForm}
         onSubmit={handleFormSubmit}
+        formTitle="Product" // This makes the form adapt to products
       />
     </div>
     </div>

@@ -5,7 +5,12 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 // Define the user type
 export interface User {
   id: number;
+  name: string;
+  username: string;
   email: string;
+  address: string;
+  phoneNumber: string;
+  image?: string;
   status: "Active" | "Inactive";
   // Add any other user properties you need
   roles?: string[];

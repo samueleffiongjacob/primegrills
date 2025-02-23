@@ -1,4 +1,3 @@
-// src/AdminNavbar/AdminNav.tsx
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Bell, ChevronDown } from "lucide-react";
@@ -28,10 +27,10 @@ const Header = () => {
   const handleLogin = (email: string, password: string) => {
     //  API call to verify credentials will be here 
 
-    // For example purpose ,simulating what the a
+    // For example purpose, simulating what the a
     const userData = {
       status: "Active" as const,
-      roles: ["user"]
+      roles: ["accountant"]
     };
     
     // This comes from AuthContext
@@ -44,10 +43,37 @@ const Header = () => {
     setIsDropdownOpen(false);
   };
 
+  // Get the user role to display
+  const userRole = user?.roles?.[0] || "Accountant";
+  const displayRole = userRole.charAt(0).toUpperCase() + userRole.slice(1);
+
   return (
-    <header className="flex justify-end items-center max-w-full px-6 py-3 bg-[#171943] text-white">
+    <header className="flex justify-between items-center max-w-full px-6 py-3 bg-[#171943] text-white">
+      {/* Logo or brand could go here */}
+      <div className="flex-1">
+        {/* Placeholder for any left-side content */}
+      </div>
+      
+      {/* User info and actions container */}
       <div className="flex items-center gap-4">
-        <Bell className="text-white" />
+        <Link to={'/message'}>
+          <Bell className="text-white" />
+        </Link>
+        
+        {isAuthenticated && (
+          <div className="flex items-center gap-2">
+            <div className="text-right text-sm">
+              <p className="text-gray-300">{user?.email || "user@example.com"}</p>
+              <div className="flex items-center gap-2">
+                <p className="font-medium">{user?.name || "Rudu"}</p>
+                <span className="px-2 py-0.5 bg-blue-900 rounded-full text-xs">
+                  {displayRole}
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+        
         <div className="relative">
           <div className="flex items-center gap-2 cursor-pointer" onClick={toggleDropdown}>
             <Avatar>
@@ -63,20 +89,22 @@ const Header = () => {
 
           {/* Dropdown Menu */}
           {isDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg text-gray-700 z-10">
+            <div onMouseLeave={toggleDropdown} className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg text-gray-700 z-50">
               <ul className="py-2">
                 {isAuthenticated ? (
                   <>
+                  <Link to={'/profile'}>
                     <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Profile</li>
-                    <Link to={'/settings'} onClick={toggleDropdown}>
+                  </Link>
+                  <Link to={'/settings'} onClick={toggleDropdown}>
                     <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Settings</li>
-                    </Link>
-                    <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer" onClick={handleLogout}>
-                      Logout
-                    </li>
-                    <li className="px-4 py-2 bg-green-100 text-green-800">
-                      Status: {user?.status}
-                    </li>
+                  </Link>
+                  <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer" onClick={handleLogout}>
+                    Logout
+                  </li>
+                  <li className="px-4 py-2 bg-green-100 text-green-800">
+                    Status: {user?.status}
+                  </li>
                   </>
                 ) : (
                   <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer" onClick={handleOpenLoginModal}>
