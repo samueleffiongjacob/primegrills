@@ -134,7 +134,7 @@ const ItemForm = ({
   
   if (!isVisible) return null;
   
-  const isProduct = formTitle.toLowerCase().includes('product');
+  const isProduct = formTitle.toLowerCase().includes('menu');
   
   return (
     <div className="fixed inset-0 backdrop-blur-xs bg-[#171943]  bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -248,8 +248,8 @@ const ItemForm = ({
               name="price"
               value={formData.price || ''}
               onChange={handleInputChange}
-              step="0.01"
-              min="0"
+              step="10" 
+              min="500"
               className="w-full p-2 border rounded focus:ring-2 focus:ring-[#EE7F61] focus:border-transparent"
               required
             />
@@ -296,7 +296,7 @@ const ItemForm = ({
           
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Items in {isProduct ? 'Product' : 'Meal'} (Optional)
+              Items in {isProduct ? 'Menu' : 'Meal'} (Optional)
             </label>
             <div className="flex gap-2 mb-2">
               <input
