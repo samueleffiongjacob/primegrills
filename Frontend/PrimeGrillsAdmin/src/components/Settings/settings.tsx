@@ -48,27 +48,6 @@ const Settings = () => {
 
       {/* Settings Content */}
       <div className="w-4/5 p-6">
-        {activeSection === "Profile" && (
-          <div>
-            <h2 className="text-xl font-bold mb-4">PrimeGrills Profile</h2>
-            <form className="space-y-4">
-              <input
-                type="text"
-                placeholder="Organization Name"
-                className="w-full px-3 py-2 border rounded dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-              />
-              <textarea
-                placeholder="Brief Description"
-                className="w-full px-3 py-2 border rounded dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                rows={3}
-              />
-              <Button
-                title="Save Changes"
-                onClick={() => handleSave("Restaurant Profile")}
-              />
-            </form>
-          </div>
-        )}
         {activeSection === "Hours" && (
           <div>
             <h2 className="text-xl font-bold mb-4">Operating Hours</h2>
@@ -104,32 +83,7 @@ const Settings = () => {
             </form>
           </div>
         )}
-        {activeSection === "Contact" && (
-          <div>
-            <h2 className="text-xl font-bold mb-4">Contact Information</h2>
-            <form className="space-y-4">
-              <input
-                type="tel"
-                placeholder="Phone Number"
-                className="w-full px-3 py-2 border rounded dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-              />
-              <input
-                type="email"
-                placeholder="Email Address"
-                className="w-full px-3 py-2 border rounded dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-              />
-              <textarea
-                placeholder="Address"
-                className="w-full px-3 py-2 border rounded dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                rows={3}
-              />
-              <Button
-                title="Save Contact Info"
-                onClick={() => handleSave("Contact Information")}
-              />
-            </form>
-          </div>
-        )}
+       
         {activeSection === "Notifications" && (
           <div>
             <h2 className="text-xl font-bold mb-4">Notifications</h2>
