@@ -86,7 +86,7 @@ const MessagesPage = () => {
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="p-6 bg-gray-100">
       <h1 className="text-2xl font-semibold text-gray-800 mb-4">Messages</h1>
 
       <div className="flex justify-between">
