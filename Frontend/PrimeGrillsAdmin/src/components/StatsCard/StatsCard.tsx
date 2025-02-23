@@ -34,7 +34,7 @@ const StatsCard = ({ title, value, linkText, bgStyle }: StatsCardProps) => {
 
     if (title === "New Clients") {
       return (
-        <div className="absolute right-4 bottom-19 w-20 h-30">
+        <div className="absolute right-4 bottom-19 w-20 h-30 z-50">
           <img src={client} alt={title} className="w-full h-full object-contain" />
         </div>
       );
@@ -45,10 +45,10 @@ const StatsCard = ({ title, value, linkText, bgStyle }: StatsCardProps) => {
 
   return (
     <div
-      className="rounded-3xl p-6 relative  mt-5 shadow-md"
+      className="rounded-3xl p-6 relative z-10 mt-5 shadow-md"
       style={bgStyle}
     >
-      <div className="">
+      <div className="relative z-10">
         <h3 className="text-xl font-semibold mb-2 text-gray-800">{title}</h3>
         <p className="text-4xl font-bold text-[#ee7f61] mb-4">{value}</p>
         <a href="#" className="text-sm text-gray-600 hover:underline">
@@ -89,7 +89,7 @@ const StatsGrid = () => {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mx-4 py-2 px-3 ">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mx-4 py-2 px-3">
       {stats.map((stat, index) => (
         <StatsCard
           key={index}

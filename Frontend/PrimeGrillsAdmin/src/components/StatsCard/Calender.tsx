@@ -24,12 +24,12 @@ const Calendar = () => {
   const isCurrentMonth = today.getFullYear() === currentDate.getFullYear() && today.getMonth() === currentDate.getMonth();
 
   return (
-    <div className="bg-[#343434] max-h-[300px] mb-2 rounded-4xl pt-8 p-2 flex flex-col">
-      <div className="flex justify-between items-center mb-4 mx-2">
+    <div className="bg-[#343434] max-h-[400px] h-full mb-2 rounded-4xl pt-8 p-6 flex flex-col">
+      <div className="flex justify-between items-center mb-4 mx-4">
         <h2 className="text-white text-xl font-semibold">Calendar</h2>
         <button className="text-white text-xl font-semibold hover:underline">View</button>
       </div>
-      <div className="bg-white max-h-[200px] rounded-4xl p-4 shadow-lg flex flex-col">
+      <div className="bg-white rounded-4xl p-4 h-full shadow-lg flex flex-col">
         <div className="text-center mb-4">
           <h3 className="text-lg font-semibold text-gray-800">
             {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
