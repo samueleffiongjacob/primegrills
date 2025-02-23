@@ -41,7 +41,7 @@ const PayPoint = () => {
     .sort((a, b) => (a > b ? -1 : 1));
 
   return (
-    <div className="flex max-w-5xl mx-auto p-6 space-x-6">
+    <div className="flex mt-4 max-w-5xl mx-auto p-6 space-x-6">
       {/* Sidebar for Payment Methods */}
       <div className="w-1/4 bg-gray-100 p-4 rounded-lg shadow-md">
         <h2 className="text-lg font-bold mb-4">Payment Methods</h2>
