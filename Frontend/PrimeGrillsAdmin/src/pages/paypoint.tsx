@@ -9,9 +9,9 @@ const paymentMethods = [
 ];
 
 const transactions = [
-  { id: "TXN001", method: "Bank Transfer", amount: "$25.00", date: "2025-02-22", accountNumber: "123-456-7890", accountName: "John Doe", status: "Completed" },
+  { id: "TXN001", method: "Bank Transfer", amount: "$25.00", date: "2025-02-22", accountNumber: "123-456-7890", accountName: "Johnson Yemi", status: "Completed" },
   { id: "TXN002", method: "Credit/Debit Card", amount: "$15.50", date: "2025-02-21", status: "Pending" },
-  { id: "TXN003", method: "Bank Transfer", amount: "$40.00", date: "2025-02-23", accountNumber: "987-654-3210", accountName: "Jane Smith", status: "Pending" },
+  { id: "TXN003", method: "Bank Transfer", amount: "$40.00", date: "2025-02-23", accountNumber: "987-654-3210", accountName: "Mustapha Adamu", status: "Pending" },
   { id: "TXN004", method: "Cash", amount: "$10.00", date: "2025-02-20", status: "Completed" },
   { id: "TXN005", method: "Mobile Wallet", amount: "$30.00", date: "2025-02-22", status: "Completed" },
   { id: "TXN006", method: "Credit/Debit Card", amount: "$12.00", date: "2025-02-19", status: "Completed" },
