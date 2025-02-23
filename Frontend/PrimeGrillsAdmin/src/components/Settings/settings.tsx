@@ -20,9 +20,7 @@ const Settings = () => {
   };
 
   const sections = [
-    { id: "Profile", title: "PrimeGrills Profile" },
     { id: "Hours", title: "Operating Hours" },
-    { id: "Contact", title: "Contact Information" },
     { id: "Notifications", title: "Notifications" },
   ];
 
