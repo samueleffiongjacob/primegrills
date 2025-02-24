@@ -42,6 +42,7 @@ const navItems = [
   { to: "/category", icon: Users, label: "Category", roles: ["admin", "accountant"] },
   { to: "/menu", icon: Package, label: "Menu", roles: allRoles },
   { to: "/user", icon: User, label: "User", roles: allRoles},
+  { to: "/orders", icon: ShoppingCart, label: "Order", roles: ["admin", "accountant", "kitchen"]},
   { to: "/message", icon: Mail, label: "Message", roles: allRoles },
   { to: "/pos", icon: ShoppingCart, label: "POS", roles: ["admin", "accountant"] },
   { to: "/paypoints", icon: Calendar, label: "PayPoints", roles: ["admin", "accountant"] },

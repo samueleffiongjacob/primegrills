@@ -15,6 +15,7 @@ import MessagesPage from '../pages/messages';
 import Profile from '../pages/profile';
 import PayPoint from '../pages/paypoint';
 import { useAuth } from '../context/authContext';
+import OrdersDashboard from '../pages/orders';
 
 function RoleBasedRedirect() {
   const { user } = useAuth();
@@ -48,6 +49,7 @@ const Navigations = () => {
               <Route path="/message" element={<ProtectedRoute roles={allRoles}><MessagesPage /></ProtectedRoute>} />
               <Route path="/paypoints" element={<ProtectedRoute roles={["admin", "accountant"]}><PayPoint /></ProtectedRoute>} />
               <Route path="/settings" element={<ProtectedRoute roles={["admin"]}><Settings /></ProtectedRoute>} />
+              <Route path="/orders" element={<ProtectedRoute roles={["admin", "accountant", "kitchen"]}><OrdersDashboard /></ProtectedRoute>} />
               <Route path="/profile" element={<ProtectedRoute roles={allRoles}><Profile /></ProtectedRoute>} />
             </Routes>
           </main>
