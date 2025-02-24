@@ -1,9 +1,15 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> e4022d4b706a9863148c700d9508c3b7120e783f
 import { useState } from "react";
 import Button from "../Report/Button";
 
 const Settings = () => {
+<<<<<<< HEAD
 //   const [darkMode, setDarkMode] = useState(false);
+=======
+>>>>>>> e4022d4b706a9863148c700d9508c3b7120e783f
   const [activeSection, setActiveSection] = useState("Profile");
   const [notifications, setNotifications] = useState({
     order: true,
@@ -11,10 +17,14 @@ const Settings = () => {
     marketing: false,
   });
 
+<<<<<<< HEAD
 //   const toggleDarkMode = () => {
 //     setDarkMode(!darkMode);
 //     document.documentElement.classList.toggle("dark");
 //   };
+=======
+  
+>>>>>>> e4022d4b706a9863148c700d9508c3b7120e783f
 
   const handleNotificationToggle = (type: string) => {
     setNotifications((prev) => ({ ...prev, [type]: !prev[type] }));
@@ -25,14 +35,19 @@ const Settings = () => {
   };
 
   const sections = [
+<<<<<<< HEAD
     { id: "Profile", title: "PrimeGrills Profile" },
     { id: "Hours", title: "Operating Hours" },
     { id: "Contact", title: "Contact Information" },
+=======
+    { id: "Hours", title: "Operating Hours" },
+>>>>>>> e4022d4b706a9863148c700d9508c3b7120e783f
     { id: "Notifications", title: "Notifications" },
   ];
 
   return (
     <div
+<<<<<<< HEAD
       className="min-h-screen flex"
     >
       {/* Sidebar Links */}
@@ -73,6 +88,11 @@ const Settings = () => {
             </svg>
           )}
         </button> */}
+=======
+      className="min-h-screen flex" >
+      {/* Sidebar Links */}
+      <div className="w-1/5 bg-white dark:bg-gray-800 shadow-md p-4 space-y-4">
+>>>>>>> e4022d4b706a9863148c700d9508c3b7120e783f
         <nav className="space-y-2">
           {sections.map((section) => (
             <button
@@ -92,6 +112,7 @@ const Settings = () => {
 
       {/* Settings Content */}
       <div className="w-4/5 p-6">
+<<<<<<< HEAD
         {activeSection === "Profile" && (
           <div>
             <h2 className="text-xl font-bold mb-4">PrimeGrills Profile</h2>
@@ -113,6 +134,8 @@ const Settings = () => {
             </form>
           </div>
         )}
+=======
+>>>>>>> e4022d4b706a9863148c700d9508c3b7120e783f
         {activeSection === "Hours" && (
           <div>
             <h2 className="text-xl font-bold mb-4">Operating Hours</h2>
@@ -148,6 +171,7 @@ const Settings = () => {
             </form>
           </div>
         )}
+<<<<<<< HEAD
         {activeSection === "Contact" && (
           <div>
             <h2 className="text-xl font-bold mb-4">Contact Information</h2>
@@ -174,6 +198,9 @@ const Settings = () => {
             </form>
           </div>
         )}
+=======
+       
+>>>>>>> e4022d4b706a9863148c700d9508c3b7120e783f
         {activeSection === "Notifications" && (
           <div>
             <h2 className="text-xl font-bold mb-4">Notifications</h2>
@@ -206,4 +233,7 @@ const Settings = () => {
 };
 
 export default Settings;
+<<<<<<< HEAD
 
+=======
+>>>>>>> e4022d4b706a9863148c700d9508c3b7120e783f
