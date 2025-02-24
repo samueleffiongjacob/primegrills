@@ -26,7 +26,7 @@ const Settings = () => {
 
   return (
     <div
-      className="min-h-screen flex" >
+      className="flex" >
       {/* Sidebar Links */}
       <div className="w-1/5 bg-white dark:bg-gray-800 shadow-md p-4 space-y-4">
         <nav className="space-y-2">

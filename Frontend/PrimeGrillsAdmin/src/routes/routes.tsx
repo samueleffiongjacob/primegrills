@@ -1,6 +1,4 @@
-
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-
 import Sidebar from "../components/AdminSidebar/Sidebar";
 import Header from "../components/AdminNavbar/AdminNav";
 import Dashboard from '../pages/adminDashboard';
@@ -16,32 +14,41 @@ import { ProtectedRoute } from '../components/ProtectedRoute';
 import MessagesPage from '../pages/messages';
 import Profile from '../pages/profile';
 import PayPoint from '../pages/paypoint';
+import { useAuth } from '../context/authContext';
 
-const Navigations= () => {
+function RoleBasedRedirect() {
+  const { user } = useAuth();
+
+  if (!user) return; // Redirect to login if no user
+
+  return user.role === "admin" || user.role === "accountant" 
+    ? <Navigate to="/dashboard" replace /> 
+    : <Navigate to="/profile" replace />;
+}
+
+const Navigations = () => {
+  const allRoles = ["admin", "accountant", "waiter", "kitchen", "cleaner"];
   return (
     <Router>
       <div className="flex bg-gray-100 min-h-screen">
-        {/* Sidebar always visible */}
         <Sidebar />
-
         <div className="flex flex-col flex-1">
-          {/* Header always visible */}
           <Header />
-
-          {/* Main content area */}
-          <main className=" ">
+          <main>
             <Routes>
-              <Route path="/" element={  <ProtectedRoute><Dashboard /></ProtectedRoute>} />
-              <Route path="/menu" element={<ProtectedRoute><MenuDashboard /></ProtectedRoute>} />
-              <Route path="/user" element={<ProtectedRoute><User /></ProtectedRoute>} />
-              <Route path="/category" element={<ProtectedRoute><Category /></ProtectedRoute>} />
-              <Route path="/report" element={<ProtectedRoute><ReportIssue /></ProtectedRoute>} />
-              <Route path="/complaintpolicy" element={<ProtectedRoute><ComplaintPolicy /></ProtectedRoute>} />
-              <Route path="/message" element={<ProtectedRoute><MessagesPage /></ProtectedRoute>} />
-              <Route path="/paypoints" element={<ProtectedRoute><PayPoint /></ProtectedRoute>} />
-              <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-              <Route path='/profile' element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-              {/* Add more routes as needed */}
+               {/* Role-based redirection */}
+              <Route path="/" element={<RoleBasedRedirect />} />
+
+              <Route path="/dashboard" element={<ProtectedRoute roles={["admin", "accountant"]}><Dashboard /></ProtectedRoute>} />
+              <Route path="/menu" element={<ProtectedRoute roles={["admin", "accountant", "waiter", "kitchen", "cleaner"]}><MenuDashboard /></ProtectedRoute>} />
+              <Route path="/user" element={<ProtectedRoute roles={allRoles}><User /></ProtectedRoute>} />
+              <Route path="/category" element={<ProtectedRoute roles={["admin", "accountant"]}><Category /></ProtectedRoute>} />
+              <Route path="/report" element={<ProtectedRoute roles={allRoles}><ReportIssue /></ProtectedRoute>} />
+              <Route path="/complaintpolicy" element={<ProtectedRoute roles={allRoles}><ComplaintPolicy /></ProtectedRoute>} />
+              <Route path="/message" element={<ProtectedRoute roles={allRoles}><MessagesPage /></ProtectedRoute>} />
+              <Route path="/paypoints" element={<ProtectedRoute roles={["admin", "accountant"]}><PayPoint /></ProtectedRoute>} />
+              <Route path="/settings" element={<ProtectedRoute roles={["admin"]}><Settings /></ProtectedRoute>} />
+              <Route path="/profile" element={<ProtectedRoute roles={allRoles}><Profile /></ProtectedRoute>} />
             </Routes>
           </main>
         </div>
