@@ -33,13 +33,8 @@ const SidebarLink = ({ to, children, icon: Icon }) => {
 
 const navItems = [
   { to: "/", icon: LayoutDashboard, label: "Dashboard" },
-<<<<<<< HEAD
-  { to: "/menu", icon: Menu, label: "Menu" },
-  { to: "/products", icon: Package, label: "Products" },
-=======
   { to: "/category", icon: Users, label: "Category" },
   { to: "/menu", icon: Package, label: "Menu" },
->>>>>>> e4022d4b706a9863148c700d9508c3b7120e783f
   { to: "/user", icon: User, label: "User" },
   { to: "/message", icon: Mail, label: "Message" },
   { to: "/pos", icon: ShoppingCart, label: "POS" },
