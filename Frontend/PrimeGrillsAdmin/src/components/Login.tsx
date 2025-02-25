@@ -5,15 +5,15 @@ import { MdEmail } from 'react-icons/md';
 // INTERNAL IMPORTS
 import { loginStaff } from '../api/auth';
 import { useAuth } from '../context/authContext';
+import { User } from '../context/authContext';
+
 
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onLogin: (email: string, password: string) => void;
+  onLogin: (email: string, password: string, userData: Omit<User, 'email' | 'password'>) => void;
 }
-
 const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin}) => {
-  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -24,8 +24,19 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin}) => {
     if (!email || !password) return alert("All fields are required");
     if (password.length < 6) return alert("Password must be at least 6 characters");
 
-    //sample login
-    onLogin(email, password);
+    // Assuming you fetch or have userData
+  const userData = {
+    id: 1,
+    name: "John Doe",
+    username: "johndoe",
+    address: "123 Main St",
+    phoneNumber: "123-456-7890",
+    status: "Active",
+    role: "admin"
+  };
+
+  //login function from AuthContext
+  onLogin(email, password, userData)
     alert('Login Success')
 
      /* try {
@@ -104,7 +115,6 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin}) => {
             {/* Log In Button */}
             <button
               type="submit"
-              onClick={handleSubmit}
               className="w-full py-3 bg-[#EE7F61] text-white rounded-xl hover:bg-orange-500 transition-colors"
             >
               Log In

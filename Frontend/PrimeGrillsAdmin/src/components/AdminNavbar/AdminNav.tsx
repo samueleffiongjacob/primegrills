@@ -33,12 +33,18 @@ const Header = () => {
 
     // For example purpose, simulating what the a
     const userData = {
-      status: "Active" as const,
-      roles: ["accountant"]
+      id: 1,
+      name: "John Doe",
+      username: "johndoe",
+      address: "123 Main St",
+      phoneNumber: "123-456-7890",
+      status: "Active",
+      role: "admin"
     };
+  
     
     // This comes from AuthContext
-    login(email, userData);
+    login(email, password, userData);
     setIsLoginModalOpen(false);
   };
 
@@ -48,7 +54,7 @@ const Header = () => {
   };
 
   // Get the user role to display
-  const userRole = user?.roles?.[0] || "Accountant";
+  const userRole = user?.role || "";
   const displayRole = userRole.charAt(0).toUpperCase() + userRole.slice(1);
 
   return (
@@ -75,7 +81,7 @@ const Header = () => {
         {isAuthenticated && (
           <div className="flex items-center gap-2">
             <div className="text-right text-sm">
-              <p className="text-gray-300">{user?.email || "user@example.com"}</p>
+              {/* <p className="text-gray-300">{user?.email || "user@example.com"}</p> */}
               <div className="flex items-center gap-2">
                 <p className="font-medium">{user?.name || "Rudu"}</p>
                 <span className="px-2 py-0.5 bg-blue-900 rounded-full text-xs">

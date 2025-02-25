@@ -1,3 +1,5 @@
+import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   Menu,
@@ -9,61 +11,151 @@ import {
   Users,
   Settings,
   FileBarChart,
+  X
 } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
 import logo from "../../assets/images/primeLogo.png";
 
-const SidebarLink = ({ to, children, icon: Icon }) => {
+// Mock user role 
+const userRole = "admin"; // Example roles: "admin", "accountant", "user"
+const allRoles = ["admin", "accountant", "waiter", "cleaner", "kitchen"];
+
+const SidebarLink = ({ to, children, icon: Icon, collapsed }) => {
   const location = useLocation();
   const isActive = location.pathname === to;
 
   return (
     <Link
       to={to}
-      className={`flex items-center  gap-3 px-4 py-2 rounded-lg transition-colors duration-300 ${
+      className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-300 relative ${
         isActive ? "text-[#EE7F61] bg-[#2C2F55]" : "hover:text-[#EE7F61]"
       }`}
     >
       <Icon size={20} />
-      <span>{children}</span>
+      {!collapsed && <span>{children}</span>}
       {isActive && <span className="absolute inset-y-0 left-0 w-1 bg-[#EE7F61] rounded-r-lg" />}
     </Link>
   );
 };
 
+// Define navigation items
 const navItems = [
-  { to: "/", icon: LayoutDashboard, label: "Dashboard" },
-  { to: "/category", icon: Users, label: "Category" },
-  { to: "/menu", icon: Package, label: "Menu" },
-  { to: "/user", icon: User, label: "User" },
-  { to: "/message", icon: Mail, label: "Message" },
-  { to: "/pos", icon: ShoppingCart, label: "POS" },
-  { to: "/paypoints", icon: Calendar, label: "PayPoints" },
-  { to: "/settings", icon: Settings, label: "Settings" },
-  { to: "/report", icon: FileBarChart, label: "Report" },
+  { to: "/profile", icon: Users, label: "Profile", roles: [ "cleaner", "waiter", "kitchen"] },
+  { to: "/", icon: LayoutDashboard, label: "Dashboard", roles: ["admin", "accountant"] },
+  { to: "/category", icon: Users, label: "Category", roles: ["admin", "accountant"] },
+  { to: "/menu", icon: Package, label: "Menu", roles: allRoles },
+  { to: "/user", icon: User, label: "User", roles: allRoles},
+  { to: "/orders", icon: ShoppingCart, label: "Order", roles: ["admin", "accountant", "kitchen"]},
+  { to: "/message", icon: Mail, label: "Message", roles: allRoles },
+  { to: "/pos", icon: ShoppingCart, label: "POS", roles: ["admin", "accountant"] },
+  { to: "/paypoints", icon: Calendar, label: "PayPoints", roles: ["admin", "accountant"] },
+  { to: "/settings", icon: Settings, label: "Settings", roles: ["admin"] },
+  { to: "/report", icon: FileBarChart, label: "Report", roles: allRoles},
 ];
 
 const Sidebar = () => {
-  return (
-    <aside className="w-[250px] overflow-y-auto max-h-screen scroll-smooth bg-[#171943] text-white p-6">
-      <div className="mb-8">
-        <img
-          src={logo}
-          alt="Prime Grills & Cafe"
-          width={100}
-          height={40}
-          className="mx-auto"
-        />
-      </div>
+  const [collapsed, setCollapsed] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+  
+  // Track window width for responsive behavior
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 1024) {
+        setCollapsed(true);
+      } else {
+        setCollapsed(false);
+        setIsMobileOpen(false);
+      }
+    };
+    
+    // Set initial state
+    handleResize();
+    
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-      <nav className="space-y-6">
-        {navItems.map((item) => (
-          <SidebarLink key={item.label} to={item.to} icon={item.icon}>
-            {item.label}
-          </SidebarLink>
-        ))}
-      </nav>
-    </aside>
+  // Filter items based on user role
+  const filteredNavItems = navItems.filter((item) => 
+    item.roles.includes(userRole)
+  );
+
+  return (
+    <>
+      {/* Mobile Menu Overlay */}
+      {isMobileOpen && (
+        <div 
+          className="fixed inset-0  bg-opacity-50 z-30 lg:hidden"
+          onClick={() => setIsMobileOpen(false)}
+        />
+      )}
+      
+      {/* Mobile Toggle Button - Fixed Position */}
+      <button
+        onClick={() => setIsMobileOpen(!isMobileOpen)}
+        className="fixed top-4 left-4 z-40 lg:hidden bg-[#171943] text-white p-2 rounded-lg shadow-lg"
+      >
+        <Menu size={24} />
+      </button>
+      
+      {/* Sidebar */}
+      <aside 
+        className={`fixed lg:static h-screen z-40 transition-all duration-300 transform ${
+          isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+        } ${
+          collapsed && !isMobileOpen ? 'w-[70px]' : 'w-[250px]'
+        } overflow-y-auto scroll-smooth bg-[#171943] text-white shadow-xl`}
+      >
+        <div className="flex items-center justify-between p-4 border-b border-[#2C2F55]">
+          {!collapsed && (
+            <img 
+              src={logo} 
+              alt="Prime Grills & Cafe" 
+              className="h-8"
+            />
+          )}
+          
+          {/* Toggle button for large screens */}
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            className="hidden lg:block text-white hover:text-[#EE7F61] transition-colors"
+          >
+            {collapsed ? (
+              <Menu size={20} />
+            ) : (
+              <X size={20} />
+            )}
+          </button>
+          
+          {/* Close button for mobile */}
+          {isMobileOpen && (
+            <button
+              onClick={() => setIsMobileOpen(false)}
+              className="lg:hidden text-white hover:text-[#EE7F61] transition-colors"
+            >
+              <X size={20} />
+            </button>
+          )}
+        </div>
+
+        <div className={`p-3 ${collapsed ? 'mt-2' : 'mt-4'}`}>
+          <nav className="space-y-1 text-white">
+            {filteredNavItems.map((item) => (
+              <SidebarLink 
+                key={item.label} 
+                to={item.to} 
+                icon={item.icon}
+                collapsed={collapsed}
+              >
+                {item.label}
+              </SidebarLink>
+            ))}
+          </nav>
+        </div>
+      </aside>
+
+      {/* Responsive spacer div for small screens when sidebar is hidden */}
+      <div className="lg:hidden h-16" />
+    </>
   );
 };
 
