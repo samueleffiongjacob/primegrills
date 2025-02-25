@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import { Swiper as SwiperType } from "swiper/types";
-import "swiper/css";
+import 'swiper/css';
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
