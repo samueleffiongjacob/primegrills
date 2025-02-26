@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -19,7 +19,15 @@ import logo from "../../assets/images/primeLogo.png";
 const userRole = "admin"; // Example roles: "admin", "accountant", "user"
 const allRoles = ["admin", "accountant", "waiter", "cleaner", "kitchen"];
 
-const SidebarLink = ({ to, children, icon: Icon, collapsed }) => {
+
+interface SidebarLinkProps {
+  to: string;
+  children: React.ReactNode;
+  icon: React.ElementType;
+  collapsed: boolean;
+}
+
+const SidebarLink = ({ to, children, icon: Icon, collapsed }: SidebarLinkProps) => {
   const location = useLocation();
   const isActive = location.pathname === to;
 
@@ -36,6 +44,13 @@ const SidebarLink = ({ to, children, icon: Icon, collapsed }) => {
     </Link>
   );
 };
+
+interface navItems {
+  to: string;
+  icon: React.ElementType;
+  label: string;
+  
+}
 
 // Define navigation items
 const navItems = [

@@ -24,14 +24,21 @@ export const loginUser = async (
   return res.json();
 };
 
-export const signUpUser = async (
-  username: string,
-  fullName: string,
-  email: string ,
-  phoneNumber: string,
-  address: string,
-  password: string,
-): Promise<AuthResponse> => {
+export const signUpUser = async ({
+  username,
+  fullName,
+  email,
+  phoneNumber,
+  address,
+  password,
+}: {
+  username: string;
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  address: string;
+  password: string;
+}): Promise<AuthResponse> => {
   const res = await fetch(`${API_URL}/signup`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

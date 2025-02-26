@@ -5,9 +5,11 @@
     { "path": "./tsconfig.node.json" }
   ],
   "compilerOptions": {
+    "types": ["@types/styled-jsx"],
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     }
   }
+  
 }

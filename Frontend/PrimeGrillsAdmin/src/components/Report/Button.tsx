@@ -1,6 +1,7 @@
 interface ButtonProps {
     title: string;
-    onClick?: () => void;
+    disabled?: boolean; // Optional if you want it to default to `false`
+    onClick?: () => void; // Optional for click handling
   }
   
   const Button: React.FC<ButtonProps> = ({ title, onClick }) => {

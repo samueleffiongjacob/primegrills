@@ -1,9 +1,15 @@
 import { useState } from "react";
 import { useAuth } from "../context/authContext";
 import LoginModal from "./Login";
-import { Navigate } from "react-router-dom";
+// import { Navigate } from "react-router-dom";
 
-export const ProtectedRoute = ({ children, roles }) => {
+
+interface ProtectedRouteProps {
+  children: string; 
+  roles: string[]; 
+}
+
+export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, roles }) => {
   const { user, isAuthenticated, login } = useAuth();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 

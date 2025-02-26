@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const OrdersDashboard = () => {
   // Sample data - in a real app, this would come from your API
@@ -28,16 +28,18 @@ const OrdersDashboard = () => {
   const deliveredCount = orders.filter(order => order.status === 'delivered').length;
   
   // Function to handle status change
-  const changeStatus = (orderId, newStatus) => {
+  
+  const changeStatus = (orderId: string, newStatus: string) => {
     setOrders(orders.map(order => 
       order.id === orderId ? {...order, status: newStatus} : order
     ));
   };
   
   // Status badge component
-  const StatusBadge = ({ status }) => {
+  
+  const StatusBadge = ({ status }: { status: string }) => {
     let bgColor = '';
-    let textColor = 'text-white';
+    const textColor = 'text-white';
     
     switch(status) {
       case 'pending':

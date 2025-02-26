@@ -102,7 +102,7 @@ const Menu = () => {
                     }}
                     className=" h-[220px] "
                 >
-                    {MENU_CARD_ITEMS.map((item, index) => (
+                    {MENU_CARD_ITEMS.map((item) => (
                         <SwiperSlide key={item.id} className="p-2">
                             <div className="w-full max-w-sm mx-auto" >
                                 <Link to={item.path}>

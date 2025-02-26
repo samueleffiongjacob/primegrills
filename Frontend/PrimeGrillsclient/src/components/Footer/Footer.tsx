@@ -1,8 +1,15 @@
-import React from 'react';
+import { FC } from 'react';
+import { IconType } from 'react-icons'; // Import IconType for typing the icons
 import { FaXTwitter, FaFacebook, FaInstagram } from 'react-icons/fa6';
 import logo from '../../assets/images/primeLogo.png';
 
-const FooterLink = ({ href, children }) => (
+// Define types for FooterLink props
+interface FooterLinkProps {
+  href: string;
+  children: React.ReactNode;
+}
+
+const FooterLink: FC<FooterLinkProps> = ({ href, children }) => (
   <li>
     <a 
       href={href} 
@@ -13,7 +20,13 @@ const FooterLink = ({ href, children }) => (
   </li>
 );
 
-const SocialIcon = ({ href, icon: Icon }) => (
+// Define types for SocialIcon props
+interface SocialIconProps {
+  href: string;
+  icon: IconType;
+}
+
+const SocialIcon: FC<SocialIconProps> = ({ href, icon: Icon }) => (
   <a 
     href={href}
     target="_blank"
@@ -24,7 +37,7 @@ const SocialIcon = ({ href, icon: Icon }) => (
   </a>
 );
 
-const Footer = () => {
+const Footer: FC = () => {
   const currentYear = new Date().getFullYear();
 
   const usefulLinks = [
@@ -43,7 +56,7 @@ const Footer = () => {
 
   return (
     <footer className="mt-32 py-12 mx-2 px-6 bg-white">
-      <div className="container  lg:w-[86%] mx-auto max-w-7xl">
+      <div className="container lg:w-[86%] mx-auto max-w-7xl">
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Brand Column */}
           <div className="space-y-6 lg:pl-10">
@@ -52,13 +65,13 @@ const Footer = () => {
               alt="Prime and Grills Logo"
               className="h-14 w-auto"
             />
-            <p className="text-gray-600 font-semibold w-[180px]  -mt-3 text-sm leading-relaxed">
+            <p className="text-gray-600 font-semibold w-[180px] -mt-3 text-sm leading-relaxed">
               Savor The Artistry Where Every Dish is a Culinary Masterpiece
             </p>
           </div>
 
           {/* Useful Links */}
-          <div className='lg:pl-8'>
+          <div className="lg:pl-8">
             <h3 className="text-xl font-semibold mb-6 text-gray-900 border-b border-[#EE7F61] pb-2 inline-block">
               Useful Links
             </h3>
@@ -72,8 +85,8 @@ const Footer = () => {
           </div>
 
           {/* Main Menu */}
-          <div className='lg:pl-8'>
-            <h3 className=" text-xl font-semibold mb-6 text-gray-900 border-b border-[#EE7F61] pb-2 inline-block">
+          <div className="lg:pl-8">
+            <h3 className="text-xl font-semibold mb-6 text-gray-900 border-b border-[#EE7F61] pb-2 inline-block">
               Main Menu
             </h3>
             <ul className="space-y-3 text-gray-600">
@@ -86,7 +99,7 @@ const Footer = () => {
           </div>
 
           {/* Contact Info */}
-          <div className=' lg:pl-10'>
+          <div className="lg:pl-10">
             <h3 className="text-xl font-semibold mb-6 text-gray-900 border-b border-[#EE7F61] pb-2 inline-block">
               Contact Us
             </h3>

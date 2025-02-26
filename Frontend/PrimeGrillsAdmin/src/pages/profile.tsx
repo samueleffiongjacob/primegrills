@@ -3,7 +3,7 @@ import { useAuth } from "../context/authContext";
 
 const Profile = () => {
   const { user } = useAuth();
-  const [editingField, setEditingField] = useState(null);
+  const [editingField, setEditingField] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     username: user?.name || "Rkay",
     address: user?.address || "11 Obashoba, Lagos, Nigeria",
@@ -13,12 +13,12 @@ const Profile = () => {
   // Track original data to detect changes
   const [originalData, setOriginalData] = useState({...formData});
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleEdit = (field) => {
+  const handleEdit = (field:string) => {
     setEditingField(field);
     // Store original data when starting to edit
     setOriginalData({...formData});
@@ -32,8 +32,8 @@ const Profile = () => {
   };
 
   // Check if the current field has been modified
-  const isFieldModified = (field) => {
-    return editingField === field && formData[field] !== originalData[field];
+  const isFieldModified = (field: string) => {
+    return editingField === field && formData[field as keyof typeof formData] !== originalData[field as keyof typeof originalData];
   };
 
   return (

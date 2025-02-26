@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FcGoogle } from 'react-icons/fc';
-import { FaFacebook, FaApple, FaUser, FaUserCircle, FaEnvelope, FaPhone, FaMapMarkerAlt, FaLock } from 'react-icons/fa';
+import { FaFacebook, FaApple, FaUser, FaUserCircle, FaEnvelope, FaPhone, FaMapMarkerAlt } from 'react-icons/fa';
 
 // INTERNAL IMPORTS
 import { signUpUser } from '../../api/auth';
@@ -38,7 +38,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
   }>({});
 
   const validateForm = () => {
-    let newErrors: {
+    const newErrors: {
       username?: string;
       fullName?: string;
       email?: string;
@@ -66,6 +66,8 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
+
+    
 
     const response = await signUpUser({
       username,

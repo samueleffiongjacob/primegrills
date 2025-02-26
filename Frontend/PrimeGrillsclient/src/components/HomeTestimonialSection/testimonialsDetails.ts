@@ -1,5 +1,5 @@
 import customer from '../../assets/images/customer.png';
-import testimonial from '../../assets/images/testimonial.png';
+// import testimonial from '../../assets/images/testimonial.png';
 
 export const testimonials = [
     {

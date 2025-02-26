@@ -1,6 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
-const BankTransferPayment = ({ onPaymentSuccess }) => {
+interface BankTransferPaymentProps {
+  onPaymentSuccess: () => void; // Define the type for the onPaymentSuccess prop
+}
+
+const BankTransferPayment: React.FC<BankTransferPaymentProps> =  ({ onPaymentSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [timer, setTimer] = useState(26 * 60);
 
@@ -11,7 +15,7 @@ const BankTransferPayment = ({ onPaymentSuccess }) => {
     return () => clearInterval(interval);
   }, []);
 
-  const formatTime = (time) => {
+  const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
     const seconds = time % 60;
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;

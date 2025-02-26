@@ -28,7 +28,7 @@ import Icon1 from '../../assets/images/icon1.png'
 import Icon2 from '../../assets/images/icon2.png'
 import Icon3 from '../../assets/images/bin.png'
 import Icon4 from '../../assets/images/icon3.png'
-import { slideVariants } from '../../utils/utils'
+// import { slideVariants } from '../../utils/utils'
 import { motion } from 'framer-motion';
 
 const Card = () => {

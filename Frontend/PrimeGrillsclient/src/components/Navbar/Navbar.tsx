@@ -1,9 +1,5 @@
-<<<<<<< HEAD
-import React, { useState } from "react";
-=======
 import { useState } from "react";
->>>>>>> AdminDashboard
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, To } from "react-router-dom";
 import { FiChevronDown } from "react-icons/fi";
 import { User } from "lucide-react";
 
@@ -23,8 +19,14 @@ interface UserProfile {
   phone: string;
   memberSince: string;
 }
+interface NavLinkProps {
+  to: To; // Route path
+  children: React.ReactNode; // Children can be any React node
+  onClick?: () => void; // Optional click handler
+  isParentActive?: boolean; // Optional boolean to indicate active parent
+}
 
-const NavLink = ({ to, children, onClick, isParentActive }) => {
+const NavLink: React.FC<NavLinkProps> = ({ to, children, onClick, isParentActive }) => {
   const location = useLocation(); // Get current URL
   const isActive = location.pathname === to || isParentActive; // Check if link is active or parent is active
   return (
@@ -129,7 +131,7 @@ const Navbar = () => {
                   onMouseEnter={() => setHoveredItem(item.title)}
                 >
                   <NavLink
-                    to={item.path}
+                    to={item.path || "/default-path"}
                     onClick={() => {
                       if (item.title.toLowerCase() === "offers") {
                         document

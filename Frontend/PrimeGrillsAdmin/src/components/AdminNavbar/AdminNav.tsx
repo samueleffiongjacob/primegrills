@@ -2,12 +2,8 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Bell, ChevronDown } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-<<<<<<< HEAD
-import { NavLink } from "react-router-dom"; // Import NavLink for routing
-=======
 import { useAuth } from "../../context/authContext";
 import LoginModal from "../Login";
->>>>>>> e4022d4b706a9863148c700d9508c3b7120e783f
 import log from "../../assets/images/ladyimage.jpg";
 
 const Header = () => {
@@ -58,13 +54,6 @@ const Header = () => {
   const displayRole = userRole.charAt(0).toUpperCase() + userRole.slice(1);
 
   return (
-<<<<<<< HEAD
-    <header className="flex justify-between items-center px-6 py-3 bg-[#171943] text-white">
-      {/* Logo or Branding */}
-      <div className="text-xl font-bold"></div>
-
-      {/* Right-side icons and dropdown */}
-=======
     <header className="flex justify-between items-center max-w-full px-6 py-3 bg-[#171943] text-white">
       {/* Logo or brand could go here */}
       <div className="flex-1">
@@ -72,7 +61,6 @@ const Header = () => {
       </div>
       
       {/* User info and actions container */}
->>>>>>> e4022d4b706a9863148c700d9508c3b7120e783f
       <div className="flex items-center gap-4">
         <Link to={'/message'}>
           <Bell className="text-white" />
@@ -93,14 +81,7 @@ const Header = () => {
         )}
         
         <div className="relative">
-<<<<<<< HEAD
-          <div
-            className="flex items-center gap-2 cursor-pointer"
-            onClick={toggleDropdown}
-          >
-=======
           <div className="flex items-center gap-2 cursor-pointer" onClick={toggleDropdown}>
->>>>>>> e4022d4b706a9863148c700d9508c3b7120e783f
             <Avatar>
               <AvatarImage
                 src={log}
@@ -114,34 +95,6 @@ const Header = () => {
 
           {/* Dropdown Menu */}
           {isDropdownOpen && (
-<<<<<<< HEAD
-            <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg text-gray-700 z-50">
-              <ul className="py-2">
-                <li>
-                  <NavLink
-                    to="/profile"
-                    className="block px-4 py-2 hover:bg-gray-100"
-                  >
-                    Profile
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink
-                    to="/settings"
-                    className="block px-4 py-2 hover:bg-gray-100"
-                  >
-                    Settings
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink
-                    to="/logout"
-                    className="block px-4 py-2 hover:bg-gray-100"
-                  >
-                    Logout
-                  </NavLink>
-                </li>
-=======
             <div onMouseLeave={toggleDropdown} className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg text-gray-700 z-50">
               <ul className="py-2">
                 {isAuthenticated ? (
@@ -164,7 +117,6 @@ const Header = () => {
                     Login
                   </li>
                 )}
->>>>>>> e4022d4b706a9863148c700d9508c3b7120e783f
               </ul>
             </div>
           )}

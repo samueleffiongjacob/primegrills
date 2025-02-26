@@ -23,14 +23,14 @@ interface ProfileData {
   memberSince: string;
 }
 
-interface ProfileSidePanelProps {
-  isOpen: boolean;
-  onClose: () => void;
-  profile: ProfileData;
-  onLogout: () => void;
-  onLogin: () => void;
-  isLoggedIn: boolean;
-}
+// interface ProfileSidePanelProps {
+//   isOpen: boolean;
+//   onClose: () => void;
+//   profile: ProfileData;
+//   onLogout: () => void;
+//   onLogin: () => void;
+//   isLoggedIn: boolean;
+// }
 
 const BottomNavigation: React.FC = () => {
   const location = useLocation();

@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { ChevronDown, ChevronUp, Filter, Calendar, Wallet } from "lucide-react";
+import "../assets/styles/fade.css";
+
+
 
 const paymentMethods = [
   { id: 1, name: "Bank Transfer" },
@@ -31,12 +34,24 @@ const transactions = [
 const statuses = ["All", "Pending", "Completed", "Reversed", "Failed", "To Be Paid"];
 
 // Function to group transactions by date
-const groupTransactionsByDate = (transactions: any[]) => {
-  return transactions.reduce((acc: Record<string, any[]>, txn) => {
+interface Transaction {
+  id: string;
+  method: string;
+  amount: string;
+  date: string;
+  accountNumber?: string;
+  accountName?: string;
+  status: string;
+}
+
+type GroupedTransactions = Record<string, Transaction[]>;
+const groupTransactionsByDate = (transactions: Transaction[]): GroupedTransactions => {
+  return transactions.reduce((acc: GroupedTransactions, txn) => {
     acc[txn.date] = acc[txn.date] ? [...acc[txn.date], txn] : [txn];
     return acc;
   }, {});
 };
+
 
 // Get icon for payment method
 const getPaymentIcon = (method: string) => {
@@ -74,7 +89,7 @@ const PayPoint = () => {
   };
 
   return (
-    <div className=" bg-gray-50 h-[89vh]" >
+    <div className=" bg-gray-50 h-[89vh] animate-fadeIn" >
       <div className="max-w-6xl mx-auto px-4 py-6">
         <div className="flex flex-col md:flex-row gap-6">
           {/* Sidebar for Payment Methods */}
@@ -281,15 +296,21 @@ const PayPoint = () => {
       </div>
       
       {/* Add some simple animation keyframes for fade in */}
-      <style jsx>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(-8px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.2s ease-out forwards;
-        }
-      `}</style>
+      {/* <style jsx>{`
+       @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .animate-fadeIn {
+    animation: fadeIn 0.2s ease-out forwards;
+  }
+`}</style> */}
     </div>
   );
 };

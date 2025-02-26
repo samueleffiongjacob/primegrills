@@ -31,9 +31,12 @@ const User = () => {
         if (!response.ok) throw new Error("Failed to fetch users");
         
         const backendUsers: BackendUser[] = await response.json();
-        const processedUsers = backendUsers.map(user => ({
-          ...user,
-          status: user.email === currentUser?.email ? currentUser.status : "Inactive"
+        const processedUsers :StaffUser[] = backendUsers.map(user => ({
+           ...user,
+          // status: user.email === currentUser?.email ? currentUser.status : "Inactive"
+          status: user.email === currentUser?.email && currentUser?.status === "Active"
+          ? "Active"
+          : "Inactive",
         }));
         setUsers(processedUsers);
       } catch (error) {
@@ -50,7 +53,7 @@ const User = () => {
     if (isAuthenticated) {
       fetchUsers();
     }
-  }, [isAuthenticated, currentUser?.email]);
+  }, [isAuthenticated, currentUser?.email, currentUser?.status]);
 
   const filteredUsers = users.filter(user => 
     user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
