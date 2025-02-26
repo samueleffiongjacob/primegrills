@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,13 +20,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-cyu5k$z&v937syhr&g@)qi(t!+^9n-ch4y32x7uq)5)q+byrcu'
+# SECRET_KEY = 'django-insecure-cyu5k$z&v937syhr&g@)qi(t!+^9n-ch4y32x7uq)5)q+byrcu'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
+DEBUG = bool(os.environ.get("DEBUG", default=0))
 
-ALLOWED_HOSTS = []
-
+# ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
 # Application definition
 
@@ -83,11 +85,11 @@ WSGI_APPLICATION = 'auth.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'primegrillsauth',
-        'USER': 'prime_grills',
-        'PASSWORD': 'prime',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': os.environ.get("SQL_DATABASE"), # database created in init.sql
+        'USER': os.environ.get("SQL_USER"), # POSTGRES_USER from docker-compose
+        'PASSWORD': os.environ.get("SQL_PASSWORD"), # POSTGRES_PASSWORD
+        'HOST': os.environ.get("SQL_HOST", "localhost"), # service name in docker-compose.yaml
+        'PORT': os.environ.get("SQL_PORT"),
     }
 }
 

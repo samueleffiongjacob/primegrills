@@ -1,0 +1,42 @@
+# for devlopment 
+
+FROM python
+
+WORKDIR /AUTH/auth
+
+# Environment variables to optimize Python behavior
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# install system dependencies
+RUN apt-get update && apt-get install -y netcat-openbsd
+# RUN apt-get update && apt-get install -y netcat-traditional # legacy compatibility
+
+# upgrade pip
+RUN pip install --upgrade pip
+
+# dependencies file 
+COPY . requirements.txt /AUTH/auth/
+
+# Install dependencies
+#RUN pip install --no-cache-dir -r /AUTH/auth/requirements.txt # for production
+RUN pip install -r /AUTH/auth/requirements.txt
+
+# # copy entrypoint.sh
+# COPY  /AUTH/auth/migrate.sh /AUTH/auth/migrate.sh
+# RUN sed -i 's/\r$//' /AUTH/auth/migrate.sh && chmod +x /AUTH/auth/migrate.sh
+
+# Copy project files
+COPY . /AUTH/auth/
+
+# Expose the default development port
+EXPOSE 8000
+
+# Run Django's development server
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
+# run entrypoint.sh
+# ENTRYPOINT ["/AUTH/auth/migrate.sh"]
+
+# for production
+#CMD ["gunicorn", "--bind", "0.0.0.0:8000", "auth_service.wsgi:application"]
