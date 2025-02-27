@@ -1,28 +1,37 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const Settings = () => {
-  const [activeSection, setActiveSection] = useState("Hours");
-  const [notifications, setNotifications] = useState({
-    order: true,
-    review: false,
-    marketing: false,
-  });
+  const [activeSection, setActiveSection] = useState<"Hours" | "Notifications">("Hours");
+  const [notifications, setNotifications] = useState<Record<NotificationType, boolean>>({
+  order: true,
+  review: false,
+  marketing: false,
+});
 
-  const handleNotificationToggle = (type) => {
+  type NotificationType = "order" | "review" | "marketing";
+
+  const handleNotificationToggle = (type: NotificationType) => {
     setNotifications((prev) => ({ ...prev, [type]: !prev[type] }));
   };
+  
 
-  const handleSave = (section) => {
+
+  const handleSave = (section :string) => {
     alert(`${section} settings saved successfully!`);
   };
 
-  const sections = [
+  const sections: { id: "Hours" | "Notifications"; title: string; icon: string }[] = [
     { id: "Hours", title: "Operating Hours", icon: "clock" },
     { id: "Notifications", title: "Notifications", icon: "bell" },
   ];
+  
 
   // Render icon based on name
-  const Icon = ({ name }) => {
+  interface IconProps {
+    name: string;
+  }
+
+  const Icon = ({ name  } : IconProps) => {
     switch (name) {
       case 'clock':
         return (
@@ -146,11 +155,11 @@ const Settings = () => {
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input
                           type="checkbox"
-                          checked={notifications[type]}
-                          onChange={() => handleNotificationToggle(type)}
+                          checked={notifications[type as NotificationType]}
+                          onChange={() => handleNotificationToggle(type as NotificationType)}
                           className="sr-only peer"
                         />
-                        <div className={`w-11 h-6 rounded-full peer ${notifications[type] ? 'bg-indigo-800' : 'bg-gray-200'} peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-300 transition-colors after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all ${notifications[type] ? 'after:translate-x-5' : ''}`}></div>
+                        <div className={`w-11 h-6 rounded-full peer ${notifications[type as NotificationType] ? 'bg-indigo-800' : 'bg-gray-200'} peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-300 transition-colors after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all ${notifications[type as NotificationType] ? 'after:translate-x-5' : ''}`}></div>
                       </label>
                     </div>
                   </div>

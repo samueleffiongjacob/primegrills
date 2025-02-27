@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { ChevronDown, ChevronUp, X } from "lucide-react";
 import { useAuth } from "../context/authContext";
 
+
 const customerMessages = [
   {
     id: 1,
@@ -39,7 +40,8 @@ const staffMessages = [
 const staffRoles = ["Kitchen", "Accountant", "Manager", "Waiter", "Cleaner"];
 
 const MessagesPage = () => {
-  const [openMessage, setOpenMessage] = useState(null);
+  // const [openMessage, setOpenMessage] = useState(null);
+  const [openMessage, setOpenMessage] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState("customers");
   const [messages, setMessages] = useState(customerMessages);
   const [reply, setReply] = useState("");
@@ -48,11 +50,11 @@ const MessagesPage = () => {
   const [newMessage, setNewMessage] = useState("");
   const { user: currentUser } = useAuth();
 
-  const toggleMessage = (id) => {
+  const toggleMessage = (id: number) => {
     setOpenMessage(openMessage === id ? null : id);
   };
 
-  const sendReply = async (messageId) => {
+  const sendReply = async (messageId: number) => {
     const response = await fetch("/messages/reply", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -63,17 +65,23 @@ const MessagesPage = () => {
       setReply("");
     }
   };
-
+ 
+  if (!currentUser) {
+    console.error("User not authenticated.");
+    return;
+  }
+  
+  // Example in `sendMessageToStaff`
   const sendMessageToStaff = async () => {
-    if (!selectedStaff || !newMessage.trim()) return;
-
+    if (!selectedStaff || !newMessage.trim() || !currentUser) return;
+  
     const response = await fetch("/messages/send", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         recipientRole: selectedStaff,
         content: newMessage,
-        sender: currentUser.name,
+        sender: currentUser.name, // Safe to access here
       }),
     });
 

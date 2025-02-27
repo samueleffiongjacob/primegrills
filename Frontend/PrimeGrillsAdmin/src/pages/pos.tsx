@@ -1,11 +1,11 @@
-import { PencilIcon, ArrowDownIcon, ZoomIn } from "lucide-react";
+import { ArrowDownIcon, ZoomIn } from "lucide-react";
 
 /* import {
     ArrowDownTrayIcon,
     MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline"; */
 //import { OrderModal } from "./OrderModal";
-import { useState } from "react";
+// import { useState } from "react";
 import { showToast } from '../utils/toast';
 
 interface TableRow {
@@ -19,18 +19,18 @@ interface TableRow {
     expiry: string;
 }
 
-interface Order {
-    id: string;
-    customerName: string;
-    date: string;
-    items: Array<{
-      name: string;
-      quantity: number;
-      price: number;
-    }>;
-    total: number;
-    status: string;
-  };
+// interface Order {
+//     id: string;
+//     customerName: string;
+//     date: string;
+//     items: Array<{
+//       name: string;
+//       quantity: number;
+//       price: number;
+//     }>;
+//     total: number;
+//     status: string;
+//   };
 
 const TABLE_HEAD = ["S/N","Transaction", "Amount", "Date", "Status", "Account", ""];
 
@@ -154,8 +154,8 @@ const TABLE_ROWS: (TableRow & { id: number; items: Array<{ name: string; quantit
 ];
 
 function TransactionsTable() {
-    const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
-    const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+    // const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+    // const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
     const handleDownload = () => {
         showToast.promise(

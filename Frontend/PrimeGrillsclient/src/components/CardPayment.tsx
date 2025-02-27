@@ -1,16 +1,32 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { CreditCard, Calendar, Lock } from 'lucide-react';
 
-const CardPaymentForm = ({ onPaymentSuccess }) => {
+interface BankTransferPaymentProps {
+  onPaymentSuccess: () => void; // Define the type for the onPaymentSuccess prop
+}
+// interface formData {
+//   cardNumber: string;
+//   expiryDate: string;
+//   cvv: string;
+// }
+
+interface FormErrors {
+  cardNumber?: string;
+  expiryDate?: string;
+  cvv?: string;
+}
+
+
+const CardPaymentForm: React.FC<BankTransferPaymentProps> = ({ onPaymentSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     cardNumber: '',
     expiryDate: '',
     cvv: ''
   });
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<FormErrors>({});
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     
     // Apply specific formatting based on field type
@@ -34,7 +50,7 @@ const CardPaymentForm = ({ onPaymentSuccess }) => {
     });
     
     // Clear error when user starts typing
-    if (errors[name]) {
+    if (errors[name as keyof FormErrors]) {
       setErrors({
         ...errors,
         [name]: null
@@ -43,7 +59,7 @@ const CardPaymentForm = ({ onPaymentSuccess }) => {
   };
 
   const validateForm = () => {
-    const newErrors = {};
+    const newErrors: FormErrors = {};
     
     if (!formData.cardNumber.replace(/\s/g, '').trim()) {
       newErrors.cardNumber = 'Card number is required';
@@ -67,7 +83,7 @@ const CardPaymentForm = ({ onPaymentSuccess }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleConfirm = (e) => {
+  const handleConfirm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     if (validateForm()) {

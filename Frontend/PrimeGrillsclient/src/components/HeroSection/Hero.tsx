@@ -1,5 +1,5 @@
 import {motion} from 'framer-motion';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 // import { FaArrowDown, FaCaretDown } from 'react-icons/fa';
 
@@ -10,6 +10,7 @@ import ItemCard from "../itemCard/itemCard.tsx";
 import { headerVariants, slideVariants } from '../../utils/utils.ts';
 
 const Hero =() => {
+    const navigate = useNavigate();
     return (
         <div className="container -mt-8 justify-self-center">
             <div className="min-h-screen flex flex-col justify-center lg:flex-row lg:justify-center items-center lg:px-12 px-5 gap-10 ">

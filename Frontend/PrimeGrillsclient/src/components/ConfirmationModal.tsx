@@ -1,9 +1,21 @@
-
 import React from 'react';
+
+interface AddressDetails {
+  street: string;
+  city: string;
+  phoneNumber: string;
+}
+
+interface OrderDetails {
+  trackingId: string;
+  amount: number;
+  deliveryMethod: 'delivery' | 'pickup';
+  address?: AddressDetails; // Optional for 'pickup'
+}
 
 interface ConfirmationModalProps {
   isOpen: boolean;
-  orderDetails: any;
+  orderDetails: OrderDetails;
   onClose: () => void;
 }
 
@@ -16,7 +28,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ isOpen, orderDeta
         <h2 className="text-lg font-semibold mb-3">Order Confirmed</h2>
         <p><strong>Order ID:</strong> {orderDetails.trackingId}</p>
         <p><strong>Total:</strong> ₦{orderDetails.amount.toLocaleString()}</p>
-        {orderDetails.deliveryMethod === 'delivery' ? (
+        {orderDetails.deliveryMethod === 'delivery' && orderDetails.address ? (
           <>
             <p><strong>Delivery Address:</strong> {orderDetails.address.street}, {orderDetails.address.city}</p>
             <p><strong>Contact:</strong> {orderDetails.address.phoneNumber}</p>
@@ -27,7 +39,12 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ isOpen, orderDeta
             <p><strong>Contact:</strong> 08098765432</p>
           </>
         )}
-        <button onClick={onClose} className="mt-4 w-full bg-[#EE7F61] text-white py-2 rounded-md font-semibold">Close</button>
+        <button
+          onClick={onClose}
+          className="mt-4 w-full bg-[#EE7F61] text-white py-2 rounded-md font-semibold"
+        >
+          Close
+        </button>
       </div>
     </div>
   );

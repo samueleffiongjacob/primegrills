@@ -114,7 +114,7 @@ const ProductMenu: React.FC = () => {
                     }}
                     className="w-full"
                 >
-                    {MENU_ITEMS.map((item, index) => (
+                    {MENU_ITEMS.map((item) => (
                         <SwiperSlide key={item.id} className="flex items-center justify-center">
                             <div className="w-full max-w-sm mx-auto"
                             onClick={() => setSelectedMeal(item)}>

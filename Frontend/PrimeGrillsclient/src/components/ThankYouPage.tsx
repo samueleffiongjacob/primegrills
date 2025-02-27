@@ -1,7 +1,11 @@
-import React from 'react';
-import { Home } from 'lucide-react';
 
-const ThankYouPage = ({ customerName = 'valued customer', onGoHome }) => {
+import { Home } from 'lucide-react';
+interface ThankYouPageProps {
+  customerName?: string; // Optional string
+  onGoHome: () => void; 
+}
+
+const ThankYouPage: React.FC<ThankYouPageProps> = ({ customerName = 'valued customer', onGoHome }) => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-amber-50 to-orange-50 p-6">
       <div className="max-w-md text-center bg-white p-8 rounded-lg shadow-lg">

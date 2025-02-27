@@ -1,5 +1,5 @@
 import { useCart } from "../context/CartContext";
-import Button from "./Navbar/button";
+// import Button from "./Navbar/button";
 
 interface RemoveFromCartModalProps {
     id: number;

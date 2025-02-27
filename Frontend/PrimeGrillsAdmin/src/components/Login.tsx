@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { MdEmail } from 'react-icons/md';
 
 // INTERNAL IMPORTS
-import { loginStaff } from '../api/auth';
-import { useAuth } from '../context/authContext';
+// import { loginStaff } from '../api/auth';
+// import { useAuth } from '../context/authContext';
 import { User } from '../context/authContext';
 
 
