@@ -14,6 +14,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.http import HttpResponse # comment letter
 from django.contrib import admin
 from django.urls import path, include
 from signup.views import register_user_with_verification, register_staff, verify_email, resend_verification_email
@@ -21,7 +22,12 @@ from signinandout.views import login_user, logout_user
 from rest_framework_simplejwt.views import TokenRefreshView
 
 
+# Add a simple home page view
+def home_view(request):
+    return HttpResponse("Welcome to PrimeGrills Auth!  Comment it later when u are done")
+
 urlpatterns = [
+    path('', home_view, name='home'),  # comment later
     path('admin/', admin.site.urls),
     path("register_staff/", register_staff, name="register_staff"),
     path("login/", login_user, name="login"),

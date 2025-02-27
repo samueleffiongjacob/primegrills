@@ -20,12 +20,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-cyu5k$z&v937syhr&g@)qi(t!+^9n-ch4y32x7uq)5)q+byrcu'
-# SECRET_KEY = os.environ.get("SECRET_KEY")
+# SECRET_KEY = 'django-insecure-cyu5k$z&v937syhr&g@)qi(t!+^9n-ch4y32x7uq)5)q+byrcu'
+SECRET_KEY = os.environ.get("SECRET_KEY", 'django-insecure-cyu5k$z&v937syhr&g@)qi(t!+^9n-ch4y32x7uq)5)q+byrcu' )
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
 DEBUG = bool(os.environ.get("DEBUG", default=0))
+
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost 127.0.0.1 [::1]").split(" ")
+
 
 # Application definition
 
@@ -105,12 +108,12 @@ WSGI_APPLICATION = 'auth.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'primegrillsauth',
-        'USER': 'primegrills',
-        'PASSWORD': 'primegrills',
-        'HOST': 'localhost',
-        'PORT': '5433',
+        "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
+        "NAME": os.environ.get("SQL_DATABASE", "primegrillsauth"),
+        "USER": os.environ.get("SQL_USER", "prime_grills"),
+        "PASSWORD": os.environ.get("SQL_PASSWORD", "prime"),
+        "HOST": os.environ.get("SQL_HOST", "localhost"),
+        "PORT": os.environ.get("SQL_PORT", "5432"),
     }
 }
 
