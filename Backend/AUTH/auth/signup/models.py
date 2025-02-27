@@ -45,7 +45,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     # Common fields for both user types
     username = models.CharField(max_length=50, unique=True)
     email = models.EmailField(unique=True, max_length=255)
-    password = models.CharField(max_length=255)  # Managed by Django’s built-in password hashing
+    #password = models.CharField(max_length=255)  # Managed by Django’s built-in password hashing
     phone = models.CharField(max_length=15, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
 
@@ -73,8 +73,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=50, unique=True)
     email = models.EmailField(unique=True, max_length=255)
     
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
+    # is_active = models.BooleanField(default=True)
+    # is_staff = models.BooleanField(default=False)
     
     objects = CustomUserManager()
 

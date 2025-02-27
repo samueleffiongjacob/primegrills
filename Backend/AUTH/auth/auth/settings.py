@@ -108,7 +108,7 @@ WSGI_APPLICATION = 'auth.wsgi.application'
 
 DATABASES = {
     'default': {
-        "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
+        "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.postgresql"),
         "NAME": os.environ.get("SQL_DATABASE", "primegrillsauth"),
         "USER": os.environ.get("SQL_USER", "prime_grills"),
         "PASSWORD": os.environ.get("SQL_PASSWORD", "prime"),
@@ -159,7 +159,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = "signup.CustomUser"
+AUTH_USER_MODEL = "signup.CustomUser" # relationship in singup
 
 # Rest Framework settings update
 REST_FRAMEWORK = {
