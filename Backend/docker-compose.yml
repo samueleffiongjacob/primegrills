@@ -1,7 +1,5 @@
 #version: '3.8'
-
 services:
-
   auth_service:
     build: ./AUTH
     container_name: auth_service
@@ -10,7 +8,7 @@ services:
     volumes:
       - ./AUTH/auth:/AUTH/auth
     env_file:
-      - ./AUTH/.env.dev
+      - ./AUTH/.env
     depends_on:
       primegrillsdb:
         condition: service_healthy
