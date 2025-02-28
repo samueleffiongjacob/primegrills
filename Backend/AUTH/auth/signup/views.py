@@ -21,6 +21,9 @@ def register_user_with_verification(request):
     if User.objects.filter(email=data["email"]).exists():
         return Response({"error": "Email already exists"}, status=400)
     
+    if User.objects.filter(username=data["username"]).exists():
+        return Response({"error": "Username already exists"}, status=400)
+    
     # Create user but set is_active to False until verified
     user = User.objects.create(
         username=data["username"],
@@ -33,6 +36,18 @@ def register_user_with_verification(request):
     
     # Generate verification token
     send_verification_email(user)
+
+    """ try: 
+        send_mail(
+            "Test Email",
+            "This is a test email from Django.",
+            "sageberrymr@gmail.com", 
+            ["recipient@example.com"],
+            fail_silently=False,
+        )
+    except Exception as e:
+        # Log the error but don't stop registration
+        print(f"Error sending verification email: {str(e)}") """
     
     return Response({
         "message": "User registered successfully. Please check your email to verify your account."
@@ -45,6 +60,9 @@ def register_staff(request):
 
     if User.objects.filter(email=data["email"]).exists():
         return Response({"error": "Email already exists"}, status=400)
+    
+    if User.objects.filter(username=data["username"]).exists():
+        return Response({"error": "Username already exists"}, status=400)
 
     staff = User.objects.create(
         username=data["username"],
@@ -74,6 +92,7 @@ def send_verification_email(user):
     uid = urlsafe_base64_encode(force_bytes(user.pk))
     
     # Build the verification URL
+    print(settings.FRONTEND_URL)
     verification_url = f"{settings.FRONTEND_URL}/verify-email/{uid}/{token}/"
     
     # Create email content

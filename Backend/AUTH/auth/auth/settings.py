@@ -87,7 +87,9 @@ ROOT_URLCONF = 'auth.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            BASE_DIR / "signup/templates",
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -168,14 +170,15 @@ REST_FRAMEWORK = {
     ),
 }
 
+FRONTEND_URL = 'http://localhost:5173/'
 # Email Configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'  # Change to the correct SMTP server
+EMAIL_HOST = 'sandbox.smtp.mailtrap.io'  # Change to the correct SMTP server
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'allenkimmy846@gmail.com'  # Change to correct email
-EMAIL_HOST_PASSWORD = 'Micheal@14'  # Change to correct email password or app password
-DEFAULT_FROM_EMAIL = 'allenkimmy846@gmail.com' #'Prime Grills <no-reply@primegrills.com>'
+EMAIL_HOST_USER = '1059f82e29a0f2'  # Change to correct email
+EMAIL_HOST_PASSWORD = '27c5161ccbbbf0'  # Change to correct email password or app password
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  #'Prime Grills <no-reply@primegrills.com>'
 
 
 # JWT settings
