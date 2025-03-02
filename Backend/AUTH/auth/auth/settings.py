@@ -76,6 +76,14 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
+    'https://primegrills.com' # url when deployed for production
+]
+
+CORS_ALLOW_CREDENTIALS = True  # Since you are using `credentials: "include"`
+CORS_ALLOW_HEADERS = [
+    "content-type",
+    "authorization",
+    "x-csrftoken",
 ]
 
 # Site ID (required for allauth)
@@ -173,6 +181,7 @@ AUTH_USER_MODEL = "signup.CustomUser" # relationship in singup
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'signinandout.middleware.cookie_auth.CookieJWTAuthentication'
     ),
 }
 
@@ -192,7 +201,7 @@ from datetime import timedelta
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=5),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': True,
     'ALGORITHM': 'HS256',
