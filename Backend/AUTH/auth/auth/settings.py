@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt.token_blacklist",  # Enables blacklisting for logout
     "rest_framework_simplejwt",
     "rest_framework.authtoken",
+    'corsheaders',
 
     # Base auth apps
     'allauth',
@@ -70,6 +71,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     'allauth.account.middleware.AccountMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+]
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
 ]
 
 # Site ID (required for allauth)
@@ -111,9 +117,9 @@ WSGI_APPLICATION = 'auth.wsgi.application'
 DATABASES = {
     'default': {
         "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.postgresql"),
-        "NAME": os.environ.get("SQL_DATABASE", "primegrillsauth"),
-        "USER": os.environ.get("SQL_USER", "prime_grills"),
-        "PASSWORD": os.environ.get("SQL_PASSWORD", "prime"),
+        "NAME": os.environ.get("SQL_DATABASE", "primegrillsauth_db"),
+        "USER": os.environ.get("SQL_USER", "primegrills"),
+        "PASSWORD": os.environ.get("SQL_PASSWORD", "primegrills"),
         "HOST": os.environ.get("SQL_HOST", "localhost"),
         "PORT": os.environ.get("SQL_PORT", "5432"),
     }
@@ -170,7 +176,7 @@ REST_FRAMEWORK = {
     ),
 }
 
-FRONTEND_URL = 'http://localhost:5173/'
+FRONTEND_URL = 'http://localhost:5173'
 # Email Configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'sandbox.smtp.mailtrap.io'  # Change to the correct SMTP server
@@ -253,3 +259,10 @@ REST_AUTH = {
 # Social login adapters - each will be configured in its own app
 # Common adapter for all social providers
 SOCIALACCOUNT_ADAPTER = 'auth.adapters.BaseSocialAccountAdapter'
+
+
+# RabbitMQ Configuration
+RABBITMQ_HOST = 'rabbitmq'  # Use the service name from docker-compose
+RABBITMQ_PORT = 5672
+RABBITMQ_USER = 'primegrills'
+RABBITMQ_PASS = 'primegrills'

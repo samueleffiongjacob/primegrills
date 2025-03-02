@@ -35,7 +35,7 @@ urlpatterns = [
     path('logout/', logout_user, name='logout'),
     
     # Email verification
-    path('register/verify/', register_user_with_verification, name='register-with-verification'),
+    path('register/', register_user_with_verification, name='register-with-verification'),
     path('email/verify/<str:uidb64>/<str:token>/', verify_email, name='verify-email'),
     path('email/verify/resend/', resend_verification_email, name='resend-verification'),
 

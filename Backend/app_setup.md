@@ -77,3 +77,15 @@ python manage.py makemigrations
 python manage.py migrate
 python manage.py runserver 8002
 deactivate
+
+ 
+cd Backend/EVENTS
+python -m venv venv
+source venv/bin/activate
+pip freeze > requirements.txt # only when u are done for the days developmet sothat others can use it.
+pip install -r requirements.txt # git pull before running to have access to all dependency
+cd Backend/EVENTS/event_service
+python manage.py makemigrations
+python manage.py migrate
+python manage.py consume_auth_events
+deactivate
