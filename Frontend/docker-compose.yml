@@ -1,0 +1,9 @@
+version: '3.8'  
+services:  
+  PrimeGrillsAdmin:  
+    build: .
+    volumes:
+        - .:/PrimeGrillsAdmin  
+        - /PrimeGrillsAdmin/node_modules 
+    ports:  
+      - '80:80'  
