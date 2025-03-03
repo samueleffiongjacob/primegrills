@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt.token_blacklist",  # Enables blacklisting for logout
     "rest_framework_simplejwt",
     "rest_framework.authtoken",
+    'corsheaders',
 
     # Base auth apps
     'allauth',
@@ -70,6 +71,19 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     'allauth.account.middleware.AccountMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+]
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+    'https://primegrills.com' # url when deployed for production
+]
+
+CORS_ALLOW_CREDENTIALS = True  # Since you are using `credentials: "include"`
+CORS_ALLOW_HEADERS = [
+    "content-type",
+    "authorization",
+    "x-csrftoken",
 ]
 
 # Site ID (required for allauth)
@@ -87,7 +101,9 @@ ROOT_URLCONF = 'auth.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            BASE_DIR / "signup/templates",
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -109,9 +125,9 @@ WSGI_APPLICATION = 'auth.wsgi.application'
 DATABASES = {
     'default': {
         "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.postgresql"),
-        "NAME": os.environ.get("SQL_DATABASE", "primegrillsauth"),
-        "USER": os.environ.get("SQL_USER", "prime_grills"),
-        "PASSWORD": os.environ.get("SQL_PASSWORD", "prime"),
+        "NAME": os.environ.get("SQL_DATABASE", "primegrillsauth_db"),
+        "USER": os.environ.get("SQL_USER", "primegrills"),
+        "PASSWORD": os.environ.get("SQL_PASSWORD", "primegrills"),
         "HOST": os.environ.get("SQL_HOST", "localhost"),
         "PORT": os.environ.get("SQL_PORT", "5432"),
     }
@@ -165,17 +181,19 @@ AUTH_USER_MODEL = "signup.CustomUser" # relationship in singup
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'signinandout.middleware.cookie_auth.CookieJWTAuthentication'
     ),
 }
 
+FRONTEND_URL = 'http://localhost:5173'
 # Email Configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'  # Change to the correct SMTP server
+EMAIL_HOST = 'sandbox.smtp.mailtrap.io'  # Change to the correct SMTP server
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'allenkimmy846@gmail.com'  # Change to correct email
-EMAIL_HOST_PASSWORD = 'Micheal@14'  # Change to correct email password or app password
-DEFAULT_FROM_EMAIL = 'allenkimmy846@gmail.com' #'Prime Grills <no-reply@primegrills.com>'
+EMAIL_HOST_USER = '1059f82e29a0f2'  # Change to correct email
+EMAIL_HOST_PASSWORD = '27c5161ccbbbf0'  # Change to correct email password or app password
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  #'Prime Grills <no-reply@primegrills.com>'
 
 
 # JWT settings
@@ -183,7 +201,7 @@ from datetime import timedelta
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=5),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': True,
     'ALGORITHM': 'HS256',
@@ -250,3 +268,10 @@ REST_AUTH = {
 # Social login adapters - each will be configured in its own app
 # Common adapter for all social providers
 SOCIALACCOUNT_ADAPTER = 'auth.adapters.BaseSocialAccountAdapter'
+
+
+# RabbitMQ Configuration
+RABBITMQ_HOST = 'rabbitmq'  # Use the service name from docker-compose
+RABBITMQ_PORT = 5672
+RABBITMQ_USER = 'primegrills'
+RABBITMQ_PASS = 'primegrills'

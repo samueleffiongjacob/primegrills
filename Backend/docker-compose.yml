@@ -8,7 +8,7 @@ services:
     volumes:
       - ./AUTH/auth:/AUTH/auth
     env_file:
-      - ./AUTH/.env
+      - ./AUTH/.env.dev
     depends_on:
       primegrillsdb:
         condition: service_healthy
@@ -38,6 +38,20 @@ services:
 #     depends_on:
 #       - db
 
+  event_service:
+    build: ./EVENTS
+    container_name: event_service
+    ports:
+      - "8008:8008"
+    volumes:
+      - ./EVENTS/event_service:/EVENTS/event_service
+    env_file:
+      - ./EVENTS/.env.dev
+    depends_on:
+      primegrillsdb:
+        condition: service_healthy
+    restart: on-failure
+
   primegrillsdb:
     image: postgres:17
     container_name: postgres_db
@@ -57,7 +71,18 @@ services:
       retries: 5
       start_period: 10s
   
-  
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"   # AMQP protocol port
+      - "15672:15672" # Management UI port
+    environment:
+      - RABBITMQ_DEFAULT_USER=primegrills
+      - RABBITMQ_DEFAULT_PASS=primegrills
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - primegrills_network
 
 #   nginx:
 #     image: nginx:latest
@@ -71,5 +96,9 @@ services:
 #       - manager_service
 #       - account_service
 
+networks:
+  primegrills_network:
+  
 volumes:
   pgdata:
+  rabbitmq_data:

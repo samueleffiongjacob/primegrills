@@ -10,6 +10,8 @@ from django.utils.encoding import force_bytes, force_str
 from django.conf import settings
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.hashers import make_password
+from .event_publisher import get_publisher  # Import the publisher
+import datetime
 
 User = get_user_model()
 
@@ -20,6 +22,9 @@ def register_user_with_verification(request):
     data = request.data
     if User.objects.filter(email=data["email"]).exists():
         return Response({"error": "Email already exists"}, status=400)
+    
+    if User.objects.filter(username=data["username"]).exists():
+        return Response({"error": "Username already exists"}, status=400)
     
     # Create user but set is_active to False until verified
     user = User.objects.create(
@@ -34,6 +39,17 @@ def register_user_with_verification(request):
     # Generate verification token
     send_verification_email(user)
     
+    # Emit user registered event
+    publisher = get_publisher()
+    publisher.publish_event('user.registered', {
+        'user_id': user.id,
+        'username': user.username,
+        'email': user.email,
+        'is_active': user.is_active,
+        'created_at': user.date_joined.isoformat(),
+        'user_type': 'customer'
+    })
+    
     return Response({
         "message": "User registered successfully. Please check your email to verify your account."
     }, status=201)
@@ -45,6 +61,9 @@ def register_staff(request):
 
     if User.objects.filter(email=data["email"]).exists():
         return Response({"error": "Email already exists"}, status=400)
+    
+    if User.objects.filter(username=data["username"]).exists():
+        return Response({"error": "Username already exists"}, status=400)
 
     staff = User.objects.create(
         username=data["username"],
@@ -60,6 +79,19 @@ def register_staff(request):
         is_staff=True,  # Mark as staff
     )
 
+    # Emit staff registered event
+    publisher = get_publisher()
+    publisher.publish_event('user.staff_registered', {
+        'user_id': staff.id,
+        'username': staff.username,
+        'email': staff.email,
+        'first_name': staff.first_name,
+        'last_name': staff.last_name,
+        'role': staff.role,
+        'created_at': staff.date_joined.isoformat(),
+        'user_type': 'staff'
+    })
+
     refresh = RefreshToken.for_user(staff)
     return Response({
         "message": "Staff registered successfully",
@@ -71,9 +103,12 @@ def send_verification_email(user):
     """Send verification email to user."""
     # Generate token and encoded user ID
     token = default_token_generator.make_token(user)
+    print('user.pk', user.pk)
     uid = urlsafe_base64_encode(force_bytes(user.pk))
+    print('uid ', uid)
     
     # Build the verification URL
+    print(settings.FRONTEND_URL)
     verification_url = f"{settings.FRONTEND_URL}/verify-email/{uid}/{token}/"
     
     # Create email content
@@ -94,26 +129,53 @@ def send_verification_email(user):
             html_message=html_message,
             fail_silently=False,
         )
+        
+        # Emit verification email sent event
+        publisher = get_publisher()
+        publisher.publish_event('user.verification_email_sent', {
+            'user_id': user.id,
+            'email': user.email,
+            'timestamp': datetime.datetime.now().isoformat()
+        })
     except Exception as e:
         # Log the error but don't stop registration
         print(f"Error sending verification email: {str(e)}")
 
-@api_view(["GET"])
+@api_view(["POST"])
 def verify_email(request, uidb64, token):
     """Verify email using the token from the URL."""
+    print('reached here')
     try:
+        print("Received request for email verification")
+        print(uidb64)
         # Decode the user ID
         user_id = force_str(urlsafe_base64_decode(uidb64))
+        print(f"Decoded user_id: {user_id}")
+        
         user = User.objects.get(pk=user_id)
+        print(f"Retrieved user: {user}")
         
         # Verify the token
         if default_token_generator.check_token(user, token):
+            print("Token is valid")
+            
             # Activate the user
             user.is_active = True
             user.save()
+            print("User account activated")
+            
+            # Emit email verified event
+            publisher = get_publisher()
+            publisher.publish_event('user.email_verified', {
+                'user_id': user.id,
+                'email': user.email,
+                'verified_at': datetime.datetime.now().isoformat()
+            })
+            print("Published email verified event")
             
             # Generate tokens for auto-login
             refresh = RefreshToken.for_user(user)
+            print("Generated access and refresh tokens")
             
             return Response({
                 "message": "Email verified successfully. Your account is now active.",
@@ -121,9 +183,12 @@ def verify_email(request, uidb64, token):
                 "refresh_token": str(refresh),
             })
         else:
+            print("Invalid or expired verification link")
             return Response({"error": "Invalid or expired verification link"}, status=400)
-    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist) as e:
+        print(f"Error occurred: {e}")
         return Response({"error": "Invalid verification link"}, status=400)
+
 
 @api_view(["POST"])
 def resend_verification_email(request):
