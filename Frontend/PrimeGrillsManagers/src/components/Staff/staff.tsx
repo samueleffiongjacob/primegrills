@@ -193,17 +193,23 @@ const Staff = () => {
             <>
               <div className="mb-6 flex flex-wrap gap-4">
                 <div className="flex gap-4 ml-auto">
-                  <input
-                    type="number"
-                    placeholder="100"
-                    className="w-24 p-2 pl-3 border rounded-lg border-[#EE7F61] bg-gray-300 text-black"
-                    value={itemsPerPage}
-                    onChange={(e) => setItemsPerPage(Number(e.target.value))}
-                  />
+                  
+                  <div className="mb-4 md:mb-0">
+                    <select 
+                      className="border-[#EE7F61] border rounded-lg  p-2 mr-4"
+                      value={itemsPerPage}
+                      onChange={(e) => setItemsPerPage(Number(e.target.value))}
+                    >
+                      <option value={10}>10 per page</option>
+                      <option value={25}>25 per page</option>
+                      <option value={50}>50 per page</option>
+                      <option value={100}>100 per page</option>
+                    </select>
+                  </div>
                   <input
                     type="search"
-                    placeholder="Search"
-                    className="w-64 p-2 pl-3 border rounded-lg border-[#EE7F61] bg-gray-300 text-black"
+                    placeholder="Search Staff..."
+                    className="w-64 p-2 pl-3 border rounded-lg border-[#EE7F61]"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />

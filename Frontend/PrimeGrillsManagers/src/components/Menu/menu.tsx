@@ -21,30 +21,20 @@ const MenuDashboard = () => {
 
   // sample data
   const [menuItems, setMenuItems] = useState<Menu[]>([
-    { id: 5, name: "Grilled Chicken", image: menuImg, category: "Locals", quantity: 1 },
-    { id: 6, name: "Grilled Chicken", image: menuImg, category: "Continental", quantity: 4 },
-    { id: 7, name: "Grilled Chicken", image: menuImg, category: "Wine", quantity: 0 },
-    { id: 8, name: "Grilled Chicken", image: menuImg, category: "Softdrink", quantity: 20 },
-    { id: 2, name: "Grilled Chicken", image: menuImg, category: "Pastries", quantity: 20 },
-    { id: 3, name: "Grilled Chicken", image: menuImg, category: "Grilled", quantity: 2 },
-    { id: 4, name: "Grilled Chicken", image: menuImg, category: "Swallows", quantity: 0 },
-    { id: 5, name: "Grilled Chicken", image: menuImg, category: "Locals", quantity: 20 },
-    { id: 6, name: "Grilled Chicken", image: menuImg, category: "Continental", quantity: 10 },
-    { id: 7, name: "Grilled Chicken", image: menuImg, category: "Wine", quantity: 0 },
-    { id: 8, name: "Grilled Chicken", image: menuImg, category: "Softdrink", quantity: 22 },
-    { id: 2, name: "Grilled Chicken", image: menuImg, category: "Pastries", quantity: 39 },
-    { id: 3, name: "Grilled Chicken", image: menuImg, category: "Grilled", quantity: 12 },
-    { id: 4, name: "Grilled Chicken", image: menuImg, category: "Swallows", quantity: 0 },
-    { id: 5, name: "Grilled Chicken", image: menuImg, category: "Locals", quantity: 0 },
-    { id: 6, name: "Grilled Chicken", image: menuImg, category: "Continental", quantity: 20 },
-    { id: 7, name: "Grilled Chicken", image: menuImg, category: "Wine", quantity: 0 },
-    { id: 8, name: "Grilled Chicken", image: menuImg, category: "Softdrink", quantity: 20 },
+    { id: 5, name: "Ofada", image: menuImg, category: "Locals", quantity: 1 },
+    { id: 6, name: "Salad", image: menuImg, category: "Continental", quantity: 4 },
+    { id: 7, name: "Oceanic", image: menuImg, category: "Wine", quantity: 0 },
+    { id: 8, name: "Coke", image: menuImg, category: "Softdrink", quantity: 20 },
+    { id: 2, name: "Pasta", image: menuImg, category: "Pastries", quantity: 20 },
+
   ]);
 
   const getStatus = (quantity: number) => (quantity > 0 ? "Active" : "Inactive");
 
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [currentItem, setCurrentItem] = useState<Menu | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [itemsPerPage, setItemsPerPage] = useState(100);
   
   const handleFormSubmit = (formData: Omit<Menu, 'id'>) => {
     if (currentItem) {
@@ -94,6 +84,11 @@ const MenuDashboard = () => {
     );
   };
 
+  const filteredMenu = menuItems.filter(menu => 
+    menu.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    menu.category?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className=''>
     <div className="flex max-h-[85vh] bg-gray-100">
@@ -112,17 +107,25 @@ const MenuDashboard = () => {
             <AddButton />
             {/* Search and Pagination */}
             <div className="flex gap-4 ml-auto">
-              <input
-                type="number"
-                placeholder="100"
-                className="w-24 pl-3 border rounded-lg border-[#EE7F61] bg-gray-300"
-                defaultValue="100"
-              />
-              <input
-                type="search"
-                placeholder="Search"
-                className="w-72 pl-3 border rounded-lg border-[#EE7F61] bg-gray-300 text-black"
-              />
+            <div className="mb-4 md:mb-0">
+                  <select 
+                    className="border-[#EE7F61] border rounded-lg  p-2 mr-4"
+                    value={itemsPerPage}
+                    onChange={(e) => setItemsPerPage(Number(e.target.value))}
+                  >
+                    <option value={10}>10 per page</option>
+                    <option value={25}>25 per page</option>
+                    <option value={50}>50 per page</option>
+                    <option value={100}>100 per page</option>
+                  </select>
+                </div>
+                <input
+                  type="search"
+                  placeholder="Search Menu or Category..."
+                  className="w-64 p-2 pl-3 border rounded-lg border-[#EE7F61]"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
             </div>
           </div>
 
@@ -141,7 +144,7 @@ const MenuDashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {menuItems.map((item, index) => (
+                {filteredMenu.map((item, index) => (
                   <tr
                     key={item.id}
                     className={`shadow-lg rounded-2xl ${

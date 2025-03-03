@@ -26,7 +26,9 @@ const Category = () => {
     );
     const [isFormVisible, setIsFormVisible] = useState(false);
     const [currentItem, setCurrentItem] = useState<CategoryItems | null>(null);
-    
+    const [searchTerm, setSearchTerm] = useState("");
+    const [itemsPerPage, setItemsPerPage] = useState(100);
+
     const handleFormSubmit = (formData: Omit<CategoryItems, 'id'>) => {
       if (currentItem) {
         // Edit existing item
@@ -73,6 +75,10 @@ const Category = () => {
       );
     }; 
 
+  const filteredCategory = categoryItems.filter(category => 
+    category.name.toLowerCase().includes(searchTerm.toLowerCase()) 
+  );
+  
   return (
     <div className="flex max-h-[85vh] bg-gray-100">
       {/* Main Content */}
@@ -90,17 +96,25 @@ const Category = () => {
             <AddButton />
             {/* Search and Pagination */}
             <div className="flex gap-4 ml-auto">
-              <input
-                type="number"
-                placeholder="100"
-                className="w-24 p-2 border rounded-lg text-black border-[#EE7F61] bg-gray-300"
-                defaultValue="100"
-              />
-              <input
-                type="search"
-                placeholder="Search"
-                className="w-64 p-2 border rounded-lg border-[#EE7F61] bg-gray-300 text-black"
-              />
+               <div className="mb-4 md:mb-0">
+                    <select 
+                      className="border-[#EE7F61] border rounded-lg  p-2 mr-4"
+                      value={itemsPerPage}
+                      onChange={(e) => setItemsPerPage(Number(e.target.value))}
+                    >
+                      <option value={10}>10 per page</option>
+                      <option value={25}>25 per page</option>
+                      <option value={50}>50 per page</option>
+                      <option value={100}>100 per page</option>
+                    </select>
+                  </div>
+                  <input
+                    type="search"
+                    placeholder="Search Category..."
+                    className="w-64 p-2 pl-3 border rounded-lg border-[#EE7F61]"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
             </div>
           </div>
 
@@ -116,7 +130,7 @@ const Category = () => {
                 </tr>
               </thead>
               <tbody>
-                {categoryItems.map((item, index) => (
+                {filteredCategory.map((item, index) => (
                   <tr
                     key={item.id}
                     className={`shadow-lg rounded-2xl ${

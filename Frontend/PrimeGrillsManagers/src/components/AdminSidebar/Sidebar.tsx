@@ -11,7 +11,8 @@ import {
   Users,
   Settings,
   FileBarChart,
-  X
+  X,
+  CircleUser
 } from "lucide-react";
 import logo from "../../assets/images/primeLogo.png";
 
@@ -57,6 +58,7 @@ const navItems = [
   { to: "/category", icon: Users, label: "Category" },
   { to: "/menu", icon: Package, label: "Menu",},
   { to: "/staff", icon: User, label: "Staff"},
+  { to: "/clients", icon: CircleUser, label: "Clients"},
   { to: "/orders", icon: ShoppingCart, label: "Order"},
   { to: "/message", icon: Mail, label: "Message"},
   { to: "/pos", icon: ShoppingCart, label: "POS"},

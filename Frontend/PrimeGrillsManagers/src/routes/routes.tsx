@@ -9,7 +9,7 @@ import Category from '../components/category/category';
 import ReportIssue from '../components/Report/report';
 import ComplaintPolicy from '../components/Report/complaintPolicy';
 import Settings from '../components/Settings/settings';
-import User from '../components/User/user';
+import User from '../components/Clients/clients';
 import { ProtectedRoute } from '../components/ProtectedRoute';
 import MessagesPage from '../pages/messages';
 import Profile from '../pages/profile';
@@ -18,6 +18,7 @@ import { useAuth } from '../context/authContext';
 import OrdersDashboard from '../pages/orders';
 import TransactionsTable from '../pages/pos';
 import Staff from '../components/Staff/staff';
+import Clients from '../components/Clients/clients';
 
 function Redirect() {
     const { user } = useAuth();
@@ -44,6 +45,7 @@ const Navigations = () => {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/menu" element={<MenuDashboard />} />
               <Route path="/staff" element={<Staff />} />
+              <Route path="/clients" element={<Clients />} />
               <Route path="/category" element={<Category />} />
               <Route path="/report" element={<ReportIssue />} />
               <Route path="/complaintpolicy" element={<ComplaintPolicy />} />
