@@ -35,7 +35,7 @@ const Header = () => {
       address: "123 Main St",
       phoneNumber: "123-456-7890",
       status: "Active",
-      role: "admin"
+      role: "manager"
     };
   
     

@@ -15,9 +15,7 @@ import {
 } from "lucide-react";
 import logo from "../../assets/images/primeLogo.png";
 
-// Mock user role 
-const userRole = "admin"; // Example roles: "admin", "accountant", "user"
-const allRoles = ["admin", "accountant", "waiter", "cleaner", "kitchen"];
+
 
 
 interface SidebarLinkProps {
@@ -54,17 +52,17 @@ interface navItems {
 
 // Define navigation items
 const navItems = [
-  { to: "/profile", icon: Users, label: "Profile", roles: [ "cleaner", "waiter", "kitchen"] },
-  { to: "/", icon: LayoutDashboard, label: "Dashboard", roles: ["admin", "accountant"] },
-  { to: "/category", icon: Users, label: "Category", roles: ["admin", "accountant"] },
-  { to: "/menu", icon: Package, label: "Menu", roles: allRoles },
-  { to: "/user", icon: User, label: "User", roles: allRoles},
-  { to: "/orders", icon: ShoppingCart, label: "Order", roles: ["admin", "accountant", "kitchen"]},
-  { to: "/message", icon: Mail, label: "Message", roles: allRoles },
-  { to: "/pos", icon: ShoppingCart, label: "POS", roles: ["admin", "accountant"] },
-  { to: "/paypoints", icon: Calendar, label: "PayPoints", roles: ["admin", "accountant"] },
-  { to: "/settings", icon: Settings, label: "Settings", roles: ["admin"] },
-  { to: "/report", icon: FileBarChart, label: "Report", roles: allRoles},
+  { to: "/profile", icon: Users, label: "Profile"},
+  { to: "/", icon: LayoutDashboard, label: "Dashboard"},
+  { to: "/category", icon: Users, label: "Category" },
+  { to: "/menu", icon: Package, label: "Menu",},
+  { to: "/staff", icon: User, label: "Staff"},
+  { to: "/orders", icon: ShoppingCart, label: "Order"},
+  { to: "/message", icon: Mail, label: "Message"},
+  { to: "/pos", icon: ShoppingCart, label: "POS"},
+  { to: "/paypoints", icon: Calendar, label: "PayPoints"},
+  { to: "/settings", icon: Settings, label: "Settings" },
+  { to: "/report", icon: FileBarChart, label: "Report"},
 ];
 
 const Sidebar = () => {
@@ -88,11 +86,6 @@ const Sidebar = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  // Filter items based on user role
-  const filteredNavItems = navItems.filter((item) => 
-    item.roles.includes(userRole)
-  );
 
   return (
     <>
@@ -154,7 +147,7 @@ const Sidebar = () => {
 
         <div className={`p-3 ${collapsed ? 'mt-2' : 'mt-4'}`}>
           <nav className="space-y-1 text-white">
-            {filteredNavItems.map((item) => (
+            {navItems.map((item) => (
               <SidebarLink 
                 key={item.label} 
                 to={item.to} 
