@@ -52,7 +52,7 @@ interface navItems {
 
 // Define navigation items
 const navItems = [
-  { to: "/profile", icon: Users, label: "Profile"},
+/*   { to: "/profile", icon: Users, label: "Profile"}, */
   { to: "/", icon: LayoutDashboard, label: "Dashboard"},
   { to: "/category", icon: Users, label: "Category" },
   { to: "/menu", icon: Package, label: "Menu",},
