@@ -1,14 +1,21 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useAuth } from "../context/authContext";
+import { Camera } from "lucide-react";
+import profile from '../assets/images/ladyimage.jpg'
 
 const Profile = () => {
   const { user } = useAuth();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [editingField, setEditingField] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     username: user?.name || "Rkay",
     address: user?.address || "11 Obashoba, Lagos, Nigeria",
     phoneNumber: user?.phoneNumber || "09022773594",
+    image: user?.image || profile
   });
+  
+  // State for image preview
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   
   // Track original data to detect changes
   const [originalData, setOriginalData] = useState({...formData});
@@ -18,7 +25,24 @@ const Profile = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleEdit = (field:string) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Create preview URL for the selected image
+      const previewUrl = URL.createObjectURL(file);
+      setImagePreview(previewUrl);
+      
+      // In a real app, you'd upload the file to a server
+      // For now, we'll just store the preview URL
+      setFormData(prev => ({ ...prev, image: previewUrl }));
+    }
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleEdit = (field: string) => {
     setEditingField(field);
     // Store original data when starting to edit
     setOriginalData({...formData});
@@ -26,9 +50,22 @@ const Profile = () => {
 
   const handleSave = () => {
     // Here you can implement the update logic
+    // For a real app, you would send the updated data to your backend
     setEditingField(null);
     // Update original data to match the new values
     setOriginalData({...formData});
+    
+    // Clear image preview after saving
+    if (editingField === "image") {
+      setImagePreview(null);
+    }
+  };
+
+  const handleCancelImageEdit = () => {
+    // Revert to original image
+    setFormData(prev => ({ ...prev, image: originalData.image }));
+    setImagePreview(null);
+    setEditingField(null);
   };
 
   // Check if the current field has been modified
@@ -39,17 +76,58 @@ const Profile = () => {
   return (
     <div className="max-w-2xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
       <h2 className="text-2xl font-semibold mb-4">Profile</h2>
-      <div className="flex flex-col items-center">
-        <div
-          className="w-24 h-24 rounded-full border mb-3 overflow-hidden hover:scale-105 transition-transform duration-300"
-        >
+      <div className="flex flex-col items-center relative">
+        <div className="w-24 h-24  rounded-full border mb-3 overflow-hidden group relative">
           <img
-            src={user?.image || "https://via.placeholder.com/150"}
+            src={imagePreview || formData.image}
             alt="Profile"
             className="w-full h-full object-cover"
           />
+          {editingField !== "image" && (
+            <div 
+              className="absolute inset-0 hover:text-white opacity-0 hover:opacity-100 hover:backdrop-blur-xs bg-opacity-0 group-hover:bg-opacity-30 flex items-center justify-center transition-all duration-300 cursor-pointer"
+              onClick={() => handleEdit("image")}
+            >
+              <Camera className="  "/>
+            </div>
+          )}
         </div>
+        
+        {/* Hidden file input */}
+        <input
+          type="file"
+          ref={fileInputRef}
+          className="hidden"
+          accept="image/*"
+          onChange={handleFileChange}
+        />
+        
+        {/* Image editing controls */}
+        {editingField === "image" && (
+          <div className="flex gap-2 mb-4">
+            <button
+              onClick={triggerFileInput}
+              className="px-3 py-1 bg-gray-200 rounded text-sm hover:bg-gray-300 transition-colors"
+            >
+              Choose File
+            </button>
+            <button
+              onClick={handleSave}
+              className={`px-3 py-1 rounded text-white bg-blue-500 text-sm font-medium transition-all duration-300 ${isFieldModified("image") ? "opacity-100" : "opacity-50 cursor-not-allowed"}`}
+              disabled={!isFieldModified("image")}
+            >
+              Save
+            </button>
+            <button
+              onClick={handleCancelImageEdit}
+              className="px-3 py-1 bg-gray-200 rounded text-sm hover:bg-gray-300 transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        )}
       </div>
+      
       <div className="space-y-4 mt-4">
         <div className="flex justify-between items-center border p-3 rounded-lg">
           <div className="flex flex-col flex-grow">
