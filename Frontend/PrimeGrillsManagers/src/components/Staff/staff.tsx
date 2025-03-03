@@ -192,8 +192,7 @@ const Staff = () => {
           ) : canViewUsers ? (
             <>
               <div className="mb-6 flex flex-wrap gap-4">
-                <div className="flex gap-4 ml-auto">
-                  
+                <div className="flex gap-4 ml-auto">  
                   <div className="mb-4 md:mb-0">
                     <select 
                       className="border-[#EE7F61] border rounded-lg  p-2 mr-4"
@@ -231,7 +230,13 @@ const Staff = () => {
                   </thead>
                   <tbody>
                     {filteredUsers.slice(0, itemsPerPage).map((user, index) => (
-                      <tr key={user.id} className={`${index % 2 === 0 ? "bg-gray-50" : "bg-white"}` }>
+                      <motion.tr 
+                        key={user.id} 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.3, delay: index * 0.05 }}
+                        className={`${index % 2 === 0 ? "bg-gray-50" : "bg-white"}` }
+                        >
                         <td className="py-2 px-4">{index + 1}.</td>
                         <td className="py-2 px-4">{user.name}</td>
                         <td className="py-2 px-4">{user.roles}</td>
@@ -262,7 +267,7 @@ const Staff = () => {
                           </td>
                           
                         )}
-                      </tr>
+                      </motion.tr >
                     ))}
                   </tbody>
                 </table>

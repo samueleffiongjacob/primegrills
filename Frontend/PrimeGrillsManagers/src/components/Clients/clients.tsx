@@ -99,9 +99,13 @@ const Clients = () => {
       <h1 className="py-5 text-xl px-6 font-semibold mb-6 border-b">Clients</h1>
       
       {loading ? (
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-        </div>
+        <motion.div 
+          className="flex justify-self-center mt-[10%] items-center h-full"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+        >
+          <img src={logo} className="w-16 h-16" alt="Loading..." />
+        </motion.div>
       ) : canViewClients ? (
         <>
           <div className="flex flex-wrap justify-end gap-4 mb-6 mr-4">

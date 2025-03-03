@@ -4,6 +4,7 @@ import pencil from "../../assets/images/pencil.png";
 import trash from "../../assets/images/trash.png";
 import CategoryForm from "./CategoryForm";
 import meal from '../../assets/images/product2.png'
+import { motion } from 'framer-motion';
 
 const Category = () => {
       interface CategoryItems {
@@ -131,8 +132,11 @@ const Category = () => {
               </thead>
               <tbody>
                 {filteredCategory.map((item, index) => (
-                  <tr
+                  <motion.tr
                     key={item.id}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.3, delay: index * 0.05 }}
                     className={`shadow-lg rounded-2xl ${
                       index % 2 === 0 ? "bg-gray-50" : "bg-white"
                     }`}
@@ -160,7 +164,7 @@ const Category = () => {
                         </button>
                       </div>
                     </td>
-                  </tr>
+                  </motion.tr>
                 ))}
               </tbody>
             </table>

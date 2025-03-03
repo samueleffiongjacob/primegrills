@@ -4,6 +4,7 @@ import pencil from "../../assets/images/pencil.png";
 import trash from "../../assets/images/trash.png";
 import ItemForm from './ProductItemForm';
 import menuImg from '../../assets/images/menuimg2.png';
+import { motion } from 'framer-motion';
 
 interface Menu {
   id: number;
@@ -145,8 +146,11 @@ const MenuDashboard = () => {
               </thead>
               <tbody>
                 {filteredMenu.map((item, index) => (
-                  <tr
+                  <motion.tr
                     key={item.id}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.3, delay: index * 0.05 }}
                     className={`shadow-lg rounded-2xl ${
                       index % 2 === 0 ? "bg-gray-50" : "bg-white"
                     }`}
@@ -185,7 +189,7 @@ const MenuDashboard = () => {
                         </button>
                       </div>
                     </td>
-                  </tr>
+                  </motion.tr>
                 ))}
               </tbody>
             </table>
