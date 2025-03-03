@@ -170,7 +170,7 @@ const Staff = () => {
     <div className="flex max-h-[85vh] bg-gray-100 flex-col">
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="py-5 bg-white border-b flex items-center justify-between px-6">
-          <h1 className="text-xl font-semibold">Users</h1>
+          <h1 className="text-xl font-semibold">Staff</h1>
           {canManageUsers && (
             <button
               onClick={handleAddUser}
