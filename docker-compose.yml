@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  backend:
+    extends:
+      file: ./Backend/docker-compose.yml
+      service: Backend
+
+  frontend:
+    extends:
+      file: ./Frontend/docker-compose.yml
+      service: Frontend
+    depends_on:
+      - Backend
