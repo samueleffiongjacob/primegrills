@@ -14,4 +14,7 @@ Navigate to the appropriate directory to proceed.
 # clone directory from github
 # enter the directory u wish to work on
 $ cd Frontend || cd Backend
+
+# start container at root
+$ docker-compose up -d
 ```

@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 // INTERNAL IMPORTS
 import Button from "../components/Navbar/button";
 import Card from "../components/HomeStorySection/Card";
-import { headerVariants, slideVariants } from "../utils/utils";
+import { headerVariants } from "../utils/utils";
 
 const services = [
   {
