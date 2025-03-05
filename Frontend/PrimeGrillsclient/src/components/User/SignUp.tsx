@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FcGoogle } from 'react-icons/fc';
-import { FaFacebook, FaApple, FaUser, FaUserCircle, FaEnvelope, FaPhone, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaFacebook, FaApple, FaUser, FaUserCircle, FaEnvelope, FaPhone, FaMapMarkerAlt, FaCheckCircle } from 'react-icons/fa';
 
 // INTERNAL IMPORTS
 import { signUpUser } from '../../api/auth';
@@ -25,6 +25,8 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
   const [address, setAddress] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [signupSuccess, setSignupSuccess] = useState(false);
 
   // Error State
   const [errors, setErrors] = useState<{
@@ -67,7 +69,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
     e.preventDefault();
     if (!validateForm()) return;
 
-    
+    setIsLoading(true);
 
     const response = await signUpUser({
       username,
@@ -77,19 +79,63 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
       address,
       password,
     });
-
-    if (response.message) {
+    
+    if(response.message) {
       setErrors({ email: response.message });
+      setIsLoading(false);
     } else {
       onSignUp(email, password);
+      setSignupSuccess(true);
+      setIsLoading(false);
     }
   };
 
   if (!isOpen) return null;
 
+  // Render success state
+  if (signupSuccess) {
+    return (
+      <div className="fixed inset-0 bg-opacity-100 bg-[#F4F1F1] flex items-center justify-center z-50">
+        <div className="bg-white rounded-2xl p-8 w-full max-w-md text-center space-y-6 shadow-xl">
+          <FaCheckCircle className="mx-auto text-green-500 w-20 h-20" />
+          <h2 className="text-2xl font-bold text-gray-800">Almost There!</h2>
+          <div className="space-y-4">
+            <p className="text-gray-600 text-lg">
+              We've sent a verification email to <span className="font-semibold text-[#EE7F61]">{email}</span>
+            </p>
+            <p className="text-sm text-gray-500">
+              Please check your inbox and click the verification link to activate your account.
+            </p>
+            <div className="text-sm text-gray-400">
+              Don't see the email? Check your spam folder or 
+              <button 
+                onClick={() => {
+                  // Implement resend email logic
+                  console.log('Resend verification email');
+                }} 
+                className="text-[#EE7F61] ml-1 hover:underline"
+              >
+                resend verification email
+              </button>
+            </div>
+          </div>
+          <button
+            onClick={() => {
+              onClose();
+              setSignupSuccess(false);
+            }}
+            className="w-full py-3 bg-[#EE7F61] text-white rounded-xl hover:bg-orange-500 transition-colors"
+          >
+            Continue
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="fixed inset-0 bg-opacity-100 backdrop-blur-xs flex items-center justify-center z-50">
-      <div className="bg-gray-100 rounded-2xl p-6 w-full max-w-md max-h-screen overflow-y-auto relative">
+    <div className="fixed inset-0 bg-opacity-100 bg-[#F4F1F1] flex items-center justify-center z-50">
+      <div className="bg-white rounded-2xl p-6 w-full max-w-md max-h-screen overflow-y-auto relative shadow-xl">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 cursor-pointer text-gray-500 hover:text-[#EE7F61]"
@@ -98,9 +144,9 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
         </button>
 
         <div className="space-y-6 p-4">
-          <h1 className="text-2xl font-semibold text-center">Sign Up</h1>
+          <h1 className="text-2xl font-semibold text-center text-gray-800">Create Your Account</h1>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form className="space-y-4">
             {/* Full Name */}
             <div className="relative">
               <FaUserCircle className="absolute left-3 top-2.5 text-gray-400" />
@@ -208,22 +254,24 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
 
             <button
               type="submit"
-              className="w-full py-3 bg-[#EE7F61] text-white rounded-xl hover:bg-orange-500 transition-colors"
+              disabled={isLoading}
+              onClick={handleSubmit}
+              className="w-full py-3 bg-[#EE7F61] text-white rounded-xl hover:bg-orange-500 transition-colors disabled:bg-gray-300"
             >
-              Sign Up
+              {isLoading ? "Signing Up..." : "Create Account"}
             </button>
           </form>
 
           <div className="text-center text-sm text-gray-500 -mt-2">Or Continue with</div>
 
           <div className="flex justify-center -mt-3 space-x-4">
-            <button className="p-3 border border-gray-200 rounded-xl hover:bg-gray-50">
+            <button className="p-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition">
               <FcGoogle className="w-6 h-6" />
             </button>
-            <button className="p-3 border border-gray-200 rounded-xl hover:bg-gray-50">
+            <button className="p-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition">
               <FaFacebook className="w-6 h-6 text-blue-600" />
             </button>
-            <button className="p-3 border border-gray-200 rounded-xl hover:bg-gray-50">
+            <button className="p-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition">
               <FaApple className="w-6 h-6" />
             </button>
           </div>
@@ -232,7 +280,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
             <span className="text-gray-500">Already have an Account? </span>
             <button
               onClick={onToggleLogin}
-              className="text-orange-500 hover:text-orange-600"
+              className="text-[#EE7F61] hover:underline"
             >
               Login
             </button>

@@ -99,6 +99,8 @@ services:
 #       - auth_service
 #       - manager_service
 #       - account_service
+#       - event_service
+#       - rabbitmq
 
 networks:
   primegrills_network:
@@ -106,3 +108,4 @@ networks:
 volumes:
   pgdata:
   rabbitmq_data:
+  event_data:

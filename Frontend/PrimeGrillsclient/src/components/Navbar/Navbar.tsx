@@ -11,6 +11,7 @@ import LoginModal from "../User/Login";
 import SignUpModal from "../User/SignUp";
 import ProfileSidePanel from "../User/ProfileSidePanel";
 import { SearchBar } from "./SearchBar";
+import { useAuth } from "../../context/AuthContext";
 
 interface UserProfile {
   username: string;
@@ -51,28 +52,18 @@ const Navbar = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Track user login state
   const location = useLocation(); // Get current URL
-
-  // Sample profile data
-  const profile: UserProfile = {
-    username: isLoggedIn ? "JohnD" : "", // Only show username if logged in
-    name: isLoggedIn ? "John Doe" : "", // Only show name if logged in
-    email: isLoggedIn ? "john.doe@example.com" : "", // Only show email if logged in
-    phone: isLoggedIn ? "+82 10-1234-5678" : "", // Only show phone if logged in
-    memberSince: isLoggedIn ? "January 2024" : "", // Only show member since if logged in
-  };
+  const { user, isAuthenticated, logout } = useAuth()
 
   const toggleProfile = () => {
     setIsProfileOpen(!isProfileOpen);
   };
 
-  const handleLogin = (email: string, password: string) => {
-    console.log("Logging in with:", email, password);
+  const handleLogin = () => {
     setIsLoggedIn(true); // Set user as logged in
     setActiveModal(null); // Close the modal
   };
 
-  const handleSignUp = (email: string, password: string) => {
-    console.log("Signing up with:", email, password);
+  const handleSignUp = () => {
     setIsLoggedIn(true); // Set user as logged in
     setActiveModal(null); // Close the modal
   };
@@ -186,12 +177,12 @@ const Navbar = () => {
             <CartIcon />
 
             {/* Conditionally render Login Button or Profile Icon */}
-            {!isLoggedIn ? (
+            {!isAuthenticated ? (
               <Button title="Login" onClick={() => setActiveModal("login")} />
             ) : (
               <button
                 onClick={toggleProfile}
-                className="p-2 hover:bg-gray-100 rounded-full"
+                className="p-2 hover:bg-gray-300 bg-gray-200 rounded-full"
               >
                 <User className="w-6 h-6 text-gray-700" />
               </button>
@@ -202,10 +193,7 @@ const Navbar = () => {
           <ProfileSidePanel
             isOpen={isProfileOpen}
             onClose={() => setIsProfileOpen(false)}
-            profile={profile}
-            onLogout={handleLogout}
             onLogin={handleLoginFromPanel} // Pass login handler
-            isLoggedIn={isLoggedIn} // Pass login state
           />
 
           {/* Mobile Right Section */}

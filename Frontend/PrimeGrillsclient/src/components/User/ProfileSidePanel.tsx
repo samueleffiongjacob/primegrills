@@ -1,31 +1,21 @@
 import React from "react";
 import { User, Bell, Clock, Heart, CreditCard, MapPin, LogOut, X, LogIn } from "lucide-react";
-
-interface UserProfile {
-  username: string;
-  name: string;
-  email: string;
-  phone: string;
-  memberSince: string;
-}
+import { useAuth } from "../../context/AuthContext";
 
 interface ProfileSidePanelProps {
   isOpen: boolean;
   onClose: () => void;
-  profile: UserProfile;
-  onLogout: () => void; // onLogout prop
-  onLogin: () => void; // onLogin prop
-  isLoggedIn: boolean; // isLoggedIn prop
+  onLogin?: () => void; // Optional callback for login UI
 }
 
 const ProfileSidePanel: React.FC<ProfileSidePanelProps> = ({
   isOpen,
   onClose,
-  profile,
-  onLogout,
   onLogin,
-  isLoggedIn,
 }) => {
+  // Use the auth context
+  const { user, isAuthenticated, logout } = useAuth();
+
   const menuItems = [
     { icon: Bell, label: "Notifications", badge: 3 },
     { icon: Clock, label: "Order History" },
@@ -33,6 +23,25 @@ const ProfileSidePanel: React.FC<ProfileSidePanelProps> = ({
     { icon: CreditCard, label: "Payment Methods" },
     { icon: MapPin, label: "Addresses" },
   ];
+
+  // Default profile data when not authenticated
+  const defaultProfile = {
+    name: "Guest",
+    username: "",
+    email: "",
+    phone: "",
+    memberSince: ""
+  };
+  //console.log('profile ',user)
+  // Use actual user data or default
+  const profile = user || defaultProfile;
+
+  const handleLogin = () => {
+    // If onLogin prop is provided, use it to navigate to login page
+    if (onLogin) {
+      onLogin();
+    }
+  };
 
   return (
     <div
@@ -54,33 +63,49 @@ const ProfileSidePanel: React.FC<ProfileSidePanelProps> = ({
             <User className="w-8 h-8 text-gray-500" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold">{profile.name || "Guest"}</h2>
-            <p className="text-sm text-gray-500">
-              {profile.username ? `@${profile.username}` : "Not logged in"}
-            </p>
+            <h2 className="text-lg font-semibold">{profile.name}</h2>
+            {isAuthenticated && profile.username && (
+              <p className="text-sm text-gray-500">@{profile.username}</p>
+            )}
+            {isAuthenticated && profile.email && (
+              <p className="text-sm text-gray-500">{profile.email}</p>
+            )}
+            {!isAuthenticated && (
+              <p className="text-sm text-gray-500">Not logged in</p>
+            )}
           </div>
         </div>
 
-        {/* Menu Items */}
-        <div className="space-y-2">
-          {menuItems.map((item, index) => (
-            <button key={index} className="w-full flex text-left p-3 hover:bg-gray-100 rounded-lg">
-              <item.icon className="w-5 h-5 mt-1 text-gray-500 mr-3" />
-              <span className="flex-grow text-gray-700">{item.label}</span>
-              {item.badge && (
-                <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-                  {item.badge}
-                </span>
-              )}
-            </button>
-          ))}
-        </div>
+        {/* Menu Items - Only show if authenticated */}
+        {isAuthenticated && (
+          <div className="space-y-2">
+            {menuItems.map((item, index) => (
+              <button key={index} className="w-full flex text-left p-3 hover:bg-gray-100 rounded-lg">
+                <item.icon className="w-5 h-5 mt-1 text-gray-500 mr-3" />
+                <span className="flex-grow text-gray-700">{item.label}</span>
+                {item.badge && (
+                  <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                    {item.badge}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Membership info - Only show if authenticated */}
+        {isAuthenticated && profile.memberSince && (
+          <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+            <p className="text-sm text-gray-500">Member since</p>
+            <p className="font-medium">{profile.memberSince}</p>
+          </div>
+        )}
 
         {/* Logout/Login Button */}
         <div className="mt-6 border-t pt-4">
-          {isLoggedIn ? (
+          {isAuthenticated ? (
             <button
-              onClick={onLogout}
+              onClick={logout}
               className="w-full flex items-center justify-center p-3 text-red-600 hover:bg-red-50 rounded-lg"
             >
               <LogOut className="w-5 h-5 mr-2" />
@@ -88,7 +113,7 @@ const ProfileSidePanel: React.FC<ProfileSidePanelProps> = ({
             </button>
           ) : (
             <button
-              onClick={onLogin}
+              onClick={handleLogin}
               className="w-full flex items-center justify-center p-3 text-green-600 hover:bg-green-50 rounded-lg"
             >
               <LogIn className="w-5 h-5 mr-2" />
