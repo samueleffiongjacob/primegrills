@@ -14,9 +14,17 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.http import HttpResponse # comment letter
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+
+def home_view(request):
+    return HttpResponse("Welcome to PrimeGrills Auth!  Comment it later when u are done")
+
 
 urlpatterns = [
+     path('', home_view, name='home'),  # comment later
     path('admin/', admin.site.urls),
+    path('api/', include('category.urls')),
+    path('api/', include('menu.urls')),
 ]

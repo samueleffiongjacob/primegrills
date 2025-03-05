@@ -35,6 +35,7 @@ $ CREATE DATABASE primegrillsauth; # for Auth
 $ CREATE DATABASE primegrillsaccount
 $ CREATE DATABASE primegrillsmanager
 $ CREATE DATABASE primegrillsevents
+$ CREATE DATABASE primegrillsproduct
 $ GRANT ALL PRIVILEGES ON DATABASE primegrillsauth TO prime_grills; # do for db created
 ```
 

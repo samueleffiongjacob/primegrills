@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'category',
+    'menu',
 ]
 
 MIDDLEWARE = [
@@ -79,9 +82,9 @@ WSGI_APPLICATION = 'product.wsgi.application'
 DATABASES = {
     'default': {
         "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.postgresql"),
-        "NAME": os.environ.get("SQL_DATABASE", "primegrillsproduct_db"),
-        "USER": os.environ.get("SQL_USER", "primegrills"),
-        "PASSWORD": os.environ.get("SQL_PASSWORD", "primegrills"),
+        "NAME": os.environ.get("SQL_DATABASE", "primegrillsproduct"),
+        "USER": os.environ.get("SQL_USER", "prime_grills"),
+        "PASSWORD": os.environ.get("SQL_PASSWORD", "prime"),
         "HOST": os.environ.get("SQL_HOST", "localhost"),
         "PORT": os.environ.get("SQL_PORT", "5432"),
     }
@@ -128,3 +131,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
