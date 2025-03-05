@@ -35,6 +35,10 @@ WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'primegrillsevents_db'
 SELECT 'CREATE DATABASE primegrillsquery_db OWNER primegrills'
 WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'primegrillsquery_db')\gexec
 
+-- Create `primegrillsquery_db` only if it does not exist
+SELECT 'CREATE DATABASE primegrillsquery_db OWNER primegrills'
+WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'primegrillsproduct_db')\gexec
+
 -- Grant privileges on `primegrillsauth_db` to `primegrills`
 GRANT ALL PRIVILEGES ON DATABASE primegrillsauth_db TO primegrills;
 GRANT ALL PRIVILEGES ON DATABASE primegrillsmanager_db TO primegrills;
@@ -47,3 +51,6 @@ GRANT ALL PRIVILEGES ON DATABASE primegrillsevents_db TO primegrills;
 
 -- Grant privileges on `primegrillsquery_db` to `primegrills`
 GRANT ALL PRIVILEGES ON DATABASE primegrillsquery_db TO primegrills;
+
+-- Grant privileges on `primegrillsquery_db` to `primegrills`
+GRANT ALL PRIVILEGES ON DATABASE primegrillsproduct_db TO primegrills;
