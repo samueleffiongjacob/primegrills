@@ -36,6 +36,7 @@ $ CREATE DATABASE primegrillsaccount
 $ CREATE DATABASE primegrillsmanager
 $ CREATE DATABASE primegrillsevents
 $ CREATE DATABASE primegrillsproduct
+$ CREATE DATABASE primegrillsfilemanager
 $ GRANT ALL PRIVILEGES ON DATABASE primegrillsauth TO prime_grills; # do for db created
 ```
 
@@ -79,7 +80,6 @@ python manage.py migrate
 python manage.py runserver 8002
 deactivate
 
- 
 cd Backend/EVENTS
 python -m venv venv
 source venv/bin/activate

@@ -17,6 +17,21 @@ services:
 
     restart: on-failure
 
+  product_service:
+    build: ./PRODUCT
+    container_name: product_service
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./PRODUCT/product:/PRODUCT/product
+    env_file:
+      - ./PRODUCT/.env
+    depends_on:
+      primegrillsdb:
+        condition: service_healthy
+    restart: on-failure
+
+
 #   manager_service:
 #     build: ./manager_service
 #     container_name: manager_service
