@@ -25,6 +25,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
   const [address, setAddress] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   // Error State
   const [errors, setErrors] = useState<{
@@ -67,7 +68,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
     e.preventDefault();
     if (!validateForm()) return;
 
-    
+    setIsLoading(true);
 
     const response = await signUpUser({
       username,
@@ -82,14 +83,15 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
       setErrors({ email: response.message });
     } else {
       onSignUp(email, password);
+      setIsLoading(false);
     }
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-opacity-100 backdrop-blur-xs flex items-center justify-center z-50">
-      <div className="bg-gray-100 rounded-2xl p-6 w-full max-w-md max-h-screen overflow-y-auto relative">
+    <div className="fixed inset-0 bg-opacity-100 bg-[#F4F1F1]  flex items-center justify-center z-50">
+      <div className="bg-white rounded-2xl p-6 w-full max-w-md max-h-screen overflow-y-auto relative">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 cursor-pointer text-gray-500 hover:text-[#EE7F61]"
@@ -100,7 +102,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
         <div className="space-y-6 p-4">
           <h1 className="text-2xl font-semibold text-center">Sign Up</h1>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form className="space-y-4">
             {/* Full Name */}
             <div className="relative">
               <FaUserCircle className="absolute left-3 top-2.5 text-gray-400" />
@@ -208,9 +210,11 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
 
             <button
               type="submit"
-              className="w-full py-3 bg-[#EE7F61] text-white rounded-xl hover:bg-orange-500 transition-colors"
+              disabled={isLoading}
+              onClick={handleSubmit}
+              className="w-full py-3 bg-[#EE7F61] text-white rounded-xl hover:bg-orange-500 transition-colors disabled:bg-gray-300"
             >
-              Sign Up
+              {isLoading ? "Signing Up..." : "Sign Up"}
             </button>
           </form>
 

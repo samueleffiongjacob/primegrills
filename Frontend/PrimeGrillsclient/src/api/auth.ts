@@ -1,4 +1,3 @@
-const API_URL = "http://localhost:5000/api/auth";
 
 interface AuthResponse {
   success: boolean;
@@ -9,12 +8,11 @@ interface AuthResponse {
 export const loginUser = async (
   email: string,
   password: string,
-  phone?: string
 ): Promise<AuthResponse> => {
-  const res = await fetch(`${API_URL}/login`, {
+  const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password, phone }),
+    body: JSON.stringify({ email, password }),
   });
 
   if (!res.ok) {
@@ -39,10 +37,16 @@ export const signUpUser = async ({
   address: string;
   password: string;
 }): Promise<AuthResponse> => {
-  const res = await fetch(`${API_URL}/signup`, {
+  const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/register/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, fullName, email, phoneNumber, address, password }),
+    body: JSON.stringify({ 
+      username: username, 
+      name: fullName, 
+      email: email, 
+      phone: phoneNumber, 
+      address: address, 
+      password: password })
   });
 
   if (!res.ok) {

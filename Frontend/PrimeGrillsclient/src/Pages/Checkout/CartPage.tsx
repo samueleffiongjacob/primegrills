@@ -1,11 +1,17 @@
 import { useCart } from "../../context/CartContext";
 import CartItemCard from "./CartItemCard";
 import Button from "../../components/Navbar/button";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext"; 
 
-const CartPage = () => {
+// Add proper type for toggleLoginModal prop
+interface CartPageProps {
+  toggleLoginModal: () => void;
+}
+
+const CartPage: React.FC<CartPageProps> = ({ toggleLoginModal }) => {
   const { cartItems, dispatch } = useCart();
-   
+  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   const totalAmount = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
@@ -18,6 +24,15 @@ const CartPage = () => {
       </div>
     );
   }
+
+  const handleCheckout = () => {
+    if (isAuthenticated) {
+      navigate("/checkout");
+    } else {
+      // This should now work correctly
+      toggleLoginModal();
+    }
+  };
 
   return (
     <div className="max-w-4xl justify-center mx-auto p-4 md:p-8">
@@ -44,7 +59,7 @@ const CartPage = () => {
         <span className="text-black">₦{totalAmount.toLocaleString()}</span>
       </div>
       <div className="flex justify-self-center">
-        <Button title="Continue to Checkout" onClick={() => navigate("/checkout")} />
+        <Button title="Continue to Checkout" onClick={handleCheckout} />
       </div>
     </div>
   );
