@@ -175,7 +175,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = "signup.CustomUser" # relationship in singup
+AUTH_USER_MODEL = "signup.User" # relationship in singup
 
 # Rest Framework settings update
 REST_FRAMEWORK = {

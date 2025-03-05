@@ -9,95 +9,54 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.conf import settings
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth.hashers import make_password
 from .event_publisher import get_publisher  # Import the publisher
 import datetime
+from .serializers import UserSerializer
+
 
 User = get_user_model()
+
 
 # Modified register_user function to include email verification
 @api_view(["POST"])
 def register_user_with_verification(request):
     """Registers a regular user (customer) with email verification."""
+    
     data = request.data
+    print("Full request data:", request.data)
+    print("Request content type:", request.content_type)
     if User.objects.filter(email=data["email"]).exists():
         return Response({"error": "Email already exists"}, status=400)
     
     if User.objects.filter(username=data["username"]).exists():
         return Response({"error": "Username already exists"}, status=400)
     
-    # Create user but set is_active to False until verified
-    user = User.objects.create(
-        username=data["username"],
-        email=data["email"],
-        password=make_password(data["password"]),
-        phone=data.get("phone"),
-        address=data.get("address"),
-        is_active=False  # Set to inactive until email is verified
-    )
+    serializer = UserSerializer(data=request.data)
     
-    # Generate verification token
-    send_verification_email(user)
-    
-    # Emit user registered event
-    publisher = get_publisher()
-    publisher.publish_event('user.registered', {
-        'user_id': user.id,
-        'username': user.username,
-        'email': user.email,
-        'is_active': user.is_active,
-        'created_at': user.date_joined.isoformat(),
-        'user_type': 'customer'
-    })
-    
-    return Response({
-        "message": "User registered successfully. Please check your email to verify your account."
-    }, status=201)
-
-@api_view(["POST"])
-def register_staff(request):
-    """Registers a staff member with additional fields."""
-    data = request.data
-
-    if User.objects.filter(email=data["email"]).exists():
-        return Response({"error": "Email already exists"}, status=400)
-    
-    if User.objects.filter(username=data["username"]).exists():
-        return Response({"error": "Username already exists"}, status=400)
-
-    staff = User.objects.create(
-        username=data["username"],
-        email=data["email"],
-        password=make_password(data["password"]),
-        phone=data.get("phone"),
-        address=data.get("address"),
-        first_name=data.get("first_name"),
-        last_name=data.get("last_name"),
-        age=data.get("age"),
-        gender=data.get("gender"),
-        role=data.get("role"),
-        is_staff=True,  # Mark as staff
-    )
-
-    # Emit staff registered event
-    publisher = get_publisher()
-    publisher.publish_event('user.staff_registered', {
-        'user_id': staff.id,
-        'username': staff.username,
-        'email': staff.email,
-        'first_name': staff.first_name,
-        'last_name': staff.last_name,
-        'role': staff.role,
-        'created_at': staff.date_joined.isoformat(),
-        'user_type': 'staff'
-    })
-
-    refresh = RefreshToken.for_user(staff)
-    return Response({
-        "message": "Staff registered successfully",
-        "access_token": str(refresh.access_token),
-        "refresh_token": str(refresh),
-    }, status=201)
+    if serializer.is_valid():
+        try:
+            user = serializer.save()
+            # Generate verification token
+            send_verification_email(user)
+            
+            # Emit user registered event
+            publisher = get_publisher()
+            publisher.publish_event('user.registered', {
+                'user_id': user.id,
+                'username': user.username,
+                'email': user.email,
+                'is_active': user.is_active,
+                'created_at': user.date_joined.isoformat(),
+                'user_type': 'customer'
+            })
+            
+            return Response({
+                "message": "User registered successfully. Please check your email to verify your account."
+            }, status=201)
+        except Exception as error:
+            print(f"Error during user registration: {error}")
+            return Response({"error": "Internal server error"}, status=500)
+    return Response(serializer.errors, status=400)
 
 def send_verification_email(user):
     """Send verification email to user."""
