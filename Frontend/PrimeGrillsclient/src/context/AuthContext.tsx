@@ -57,7 +57,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
 
       if (!response.ok) {
-        throw new Error("Login failed");
+        // Parse the error response from the server
+        const errorResponse = await response.json();
+        return (errorResponse?.message);
       }
 
       // Set authentication state to true if login was successful
