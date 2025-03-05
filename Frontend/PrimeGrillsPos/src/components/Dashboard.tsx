@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Tabs, TabPanel } from './UI/Tabs';
-import OrderStatus, { CanceledOrders, CompletedOrders } from './OrderStatus';
+import { CanceledOrders, CompletedOrders, PendingOrders } from './OrderStatus';
 import { ClockIcon, CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline';
 
 const Dashboard: React.FC = () => {
@@ -10,7 +10,7 @@ const Dashboard: React.FC = () => {
     {
       label: 'Pending Orders',
       icon: <ClockIcon className="h-5 w-5" />,
-      content: <OrderStatus status="pending" />,
+      content: <PendingOrders />,
       count: 5,
       color: 'text-yellow-500'
     },
