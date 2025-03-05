@@ -24,9 +24,9 @@ const dummyOrder = {
     customerName: "John Doe",
     date: "2024-01-15",
     items: [
-        { name: "Classic Burger", quantity: 2, price: 12.99 },
-        { name: "French Fries", quantity: 1, price: 4.99 },
-        { name: "Soda", quantity: 2, price: 2.99 }
+        { name: "Classic Burger", quantity: 2, price: 12000.99 },
+        { name: "French Fries", quantity: 1, price: 4000.99 },
+        { name: "Soda", quantity: 2, price: 200.99 }
     ],
     total: 36.95,
     status: "pending"
@@ -35,12 +35,12 @@ const dummyOrder = {
 export const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, order }) => {
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
-      case 'completed':
+      case 'paid':
         return 'bg-green-500';
       case 'pending':
         return 'bg-orange-400';
       default:
-        return 'bg-gray-300';
+        return 'bg-red-600';
     }
   };
 
@@ -48,19 +48,19 @@ export const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, order }
 
   return (
     <ModalWrapper maxWidth="max-w-[600px]">
-      <div className="p-5 max-w-[600px] w-full relative bg-white rounded-lg shadow dark:bg-slate-900">
+      <div className="p-5 max-w-[600px] w-full relative bg-white rounded-lg shadow dark:bg-gray-900 dark:text-white">
         {/* Header */}
         <div className="border-b-2 border-gray-200 pb-4 mb-5">
           <h2 className="text-2xl font-semibold">Order Details</h2>
-          <p className="text-gray-600">Order ID: {order.id}</p>
+          <p className="text-gray-600 dark:text-gray-100">Order ID: {order.id}</p>
         </div>
 
         {/* Order Details */}
         <div className="grid grid-cols-2 gap-5 mb-8">
           <div>
             <h3 className="text-xl font-medium mb-3">Customer Information</h3>
-            <p className="text-gray-600 mb-2">Name: {order.customerName}</p>
-            <p className="text-gray-600 mb-2">
+            <p className="text-gray-600 dark:text-gray-100 mb-2">Name: {order.customerName}</p>
+            <p className="text-gray-600 dark:text-gray-100 mb-2">
               Date: {new Date(order.date).toLocaleDateString()}
             </p>
             <span className={`px-3 py-1.5 rounded-full text-sm text-white ${getStatusColor(order.status)}`}>
@@ -84,10 +84,10 @@ export const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, order }
           {/* Items */}
           {order.items.map((item, index) => (
             <div key={index} className="grid grid-cols-4 py-3 border-b border-gray-100">
-              <span className="text-gray-800">{item.name}</span>
-              <span className="text-gray-600">{item.quantity}</span>
-              <span className="text-gray-600">{formatCurrency(item.price)}</span>
-              <span className="text-gray-800">{formatCurrency(item.price * item.quantity)}</span>
+              <span className="text-gray-800 dark:text-gray-200">{item.name}</span>
+              <span className="text-gray-600 dark:text-gray-100">{item.quantity}</span>
+              <span className="text-gray-600 dark:text-gray-100">{formatCurrency(item.price)}</span>
+              <span className="text-gray-800 dark:text-gray-100">{formatCurrency(item.price * item.quantity)}</span>
             </div>
           ))}
 
@@ -104,7 +104,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, order }
         <div className="flex gap-4 items-center justify-between p-8 border-gray-200 dark:border-gray-600">
             <button
                 onClick={isOpen ? onClose : undefined}
-                className={'px-4 md:px-8 h-12 text-center text-black border rounded-sm'}
+                className={'px-4 md:px-8 h-12 text-center text-black dark:text-gray-200 border rounded-sm'}
             >
                 Cancel
             </button>

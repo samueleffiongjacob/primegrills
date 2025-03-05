@@ -6,6 +6,7 @@ import { FcSupport } from 'react-icons/fc';
 import { PiSealPercentFill } from 'react-icons/pi';
 import { FaSearchDollar } from 'react-icons/fa';
 import { useMenu } from '../context/MenuContext';
+import { showToast } from '@utils/toast';
 
 const OrderTemplate = () => {
   const [orderType, setOrderType] = useState('dineIn');
@@ -38,6 +39,20 @@ const OrderTemplate = () => {
     }
   };
 
+  const handleProcess = async () => {
+      setIsprocess(true);
+      await showToast.promise(
+        new Promise((resolve) => setTimeout(resolve, 3000)),
+      {
+        loading: "Processing Order ...",
+        success: "Order Completed",
+        error: "Error Processing Order"
+      }
+    );
+    setIsprocess(false)
+    
+  };
+
   return (
     <>
       <Card className="min-w-100 min-h-[calc(100vh-7.5rem)] max-w-md m-auto bg-[#171943] text-white bottom-0 p-4">
@@ -61,8 +76,8 @@ const OrderTemplate = () => {
           </div>
         </CardHeader>
         <CardContent className="float-end mt-auto">
-          <div className="space-y-4 flex flex-col justify-center">
-            <div className="space-y-2 min-h-[5rem] max-h-[15rem] overflow-y-auto hide-scrollbar">
+          <div className="space-y-4 flex flex-col justify-center  overflow-auto">
+            <div className="space-y-2 min-h-[5rem] max-h-[10rem] overflow-y-auto hide-scrollbar">
               {orders.map((item) => (
                 <div
                   key={item.id}
@@ -151,7 +166,7 @@ const OrderTemplate = () => {
               </Button>
             )
               :(<Button 
-              onClick={() => setIsprocess(true)}
+              onClick={() => handleProcess()}
               className="w-[calc(100%-20%)] rounded-2xl text-white mt-6 m-auto hover:bg-primary/85">
               Confirm Payment
             </Button>)}

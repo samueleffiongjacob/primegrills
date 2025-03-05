@@ -151,7 +151,7 @@ useEffect(() => {
           {filteredMenus.map((item: typeof menuItemsList[0]) => (
             <Card 
               key={item.id} 
-              className={`h-60 p-2 pt-4 w-50 relative flex flex-col justify-center items-center overflow-hidden hover:shadow-xl hover:-translate-y-1.5 transition-shadow rounded-3xl cursor-pointer
+              className={`h-60 p-2 pt-4 w-full relative flex flex-col justify-center items-center overflow-hidden hover:shadow-xl hover:-translate-y-1.5 transition-shadow rounded-3xl cursor-pointer
                 ${selectedItems.includes(item.id) ? 'bg-primary/75' : 'bg-black/45'}`}
               onClick={() => handleItemClick(item)}
             >

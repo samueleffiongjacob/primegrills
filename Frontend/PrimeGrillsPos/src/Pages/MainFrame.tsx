@@ -61,9 +61,11 @@ function Mainframe() {
                 <HeaderBar />
             </header>
 
-            <main className="w-full flex max-h-screen overflow-y-auto"> 
+            <main className="w-full flex overflow-hidden"> {/* Updated this line */}
                 <Sidebar />
-                <Outlet />
+                <div className="flex-1 overflow-hidden"> {/* Added this wrapper */}
+                    <Outlet />
+                </div>
                 <div className='ml-auto right-0'>
                     <OrderTemplate />
                 </div>
