@@ -1,6 +1,5 @@
-# Stage 1: Build the application
 # Use the official Node.js image  
-FROM node
+FROM node as development
 
 # Set the working directory  
 WORKDIR /PrimeGrillsAdmin  
@@ -20,16 +19,13 @@ RUN npm run dev
 # Build the application  
 # RUN npm run build  
 
-# Stage 2: Serve the application with Nginx
 # Production environment  
-# FROM nginx:stable-alpine AS production 
+# FROM nginx:stable-alpine as production 
 
 
 # Copy build output to Nginx html folder  
 # COPY --from=build /PrimeGrillsAdmin/dist /usr/share/nginx/html
-
-# Copy custom Nginx configuration
-# COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
+# COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # # Expose port  
 # EXPOSE 80

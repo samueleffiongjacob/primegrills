@@ -12,6 +12,9 @@ services:
     depends_on:
       primegrillsdb:
         condition: service_healthy
+    #environment:
+      #- DJANGO_SETTINGS_MODULE=your_project.settings.production
+
     restart: on-failure
 
 #   manager_service:
@@ -73,6 +76,7 @@ services:
   
   rabbitmq:
     image: rabbitmq:3-management
+    container_name: rabbitmq
     ports:
       - "5672:5672"   # AMQP protocol port
       - "15672:15672" # Management UI port
@@ -100,7 +104,7 @@ services:
 
 networks:
   primegrills_network:
-  
+   driver: bridge
 volumes:
   pgdata:
   rabbitmq_data:
