@@ -15,6 +15,7 @@ import product4 from "../../../assets/images/product4.png";
 import menuimage3 from "../../../assets/images/menuimg3.png";
 import menuimage1 from "../../../assets/images/menuimg1.png";
 import MealDetailsModal from "../../../components/MealDetailsModal";
+import NotPopularMenu from "../../../components/NotPopularMenu";
 
 const MenuPastriesSection = () => {
   // Sample data
@@ -120,7 +121,7 @@ const [selectedMeal, setSelectedMeal] =  useState<{
         >
           {Pastries_ITEMS.map((item) => (
             <SwiperSlide key={item.id} onClick={() => setSelectedMeal(item)}>
-              <Popular id={item.id} img={item.image} title={item.name} price={item.price} />
+              <NotPopularMenu id={item.id} img={item.image} title={item.name} price={item.price} />
             </SwiperSlide>
           ))}
         </Swiper>
