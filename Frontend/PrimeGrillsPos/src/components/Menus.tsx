@@ -123,7 +123,7 @@ function Menus() {
                             ? 'h-60 p-2 pt-4 w-full' 
                             : 'h-24 p-2 w-full'} 
                             relative flex ${viewMode === 'grid' ? 'flex-col' : 'flex-row'} 
-                            items-center overflow-hidden hover:shadow-xl transition-shadow rounded-3xl cursor-pointer
+                            items-center overflow-hidden hover:shadow-xl hover:-translate-y-1.5 transition-shadow rounded-3xl cursor-pointer
                             ${selectedItems.includes(item.id) ? 'bg-primary/75' : 'bg-black/45'}`}
                         onClick={() => handleItemClick(item)}
                     >

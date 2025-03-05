@@ -175,9 +175,9 @@ function TransactionsTable() {
     };
 
     return (
-        <div className="bg-white h-[calc(100hv-7.5rem)] w-full ml-4 flex flex-col rounded-xl shadow-lg">
+        <div className="bg-secondary h-[calc(100vh-7.5rem)] w-full mr-4 overflow-hidden flex flex-col rounded-xl shadow-2xl">
             {/* Header Section */}
-            <div className="p-6 pb-0">
+            <div className="p-6 pb-0 flex-shrink-0">
                 <div className="mb-4 flex flex-col justify-between gap-8 md:flex-row md:items-center">
                     <div>
                         <h5 className="text-xl font-semibold text-gray-800">
@@ -204,12 +204,12 @@ function TransactionsTable() {
                 </div>
             </div>
 
-            {/* Table Section - Now with proper scrolling */}
-            <div className="flex-1 overflow-hidden px-6">
-                <div className="w-full h-full overflow-x-auto">
-                    <div className="overflow-y-auto h-[calc(100vh-280px)]"> {/* Adjust 280px based on your header/footer height */}
-                        <table className="w-full min-w-max table-auto">
-                            <thead className="sticky top-0 bg-white z-10">
+            {/* Table Section */}
+            <div className="flex-1 px-6 overflow-hidden">
+                <div className="h-full relative">
+                    <div className="absolute inset-0 overflow-auto">
+                        <table className="w-full table-auto">
+                            <thead className="sticky top-0 bg-secondary z-10">
                                 <tr>
                                     {TABLE_HEAD.map((head) => (
                                         <th key={head} className="border-y border-gray-200 bg-gray-50 p-4 text-left">
@@ -237,16 +237,16 @@ function TransactionsTable() {
                                             </div>
                                         </td>
                                         <td className="p-4">
-                                            <span className="text-green-600 font-semibold">{row.amount}</span>
+                                            <span className="text-green-500 font-semibold">{row.amount}</span>
                                         </td>
                                         <td className="p-4">
                                             <span className="text-gray-700">{row.date}</span>
                                         </td>
                                         <td className="p-4">
                                             <span className={`px-3 py-1 rounded-full text-xs font-medium
-                                                ${row.status === 'paid' ? 'bg-green-100 text-green-800' : 
-                                                    row.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
-                                                    'bg-red-100 text-red-800'}`}>
+                                                ${row.status === 'paid' ? 'bg-green-200 text-green-800' : 
+                                                    row.status === 'pending' ? 'bg-yellow-200 text-yellow-800' : 
+                                                    'bg-red-200 text-red-800'}`}>
                                                 {row.status}
                                             </span>
                                         </td>
@@ -277,7 +277,7 @@ function TransactionsTable() {
                                                 customerName: row.name,
                                                 date: row.date,
                                                 items: row.items,
-                                                total: parseFloat(row.amount.replace('₦', '')),
+                                                total: Number(row.items.reduce((acc, item) => {return (item.price * item.quantity) + acc} ,0)),
                                                 status: row.status
                                             })}
                                             className="p-2 hover:bg-gray-100 rounded-full transition-colors">
@@ -292,8 +292,8 @@ function TransactionsTable() {
                 </div>
             </div>
 
-            {/* Footer/Pagination - Now sticky at bottom */}
-            <div className="sticky bottom-0 bg-white border-t border-gray-200 p-4 mt-auto">
+            {/* Footer/Pagination */}
+            <div className="px-6 py-4 border-t border-gray-200 bg-white flex-shrink-0">
                 <div className="flex items-center justify-between">
                     <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm">
                         Previous
