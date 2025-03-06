@@ -31,6 +31,7 @@ function RoleBasedRedirect() {
 const Navigations = () => {
   const allRoles = ["admin", "accountant", "waiter", "kitchen", "cleaner"];
   return (
+    <ProtectedRoute roles={allRoles}>
     <Router>
       <div className="flex bg-gray-100 min-h-screen">
         <Sidebar />
@@ -58,6 +59,7 @@ const Navigations = () => {
         </div>
       </div>
     </Router>
+    </ProtectedRoute>
   );
 };
 

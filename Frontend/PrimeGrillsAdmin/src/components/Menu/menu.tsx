@@ -133,7 +133,8 @@ const MenuDashboard = () => {
                 <tr className="bg-[#EE7F61] text-white">
                   <th className="py-2 px-4 text-left">S/N</th>
                   <th className="py-2 px-4 text-left">Category</th>
-                  <th className="py-2 px-4 text-left">Menu Name</th>        
+                  <th className="py-2 px-4 text-left">Menu Name</th>  
+                  <th className="py-2 px-4 text-left">Price</th>
                   <th className="py-2 px-4 text-left">Image</th>
                   <th className="py-2 px-4 text-left">Status</th>
                   <th className="py-2 px-4 text-left">Qty</th>
@@ -151,6 +152,7 @@ const MenuDashboard = () => {
                     <td className="py-2 px-4">{item.id}.</td>
                     <td className="py-2 px-4">{item.category}</td>
                     <td className="py-2 px-4">{item.name}</td>
+                    <td className="py-2 px-4">{item.price}</td>
                     <td className="py-2 px-4">
                       <img src={item.image} className='w-10 h-10'/>
                     </td>
