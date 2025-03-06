@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'category',
     'menu',
-    'query'
+    
 ]
 
 REST_FRAMEWORK = {
