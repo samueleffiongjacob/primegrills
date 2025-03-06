@@ -3,6 +3,7 @@ import { FcGoogle } from 'react-icons/fc';
 import { FaFacebook, FaApple, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { MdEmail } from 'react-icons/md';
 import { useAuth } from '../../context/AuthContext';
+import { ForgotPasswordModal } from './Reset_Password';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -20,6 +21,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onTog
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [showResend, setShowResend] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
 
   const handleResendVerification = async () => {
     setIsLoading(true);
@@ -55,25 +57,38 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onTog
     setIsLoading(true);
 
     try {
-      const result = await login(email, password); 
-      console.log(result)
+      const result = await login(email, password);
+
+      console.log(result);
       if (result === "Email not verified") {
         setError("Your email is not verified. Please verify your email before logging in.");
         setShowResend(true);
         return;
       } else if (result === "Invalid credentials") {
         setError("Invalid email or password");
-      } else if (result == true) {
+      } else if (result === true) {
         onLogin(email, password);
       } else {
-        setError("Login failed. Please check your credentials.");
+        setError("Login failed. Please retry");
       }
-    } catch (error) {
+    } catch (error: any) {
       setError(error instanceof Error ? error.message : "Login failed");
     } finally {
       setIsLoading(false);
     }
   };
+
+  // Show the forgot password modal instead
+  if (showForgotPassword) {
+    return (
+      <ForgotPasswordModal
+        isOpen={true}
+        onClose={() => setShowForgotPassword(false)}
+        onLogin={onLogin}
+        onToggleSignUp={onToggleSignUp}
+      />
+    );
+  }
 
   if (!isOpen) return null;
 
@@ -94,7 +109,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onTog
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
               {error}
               {showResend && (
-                <button 
+                <button
                   onClick={handleResendVerification}
                   className="text-blue-500 underline ml-2"
                   disabled={isLoading}
@@ -149,9 +164,13 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onTog
                 />
                 <span className="text-gray-600">Stay signed in</span>
               </label>
-              <a href="#" className="text-orange-400 hover:text-orange-500">
+              <button 
+                type="button"
+                onClick={() => setShowForgotPassword(true)}
+                className="text-orange-400 hover:text-orange-500"
+              >
                 Forgot password?
-              </a>
+              </button>
             </div>
 
             <button
