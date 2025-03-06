@@ -1,3 +1,11 @@
+"""
+ this below from file_manager/services/rabbitmq_consumer.py (No longer needed)
+
+
+ File Manager now only accepts direct API calls from the `event` microservice.
+"""
+
+"""
 import pika
 import json
 import requests
@@ -21,3 +29,5 @@ def consume_images():
     channel.basic_consume(queue="image_uploads", on_message_callback=callback)
     print("Waiting for image messages...")
     channel.start_consuming()
+"""
+

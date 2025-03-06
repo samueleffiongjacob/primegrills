@@ -23,8 +23,9 @@ def home_view(request):
 
 
 urlpatterns = [
-     path('', home_view, name='home'),  # comment later
+    path('', home_view, name='home'),  # comment later
     path('admin/', admin.site.urls),
     path('api/', include('category.urls')),
     path('api/', include('menu.urls')),
+    path('api/', include('query.urls')),
 ]

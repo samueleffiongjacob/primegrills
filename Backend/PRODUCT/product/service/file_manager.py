@@ -1,10 +1,12 @@
+
+"""
 import pika
 import json
 
 RABBITMQ_HOST = "rabbitmq"
 
 def send_image_to_file_manager(category_name, image_url):
-    """Send image data to RabbitMQ for File Manager."""
+    # Send image data to RabbitMQ for File Manager. 
     connection = pika.BlockingConnection(pika.ConnectionParameters(host=RABBITMQ_HOST))
     channel = connection.channel()
     channel.queue_declare(queue="image_upload_queue", durable=True)
@@ -22,3 +24,4 @@ def send_image_to_file_manager(category_name, image_url):
     )
 
     connection.close()
+"""

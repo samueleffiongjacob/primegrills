@@ -3,7 +3,8 @@ import json
 
 RABBITMQ_URL = "amqp://guest:guest@rabbitmq:5672/"
 
-def send_image_to_file_manager(image_url):
+def send_image_to_event_service(image_url):
+    """Send image URL to the event service via RabbitMQ."""
     connection = pika.BlockingConnection(pika.URLParameters(RABBITMQ_URL))
     channel = connection.channel()
     channel.queue_declare(queue="image_uploads")
