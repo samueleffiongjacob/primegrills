@@ -124,7 +124,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onTog
             <div className="relative">
               <MdEmail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
-                type="text"
+                type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email or Username"

@@ -54,7 +54,7 @@ const ProfileSidePanel: React.FC<ProfileSidePanelProps> = ({
 
     try {
       const csrfToken = getCookie("csrftoken");
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/user/profile/upload-image/`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user/profile/upload-image/`, {
         method: "POST",
         credentials: "include",
         headers: {
