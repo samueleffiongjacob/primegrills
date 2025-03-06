@@ -101,7 +101,7 @@ const MenuDashboard = () => {
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
         <header className="py-5 bg-white border-b flex items-center justify-between px-6">
-          <h1 className="text-xl font-semibold">Products</h1>
+          <h1 className="text-xl font-semibold">Menu</h1>
         </header>
 
         {/* Content Area */}
