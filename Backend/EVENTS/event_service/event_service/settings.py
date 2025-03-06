@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'event_processor',
-    'event_service'
+    'event_service',
+    'event_image'
 ]
 
 MIDDLEWARE = [
