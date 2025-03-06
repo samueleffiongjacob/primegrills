@@ -269,9 +269,13 @@ REST_AUTH = {
 # Common adapter for all social providers
 SOCIALACCOUNT_ADAPTER = 'auth.adapters.BaseSocialAccountAdapter'
 
+"""
 
-# RabbitMQ Configuration
-RABBITMQ_HOST = 'rabbitmq'  # Use the service name from docker-compose
-RABBITMQ_PORT = 5672
-RABBITMQ_USER = 'primegrills'
-RABBITMQ_PASS = 'primegrills'
+RabbitMQ Configuration
+
+Use the service name from docker-compose
+"""
+RABBITMQ_HOST = os.environ.get('RABBITMQ_HOST', 'rabbitmq' )
+RABBITMQ_PORT = os.environ.get('RABBITMQ_PORT', 5672) 
+RABBITMQ_USER = os.environ.get('RABBITMQ_USER', 'primegrills')
+RABBITMQ_PASS = os.environ.get('RABBITMQ_PASS', 'primegrills')

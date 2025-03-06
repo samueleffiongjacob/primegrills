@@ -16,8 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.http import HttpResponse
+
+def home_view(request):
+    return HttpResponse("Welcome to PrimeGrills FILEMANAGER!  Comment it later when u are done")
 
 urlpatterns = [
+    path('', home_view, name='home'), 
     path('admin/', admin.site.urls),
     path("files/", include("filemanager.urls")),
     path("files-all/", include("query.urls")),

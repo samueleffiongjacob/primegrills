@@ -28,21 +28,29 @@ services:
     depends_on:
       primegrillsdb:
         condition: service_healthy
+      event_service:
+        condition: service_started
     restart: on-failure
 
 
-#   account_service:
-#     build: ./account_service
-#     container_name: account_service
-#     ports:
-#       - "8002:8000"
-#     volumes:
-#       - ./account_service:/app
-#     env_file:
-#       - ./account_service/.env
-#     depends_on:
-#       - db
+  file_manager:
+    build: ./FILE_MANAGER
+    container_name: file_manager
+    ports:
+      - "8002:8000"
+    volumes:
+      - ./FILE_MANAGER:/app
+    env_file:
+      - ./FILE_MANAGER/.env
+    depends_on:
+      primegrillsdb:
+        condition: service_healthy
+      event_service:
+        condition: service_started
+    restart: on-failure
 
+
+  # EVENT SERVICE
   event_service:
     build: ./EVENTS
     container_name: event_service
@@ -55,7 +63,23 @@ services:
     depends_on:
       primegrillsdb:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     restart: on-failure
+
+
+
+    #   account_service:
+  #     build: ./account_service
+  #     container_name: account_service
+  #     ports:
+  #       - "8002:8000"
+  #     volumes:
+  #       - ./account_service:/app
+  #     env_file:
+  #       - ./account_service/.env
+  #     depends_on:
+  #       - db
 
   primegrillsdb:
     image: postgres:17
@@ -107,6 +131,8 @@ services:
 networks:
   primegrills_network:
    driver: bridge
+
+
 volumes:
   pgdata:
   rabbitmq_data:
