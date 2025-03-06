@@ -43,9 +43,15 @@ INSTALLED_APPS = [
     'rest_framework',
     'category',
     'menu',
-    'service',
     'query'
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ]
+}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

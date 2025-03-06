@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from models import QueryCategoryImage, QueryMenuImage
+from .models import QueryCategoryImage, QueryMenuImage
 
 class QueryCategoryImageSerializer(serializers.ModelSerializer):
     class Meta:
