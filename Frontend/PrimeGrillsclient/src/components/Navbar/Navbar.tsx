@@ -19,7 +19,9 @@ interface UserProfile {
   email: string;
   phone: string;
   memberSince: string;
+  profileImage: string | null; // Add profileImage to the UserProfile interface
 }
+
 interface NavLinkProps {
   to: To; // Route path
   children: React.ReactNode; // Children can be any React node
@@ -52,7 +54,7 @@ const Navbar = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Track user login state
   const location = useLocation(); // Get current URL
-  const { user, isAuthenticated, logout } = useAuth()
+  const { user, isAuthenticated, logout } = useAuth();
 
   const toggleProfile = () => {
     setIsProfileOpen(!isProfileOpen);
@@ -185,7 +187,15 @@ const Navbar = () => {
                 onClick={toggleProfile}
                 className="p-2 hover:bg-gray-300 bg-gray-200 rounded-full"
               >
-                <User className="w-6 h-6 text-gray-700" />
+                {user?.profileImage ? (
+                  <img
+                    src={user.profileImage}
+                    alt="Profile"
+                    className="w-6 h-6 rounded-full object-cover"
+                  />
+                ) : (
+                  <User className="w-6 h-6 text-gray-700" />
+                )}
               </button>
             )}
           </div>

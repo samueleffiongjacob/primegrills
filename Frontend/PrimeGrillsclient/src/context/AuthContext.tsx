@@ -91,8 +91,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const fetchUserProfile = async () => {
     try {
       const csrfToken = getCookie("csrftoken");
+      alert(csrfToken)
 
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/user/profile/`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user/profile/`, {
         method: "GET",
         credentials: "include",
         headers: {
