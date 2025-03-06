@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 const Settings = () => {
-  const [activeSection, setActiveSection] = useState<"Hours" | "Notifications">("Hours");
+  const [activeSection, setActiveSection] = useState<"Notifications">("Notifications");
   const [notifications, setNotifications] = useState<Record<NotificationType, boolean>>({
   order: true,
   review: false,
@@ -21,7 +21,6 @@ const Settings = () => {
   };
 
   const sections: { id: "Hours" | "Notifications"; title: string; icon: string }[] = [
-    { id: "Hours", title: "Operating Hours", icon: "clock" },
     { id: "Notifications", title: "Notifications", icon: "bell" },
   ];
   
@@ -53,7 +52,7 @@ const Settings = () => {
   };
 
   return (
-    <div className="flex max-h-[90vh] bg-gray-50">
+    <div className="flex max-h-[90vh]">
       {/* Sidebar */}
       <div className="w-64 bg-white shadow-lg">
         <div className="p-6 bg-gradient-to-r from-indigo-800 to-orange-600">
@@ -86,52 +85,7 @@ const Settings = () => {
       {/* Content Area */}
       <div className="flex-1 p-8 max-h-[90vh] overflow-auto">
         <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-sm overflow-hidden">
-          {activeSection === "Hours" && (
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold text-gray-800">Operating Hours</h2>
-                <span className="bg-indigo-100 text-indigo-800 text-xs px-3 py-1 rounded-full font-medium">Business Schedule</span>
-              </div>
-              
-              <div className="space-y-1">
-                {[
-                  "Monday",
-                  "Tuesday",
-                  "Wednesday",
-                  "Thursday",
-                  "Friday",
-                  "Saturday",
-                  "Sunday",
-                ].map((day, index) => (
-                  <div key={day} className={`flex items-center p-3 rounded-lg ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
-                    <div className="w-32 font-medium text-gray-700">{day}</div>
-                    <div className="flex-1 flex items-center space-x-4">
-                      <select className="flex-1 px-3 py-2 bg-white border border-gray-200 rounded-lg text-gray-700 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                        <option>8:00 AM</option>
-                        <option>9:00 AM</option>
-                        <option>10:00 AM</option>
-                      </select>
-                      <span className="text-gray-400">to</span>
-                      <select className="flex-1 px-3 py-2 bg-white border border-gray-200 rounded-lg text-gray-700 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                        <option>8:00 PM</option>
-                        <option>9:00 PM</option>
-                        <option>10:00 PM</option>
-                      </select>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              
-              <div className="mt-8 flex justify-end">
-                <button
-                  onClick={() => handleSave("Operating Hours")}
-                  className="px-5 py-2 bg-indigo-800 text-white rounded-lg font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition-colors"
-                >
-                  Update Hours
-                </button>
-              </div>
-            </div>
-          )}
+        
           
           {activeSection === "Notifications" && (
             <div className="p-6">

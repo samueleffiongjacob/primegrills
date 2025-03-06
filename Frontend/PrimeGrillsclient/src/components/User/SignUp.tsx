@@ -80,14 +80,18 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
       password,
     });
     
-    if(response.message) {
-      setErrors({ email: response.message });
+    if (!response.success) {
+      if (response.message.includes("Username already exists")) {
+        setErrors((prevErrors) => ({ ...prevErrors, username: response.message }));
+      } else if (response.message.includes("Email already exists")) {
+        setErrors((prevErrors) => ({ ...prevErrors, email: response.message }));
+      }
       setIsLoading(false);
-    } else {
-      onSignUp(email, password);
-      setSignupSuccess(true);
-      setIsLoading(false);
+      return; // Stop further execution
     }
+  
+    setSignupSuccess(true);
+    setIsLoading(false);
   };
 
   if (!isOpen) return null;

@@ -18,7 +18,7 @@ function FoodItems() {
     const { searchQuery } = useContext(SearchContext);
   
 const categories = [
-    { id: 1, name: 'All Menu', icon: <Home className="w-6 h-6" /> },
+    { id: 1, name: 'All Menu', icon: <Home className="w-10 h-10 items-center text-center " /> },
     { id: 2, name: 'Nigerian', image: menu1 },
     { id: 3, name: 'Pizza', image: menu2 },
     { id: 4, name: 'Pastries', image: menu3 },
@@ -115,7 +115,7 @@ useEffect(() => {
             <button
             key={category.id}
             onClick={() => handleCategory(category)}
-            className={`flex flex-col items-center min-w-[100px] p-4 rounded-lg transition-colors ${
+            className={`flex flex-col text-center items-center min-w-[100px] p-4 rounded-lg transition-colors ${
                 selectedCategory === category.name
                 ? 'bg-primary text-white'
                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -125,10 +125,10 @@ useEffect(() => {
                 <img
                 src={category.image}
                 alt={category.name}
-                className="w-12 h-12 rounded-lg object-cover mb-2"
+                className="w-16 h-16 rounded-lg object-cover mb-2"
                 />
             )}
-            <span className="text-sm font-medium">{category.name}</span>
+            <span className="text-lg italic font-medium">{category.name}</span>
             </button>
             ))}
             </div>
