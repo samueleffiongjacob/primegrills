@@ -40,7 +40,7 @@ const Staff = () => {
     
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:8000/api/staffs/all/");
+      const response = await fetch("http://localhost:8000/auth/api/staffs/all/");
       if (!response.ok) throw new Error("Failed to fetch staffs");
       
       const backendUsers: BackendUser[] = await response.json();

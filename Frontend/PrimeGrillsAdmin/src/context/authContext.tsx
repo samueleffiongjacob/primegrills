@@ -47,6 +47,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
+  const SIX_HOURS = 6 * 60 * 60 * 1000; // 6 hours for auto-logout
 
   // Fetch user data on mount (uses cookies automatically)
   const fetchUserData = async () => {
@@ -102,7 +103,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = async (email: string, password: string): Promise<void> => {
     try {
       setLoading(true);
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/login-staff`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/api/login-staff`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -120,6 +121,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       // Fetch user data after successful login
       await fetchUserData();
+
+      // Auto-logout after 6 hours
+      setTimeout(() => {
+        logout();
+      }, SIX_HOURS);
     } catch (error) {
       console.error("Login failed:", error);
       throw error;
