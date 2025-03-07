@@ -16,27 +16,32 @@ RUN apt-get update && apt-get install -y netcat-openbsd
 RUN pip install --upgrade pip
 
 # dependencies file 
-COPY . requirements.txt /AUTH/auth/
+COPY requirements.txt /AUTH/auth/
 
 # Install dependencies
 #RUN pip install --no-cache-dir -r /AUTH/auth/requirements.txt # for production
 RUN pip install -r /AUTH/auth/requirements.txt
 
-# # copy entrypoint.sh
-# COPY  /AUTH/auth/migrate.sh /AUTH/auth/migrate.sh
-# RUN sed -i 's/\r$//' /AUTH/auth/migrate.sh && chmod +x /AUTH/auth/migrate.sh
-
 # Copy project files
 COPY . /AUTH/auth/
+
+# # copy entrypoint.sh
+# COPY  migrate.sh /AUTH/auth/migrate.sh
+# RUN sed -i 's/\r$//' /AUTH/auth/migrate.sh && chmod +x /AUTH/auth/migrate.sh
+
 
 # Expose the default development port
 EXPOSE 8000
 
 # Run Django's development server
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 
 # run entrypoint.sh
 # ENTRYPOINT ["/AUTH/auth/migrate.sh"]
 
+# Use an environment variable to switch between development and production
+ARG MODE=production
+ENV MODE=${MODE}
+
 # for production
-#CMD ["gunicorn", "--bind", "0.0.0.0:8000", "auth_service.wsgi:application"]
+CMD ["sh", "-c", "python manage.py makemigrations && python manage.py migrate && if [ \"$MODE\" = 'development' ]; then python manage.py runserver 0.0.0.0:8000; else gunicorn --bind 0.0.0.0:8000 authservice.wsgi:application; fi"]

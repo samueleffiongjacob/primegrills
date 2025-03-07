@@ -1,5 +1,6 @@
 # Ignore node modules (installed inside the container)
 node_modules/
+node_modules
 npm-debug.log
 yarn-error.log
 pnpm-debug.log
@@ -8,6 +9,8 @@ package-lock.json
 # Ignore build files
 dist/
 build/
+dist
+build
 .vite/
 .cache/
 
@@ -23,3 +26,11 @@ logs/
 .vscode/
 .idea/
 *.swp
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore Git files
+.git
+.gitignore

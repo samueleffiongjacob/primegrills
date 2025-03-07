@@ -2,7 +2,7 @@
 
 FROM python
 
-WORKDIR /EVENTS/event_service
+WORKDIR /FILEMANAGER/file_manager
 
 # Environment variables to optimize Python behavior
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -16,31 +16,32 @@ RUN apt-get update && apt-get install -y netcat-openbsd
 RUN pip install --upgrade pip
 
 # dependencies file 
-COPY  requirements.txt /EVENTS/event_service
+COPY  requirements.txt /FILEMANAGER/file_manager
 
 # Install dependencies
 #RUN pip install --no-cache-dir -r /EVENTS/requirements.txt # for production
 RUN pip install -r /EVENTS/requirements.txt
 
-# # copy entrypoint.sh
-# COPY  /EVENTS/event_service/migrate.sh /EVENTS/event_service/migrate.sh
-# RUN sed -i 's/\r$//'/EVENTS/event_service/migrate.sh && chmod +x /EVENTS/event_service/migrate.sh
-
 # Copy project files
-COPY . /EVENTS/event_service/
+COPY . /FILEMANAGER/file_manager/
+
+# # copy entrypoint.sh
+# COPY  /FILEMANAGER/file_manager/migrate.sh /FILEMANAGER/file_manager/migrate.sh
+# RUN sed -i 's/\r$//'/FILEMANAGER/file_manager/migrate.sh && chmod +x /FILEMANAGER/file_manager/migrate.sh
+
 
 # Expose the default development port
-EXPOSE 8003
+EXPOSE 8002
 
 # Run Django's development server
 # CMD ["python", "manage.py", "consume_auth_events"]
 
 # run entrypoint.sh
-# ENTRYPOINT ["/EVENTS/event_service/migrate.sh"]
+# ENTRYPOINT ["/FILEMANAGER/file_manager/migrate.sh"]
 
 # Use an environment variable to switch between development and production
 ARG MODE=production
 ENV MODE=${MODE}
 
 # for production
-CMD ["sh", "-c", "python manage.py makemigrations && python manage.py migrate && if [ \"$MODE\" = 'development' ]; then python manage.py runserver 0.0.0.0:8000; else gunicorn --bind 0.0.0.0:8000 eventservice.wsgi:application; fi"]
+CMD ["sh", "-c", "python manage.py makemigrations && python manage.py migrate && if [ \"$MODE\" = 'development' ]; then python manage.py runserver 0.0.0.0:8000; else gunicorn --bind 0.0.0.0:8000 filemanager.wsgi:application; fi"]
