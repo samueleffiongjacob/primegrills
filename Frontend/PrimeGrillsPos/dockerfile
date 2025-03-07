@@ -1,5 +1,6 @@
 # Use the official Node.js image  
-FROM node AS build
+# FROM node AS build
+FROM node AS development
 
 # Set the working directory  
 WORKDIR /PrimeGrillsPos  
@@ -8,7 +9,9 @@ WORKDIR /PrimeGrillsPos
 COPY package*.json ./  
 
 # Install dependencies  
-RUN npm install --frozen-lockfile  
+# RUN npm install --frozen-lockfile 
+
+RUN npm install  
 
 # Copy the rest of the application  
 COPY . .  
@@ -17,18 +20,26 @@ COPY . .
 # RUN npm run dev
 
 # Build the application  
-RUN npm run build  
+# RUN npm run build  
+
+
 
 # Production environment  
-FROM nginx:stable-alpine AS production 
+# FROM nginx:stable-alpine AS production
+# FROM nginx:stable-alpine AS development
+ 
 
 
 # Copy build output to Nginx html folder  
-COPY --from=build /PrimeGrillsPos/dist /usr/share/nginx/html
+# COPY --from=build /PrimeGrillsPos/dist /usr/share/nginx/html
 
 
-# # Expose port  
-EXPOSE 80
+# Expose port  
+# EXPOSE 80  # production
+EXPOSE 5174
 
-# # Start Nginx  
-CMD ["nginx", "-g", "daemon off;"]  
+# # # Start Nginx  
+# CMD ["nginx", "-g", "daemon off;"]
+
+# Start the app in development mode
+CMD ["npm", "run", "dev", "--", "--host"]
