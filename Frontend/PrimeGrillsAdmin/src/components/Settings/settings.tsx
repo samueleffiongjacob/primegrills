@@ -1,36 +1,43 @@
 import { useState } from 'react';
 
-const Settings = () => {
-  const [activeSection, setActiveSection] = useState<"Notifications">("Notifications");
-  const [notifications, setNotifications] = useState<Record<NotificationType, boolean>>({
-  order: true,
-  review: false,
-  marketing: false,
-});
+// Define types first before using them
+type NotificationType = "order" | "review" | "marketing";
+type SectionId = "Notifications"; // Add more section types here if needed
 
-  type NotificationType = "order" | "review" | "marketing";
+// Define section type
+interface Section {
+  id: SectionId;
+  title: string;
+  icon: string;
+}
+
+// Define props for Icon component
+interface IconProps {
+  name: string;
+}
+
+const Settings = () => {
+  const [activeSection, setActiveSection] = useState<SectionId>("Notifications");
+  const [notifications, setNotifications] = useState<Record<NotificationType, boolean>>({
+    order: true,
+    review: false,
+    marketing: false,
+  });
 
   const handleNotificationToggle = (type: NotificationType) => {
     setNotifications((prev) => ({ ...prev, [type]: !prev[type] }));
   };
-  
 
-
-  const handleSave = (section :string) => {
+  const handleSave = (section: string) => {
     alert(`${section} settings saved successfully!`);
   };
 
-  const sections: { id: "Hours" | "Notifications"; title: string; icon: string }[] = [
+  const sections: Section[] = [
     { id: "Notifications", title: "Notifications", icon: "bell" },
   ];
-  
 
   // Render icon based on name
-  interface IconProps {
-    name: string;
-  }
-
-  const Icon = ({ name  } : IconProps) => {
+  const Icon = ({ name }: IconProps) => {
     switch (name) {
       case 'clock':
         return (
@@ -85,8 +92,6 @@ const Settings = () => {
       {/* Content Area */}
       <div className="flex-1 p-8 max-h-[90vh] overflow-auto">
         <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-sm overflow-hidden">
-        
-          
           {activeSection === "Notifications" && (
             <div className="p-6">
               <div className="flex justify-between items-center mb-6">
@@ -96,9 +101,9 @@ const Settings = () => {
               
               <div className="space-y-4">
                 {[
-                  { label: "Order Notifications", type: "order", description: "Get notified when a new order is placed" },
-                  { label: "Review Notifications", type: "review", description: "Receive alerts when customers leave reviews" },
-                  { label: "Marketing Updates", type: "marketing", description: "Stay updated with promotional opportunities" },
+                  { label: "Order Notifications", type: "order" as NotificationType, description: "Get notified when a new order is placed" },
+                  { label: "Review Notifications", type: "review" as NotificationType, description: "Receive alerts when customers leave reviews" },
+                  { label: "Marketing Updates", type: "marketing" as NotificationType, description: "Stay updated with promotional opportunities" },
                 ].map(({ label, type, description }) => (
                   <div key={type} className="p-4 border border-gray-100 rounded-lg hover:border-gray-200 transition-all">
                     <div className="flex items-center justify-between">
@@ -109,11 +114,11 @@ const Settings = () => {
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input
                           type="checkbox"
-                          checked={notifications[type as NotificationType]}
-                          onChange={() => handleNotificationToggle(type as NotificationType)}
+                          checked={notifications[type]}
+                          onChange={() => handleNotificationToggle(type)}
                           className="sr-only peer"
                         />
-                        <div className={`w-11 h-6 rounded-full peer ${notifications[type as NotificationType] ? 'bg-indigo-800' : 'bg-gray-200'} peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-300 transition-colors after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all ${notifications[type as NotificationType] ? 'after:translate-x-5' : ''}`}></div>
+                        <div className={`w-11 h-6 rounded-full peer ${notifications[type] ? 'bg-indigo-800' : 'bg-gray-200'} peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-300 transition-colors after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all ${notifications[type] ? 'after:translate-x-5' : ''}`}></div>
                       </label>
                     </div>
                   </div>

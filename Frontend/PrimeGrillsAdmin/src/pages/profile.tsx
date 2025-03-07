@@ -44,7 +44,7 @@ const Profile = () => {
           className="w-24 h-24 rounded-full border mb-3 overflow-hidden hover:scale-105 transition-transform duration-300"
         >
           <img
-            src={user?.image || "https://via.placeholder.com/150"}
+            src={user?.profileImage || "https://via.placeholder.com/150"}
             alt="Profile"
             className="w-full h-full object-cover"
           />
