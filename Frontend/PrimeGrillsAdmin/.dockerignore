@@ -1,4 +1,37 @@
-node_modules  
-build  
-.git  
+# Ignore node modules (installed inside the container)
+node_modules/
+node_modules
+npm-debug.log
+yarn-error.log
+pnpm-debug.log
+package-lock.json
+
+# Ignore build files
+dist/
+build/
+dist
+build
+.vite/
+.cache/
+
+# Ignore logs and temp files
+logs/
+*.log
+
+# Ignore environment files
+.env
+*.env.local
+
+# Ignore editor/IDE settings
+.vscode/
+.idea/
+*.swp
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore Git files
+.git
+.gitignore 
 *.log  

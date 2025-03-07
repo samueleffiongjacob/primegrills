@@ -8,11 +8,11 @@ services:
     expose:  
       - '3000'
     volumes:
-        - .:/PrimeGrillsclient:/app
+        - ./PrimeGrillsclient:/app
         - /app/node_modules
     environment:
       - NODE_ENV=production
-    restart: unless-stopped
+    restart: always
 
   PrimeGrillsPos:  
     build: ./PrimeGrillsPos
@@ -22,11 +22,11 @@ services:
     expose:  
       - '3001'
     volumes:
-        - .:/PrimeGrillsPos:/app 
+        - ./PrimeGrillsPos:/app 
         - /app/node_modules
     environment:
       - NODE_ENV=production
-    restart: unless-stopped
+    restart: always
   PrimeGrillsAdmin:  
     build: ./PrimeGrillsAdmin
     networks:
@@ -35,11 +35,11 @@ services:
     expose:  
       - '3002'  
     volumes:
-        - .:/PrimeGrillsAdmin:/app
-        - /app/node_module
+        - ./PrimeGrillsAdmin:/app
+        - /app/node_modules
     environment:
       - NODE_ENV=production
-    restart: unless-stopped
+    restart: always
   PrimeGrillsManager:  
     build: ./PrimeGrillsManager 
     networks:
@@ -48,11 +48,11 @@ services:
     expose:  
       - '3003'
     volumes:
-        - .:/PrimeGrillsManager:/app
+        - ./PrimeGrillsManager:/app
         - /app/node_modules
     environment:
       - NODE_ENV=production
-    restart: unless-stopped
+    restart: always
 
    # Nginx for Reverse Proxy
   nginx:
