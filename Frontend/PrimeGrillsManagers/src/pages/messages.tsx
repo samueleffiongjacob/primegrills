@@ -108,15 +108,7 @@ const MessagesPage = () => {
           >
             Messages from Customers
           </button>
-          <button
-            className={`px-4 py-2 rounded-lg ${activeTab === "manager" ? "bg-[#2f3585] text-white" : "bg-gray-300 text-gray-700"}`}
-            onClick={() => {
-              setActiveTab("manager");
-              setMessages(managerMessages);
-            }}
-          >
-            Messages from Manager
-          </button>
+      
           <button
             className={`px-4 py-2 rounded-lg ${activeTab === "staff" ? "bg-[#2f3585] text-white" : "bg-gray-300 text-gray-700"}`}
             onClick={() => {
