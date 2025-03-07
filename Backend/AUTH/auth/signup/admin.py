@@ -1,60 +1,54 @@
+# admin.py
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User, Staff  # Import models
+from django.contrib.auth import get_user_model
+from .models import ClientProfile, StaffProfile, CartItem
 
-# Custom Admin for User model
+User = get_user_model()
+
+class ClientProfileInline(admin.StackedInline):
+    model = ClientProfile
+    can_delete = False
+    verbose_name_plural = 'Client Profile'
+    fk_name = 'user'
+
+class StaffProfileInline(admin.StackedInline):
+    model = StaffProfile
+    can_delete = False
+    verbose_name_plural = 'Staff Profile'
+    fk_name = 'user'
+
 class CustomUserAdmin(UserAdmin):
-    # Define the fields to display in the admin list view
-    list_display = ('username', 'email', 'name', 'phone', 'is_active', 'date_joined')
-    list_filter = ('is_active','date_joined')
-    search_fields = ('username', 'email', 'name', 'phone')
-
-    # Define the fieldsets for the add/edit form
+    list_display = ('username', 'email', 'name', 'user_type', 'is_active', 'is_staff')
+    list_filter = ('user_type', 'is_active', 'is_staff')
     fieldsets = (
         (None, {'fields': ('username', 'email', 'password')}),
-        ('Personal Info', {'fields': ('name', 'phone', 'address', 'profileImage')}),
-        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
-        ('Important Dates', {'fields': ('last_login', 'date_joined')}),
+        ('Personal info', {'fields': ('name', 'phone', 'address', 'profileImage')}),
+        ('Permissions', {'fields': ('user_type', 'is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+        ('Important dates', {'fields': ('last_login', 'date_joined')}),
     )
-
-    # Define the fieldsets for the add form
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'email', 'password1', 'password2', 'is_active', 'is_staff', 'is_superuser'),
+            'fields': ('username', 'email', 'password1', 'password2', 'user_type', 'is_active', 'is_staff'),
         }),
     )
+    search_fields = ('username', 'email', 'name')
+    ordering = ('email',)
+    
+    def get_inlines(self, request, obj=None):
+        if obj:
+            if obj.user_type == 'client':
+                return [ClientProfileInline]
+            elif obj.user_type == 'staff':
+                return [StaffProfileInline]
+        return []
 
-    ordering = ('username',)
+class CartItemAdmin(admin.ModelAdmin):
+    list_display = ('user', 'name', 'quantity', 'price')
+    list_filter = ('user',)
+    search_fields = ('name', 'user__email')
 
-# Register the User model with the CustomUserAdmin
+# Register the models
 admin.site.register(User, CustomUserAdmin)
-
-# Custom Admin for Staff model
-class StaffAdmin(UserAdmin):
-    # Define the fields to display in the admin list view
-    list_display = ('username', 'email', 'name', 'role', 'shift', 'is_active', 'is_staff', 'date_joined')
-    list_filter = ('is_active', 'is_staff', 'role', 'shift')
-    search_fields = ('username', 'email', 'name', 'role', 'shift')
-
-    # Define the fieldsets for the add/edit form
-    fieldsets = (
-        (None, {'fields': ('username', 'email', 'password')}),
-        ('Personal Info', {'fields': ('name', 'phone', 'address', 'profileImage', 'age', 'gender')}),
-        ('Staff Info', {'fields': ('role', 'shift', 'shiftHours')}),
-        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
-        ('Important Dates', {'fields': ('last_login', 'date_joined')}),
-    )
-
-    # Define the fieldsets for the add form
-    add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('username', 'email', 'password1', 'password2', 'is_active', 'is_staff', 'is_superuser', 'role', 'shift'),
-        }),
-    )
-
-    ordering = ('username',)
-
-# Register the Staff model with the StaffAdmin
-admin.site.register(Staff, StaffAdmin)
+admin.site.register(CartItem, CartItemAdmin)

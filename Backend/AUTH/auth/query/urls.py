@@ -1,17 +1,24 @@
 # facebook/urls.py
 from django.urls import path
 from django.contrib import admin
-from . import user_views, staff_views
+from . import user_views, staff_views,password_reset_views
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
     # User management routes
-    path('users/profile/', user_views.user_profile, name='user-profile'),
+    path('user/profile/', user_views.user_profile, name='user-profile'),
     path('users/all/', user_views.get_all_users, name='get-all-users'),
+    path("user/profile/upload-image/", user_views.upload_profile_image, name="upload_profile_image"),
     path('users/<int:user_id>/', user_views.get_user_by_id, name='get-user-by-id'),
     path('users/update/', user_views.update_user_profile, name='update-user-profile'),
     path('users/delete/<int:user_id>/', user_views.delete_user, name='delete-user'),
+    path('request_password_reset/', password_reset_views.request_password_reset, name='request-password-reset'),
+    path('reset_password/', password_reset_views.reset_password, name='reset-password'),
+    path('verify_reset_token/', password_reset_views.verify_reset_token, name='verify-reset-token'),
+    path("cart/update/", user_views.update_cart, name="update-cart"), 
+    path("user/cart/", user_views.get_user_cart, name="get-user-cart"), 
+
 
     # Staff management roles
     path('staff/profile/', staff_views.staff_profile, name='staff-profile'),
