@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Mainframe from './Pages/MainFrame';
 import HomePage from './Pages/Out/HomePage';
 import MenuPage from './Pages/Out/MenuPage';
@@ -9,34 +9,40 @@ import Settings from "@components/Settings";
 import TransactionsTable from "@components/TransactionTable";
 import Dashboard from "@components/Dashboard";
 import { Toaster } from 'react-hot-toast';
+import { AuthProvider } from './context/authContext';
+import ProtectedRoute from './components/ProtectedRoute';
+import LoginModal from './components/Login';
 
 function App() {
-  
   return (
-    <>
+    <AuthProvider>
       <SearchProvider>
         <MenuProvider>
-          <BrowserRouter>
+          <Router>
             <Routes>
-              <Route path="/" element={<Mainframe />}>
+              {/* Public Routes */}
+              <Route path="/login" element={<LoginModal isOpen={true} onClose={() => {}} onLogin={() => {}} />} />
+              
+              {/* Protected Routes - All under same protection */}
+              <Route path="/" element={<ProtectedRoute><Mainframe /></ProtectedRoute>}>
                 <Route index element={<HomePage />} />
-                
                 <Route path='menus' element={<MenuPage />} />
                 <Route path='settings' element={<Settings />} />
                 <Route path='orders' element={<TransactionsTable />} />
-                
                 <Route path='dashboard' element={<Dashboard />} />
-                {/*
-                <Route path='*' element={<NotFound />} /> */}
-                
               </Route>
+              
+              {/* Client View - Public */}
               <Route path='/clientview' element={<ClientFrame />} />
+              
+              {/* Catch all - redirect to root */}
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
-          </BrowserRouter>
+          </Router>
         </MenuProvider>
       </SearchProvider>
       <Toaster />
-    </>
+    </AuthProvider>
   )
 }
 

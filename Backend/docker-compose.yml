@@ -55,6 +55,20 @@ services:
         condition: service_started
     restart: on-failure
 
+  order_service:
+    build: ./ORDER
+    container_name: order_service
+    ports:
+      - "8002:8000"
+    volumes:
+      - ./ORDER/order:/ORDER/order
+    env_file:
+      - ./ORDER/.env
+    depends_on:
+      primegrillsdb:
+        condition: service_healthy
+    restart: on-failure
+
 
   # EVENT SERVICE
   event_service:
