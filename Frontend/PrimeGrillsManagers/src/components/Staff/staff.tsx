@@ -44,7 +44,7 @@ const Staff = () => {
     
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/api/users");
+      const response = await fetch("http://localhost:8000/auth/api/staffs/all/");
       if (!response.ok) throw new Error("Failed to fetch users");
       
       const backendUsers: BackendUser[] = await response.json();
@@ -108,8 +108,8 @@ const Staff = () => {
     setActionLoading(true);
     try {
       const endpoint = formMode === 'add' 
-        ? "http://localhost:5000/api/users" 
-        : `http://localhost:5000/api/users/${formData.id}`;
+        ? "http://localhost:8000/auth/register_staff/" 
+        : `http://localhost:8000/auth/api/staffs/update/`;
       
       const method = formMode === 'add' ? 'POST' : 'PUT';
       
@@ -139,7 +139,7 @@ const Staff = () => {
   const handleDeleteUser = async (id: number) => {
     setActionLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/users/${id}`, {
+      const response = await fetch(`http://localhost:8000/auth/api/staffs/delete/${id}/`, {
         method: 'DELETE'
       });
       
