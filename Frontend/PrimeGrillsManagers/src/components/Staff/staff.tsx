@@ -33,7 +33,7 @@ const Staff = () => {
   const [formOpen, setFormOpen] = useState(false);
   const [formMode, setFormMode] = useState<'add' | 'edit'>('add');
   const [selectedUser, setSelectedUser] = useState<StaffFormData | undefined>(undefined);
-  const [actionLoading, setActionLoading] = useState(false);
+  //const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
     fetchUsers();
@@ -105,7 +105,7 @@ const Staff = () => {
   };
 
   const handleSubmitUser = async (formData: StaffFormData) => {
-    setActionLoading(true);
+   // setActionLoading(true);
     try {
       const endpoint = formMode === 'add' 
         ? "http://localhost:8000/auth/register_staff/" 
@@ -132,12 +132,12 @@ const Staff = () => {
       console.error(`Error ${formMode === 'add' ? 'adding' : 'updating'} user:`, error);
       throw error;
     } finally {
-      setActionLoading(false);
+      //setActionLoading(false);
     }
   };
 
   const handleDeleteUser = async (id: number) => {
-    setActionLoading(true);
+    //setActionLoading(true);
     try {
       const response = await fetch(`http://localhost:8000/auth/api/staffs/delete/${id}/`, {
         method: 'DELETE'
@@ -154,7 +154,7 @@ const Staff = () => {
       console.error('Error deleting user:', error);
       throw error;
     } finally {
-      setActionLoading(false);
+      //setActionLoading(false);
     }
   };
 

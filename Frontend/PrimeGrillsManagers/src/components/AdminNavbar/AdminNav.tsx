@@ -4,10 +4,10 @@ import { Bell, ChevronDown } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { useAuth } from "../../context/authContext";
 import LoginModal from "../Login";
-import log from "../../assets/images/ladyimage.jpg";
+import log from "../../assets/images/ladyimage.jpg"; // Default fallback image
 
 const Header = () => {
-  const { user, isAuthenticated, logout, login } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
@@ -24,26 +24,6 @@ const Header = () => {
     setIsLoginModalOpen(false);
   };
 
-  const handleLogin = (email: string, password: string) => {
-    //  API call to verify credentials will be here 
-
-    // For example purpose, simulating what the a
-    const userData = {
-      id: 1,
-      name: "John Doe",
-      username: "johndoe",
-      address: "123 Main St",
-      phoneNumber: "123-456-7890",
-      status: "Active",
-      role: "manager"
-    };
-  
-    
-    // This comes from AuthContext
-    login(email, password, userData);
-    setIsLoginModalOpen(false);
-  };
-
   const handleLogout = () => {
     logout();
     setIsDropdownOpen(false);
@@ -53,23 +33,25 @@ const Header = () => {
   const userRole = user?.role || "";
   const displayRole = userRole.charAt(0).toUpperCase() + userRole.slice(1);
 
+  // Get the user's profile image URL or use the default fallback image
+  const profileImage = user?.profileImage || log;
+
   return (
     <header className="flex justify-between items-center max-w-full px-6 py-3 bg-[#171943] text-white">
       {/* Logo or brand could go here */}
       <div className="flex-1">
         {/* Placeholder for any left-side content */}
       </div>
-      
+
       {/* User info and actions container */}
       <div className="flex items-center gap-4">
         <Link to={'/message'}>
           <Bell className="text-white" />
         </Link>
-        
+
         {isAuthenticated && (
           <div className="flex items-center gap-2">
             <div className="text-right text-sm">
-              {/* <p className="text-gray-300">{user?.email || "user@example.com"}</p> */}
               <div className="flex items-center gap-2">
                 <p className="font-medium">{user?.name || "Rudu"}</p>
                 <span className="px-2 py-0.5 bg-blue-900 rounded-full text-xs">
@@ -79,16 +61,25 @@ const Header = () => {
             </div>
           </div>
         )}
-        
+
         <div className="relative">
           <div className="flex items-center gap-2 cursor-pointer" onClick={toggleDropdown}>
             <Avatar>
+              {/* Use the user's profile image if available, otherwise fallback to the default image */}
               <AvatarImage
-                src={log}
-                alt="Admin"
+                src={profileImage}
+                alt={user?.name || "User"}
                 className="h-8 w-8 rounded-2xl"
               />
-              <AvatarFallback>AD</AvatarFallback>
+              <AvatarFallback>
+                {/* Fallback to the user's initials if no image is available */}
+                {user?.name
+                  ? user.name
+                      .split(" ")
+                      .map((part) => part[0])
+                      .join("")
+                  : "AD"}
+              </AvatarFallback>
             </Avatar>
             <ChevronDown className="text-white" />
           </div>
@@ -99,18 +90,18 @@ const Header = () => {
               <ul className="py-2">
                 {isAuthenticated ? (
                   <>
-                  <Link to={'/profile'}>
-                    <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Profile</li>
-                  </Link>
-                  <Link to={'/settings'} onClick={toggleDropdown}>
-                    <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Settings</li>
-                  </Link>
-                  <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer" onClick={handleLogout}>
-                    Logout
-                  </li>
-                  <li className="px-4 py-2 bg-green-100 text-green-800">
-                    Status: {user?.status}
-                  </li>
+                    <Link to={'/profile'}>
+                      <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Profile</li>
+                    </Link>
+                    <Link to={'/settings'} onClick={toggleDropdown}>
+                      <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Settings</li>
+                    </Link>
+                    <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer" onClick={handleLogout}>
+                      Logout
+                    </li>
+                    <li className="px-4 py-2 bg-green-100 text-green-800">
+                      Status: {user?.status}
+                    </li>
                   </>
                 ) : (
                   <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer" onClick={handleOpenLoginModal}>
@@ -127,7 +118,6 @@ const Header = () => {
       <LoginModal
         isOpen={isLoginModalOpen}
         onClose={handleCloseLoginModal}
-        onLogin={handleLogin}
       />
     </header>
   );

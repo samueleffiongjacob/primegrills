@@ -9,7 +9,6 @@ import Category from '../components/category/category';
 import ReportIssue from '../components/Report/report';
 import ComplaintPolicy from '../components/Report/complaintPolicy';
 import Settings from '../components/Settings/settings';
-import User from '../components/Clients/clients';
 import { ProtectedRoute } from '../components/ProtectedRoute';
 import MessagesPage from '../pages/messages';
 import Profile from '../pages/profile';

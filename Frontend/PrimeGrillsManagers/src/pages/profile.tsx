@@ -11,7 +11,7 @@ const Profile = () => {
     username: user?.name || "Rkay",
     address: user?.address || "11 Obashoba, Lagos, Nigeria",
     phoneNumber: user?.phoneNumber || "09022773594",
-    image: user?.image || profile
+    image: user?.profileImage || profile
   });
   
   // State for image preview

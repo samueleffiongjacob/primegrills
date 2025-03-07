@@ -9,7 +9,7 @@ interface ProtectedRouteProps {
 }
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { isAuthenticated, login, user: currentUser } = useAuth();
+  const { isAuthenticated, user: currentUser } = useAuth();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
   if (!isAuthenticated && currentUser?.status !== "Active") {
@@ -31,7 +31,6 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
         <LoginModal
           isOpen={isLoginModalOpen}
           onClose={() => setIsLoginModalOpen(false)}
-          onLogin={login}
         />
       </div>
     );
