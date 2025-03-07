@@ -12,7 +12,7 @@ def register_staff(request):
     """Registers a staff user (requires admin permissions)."""
     
     # Check if user has admin permissions
-    if not request.user.is_authenticated or request.user.user_type != 'staff' or request.user.staff_profile.role != 'Admin':
+    if not request.user.is_authenticated or request.user.user_type != 'staff' or request.user.staff_profile.role != 'Manager':
         return Response({"error": "You don't have permission to register staff members"}, status=403)
     
     data = request.data

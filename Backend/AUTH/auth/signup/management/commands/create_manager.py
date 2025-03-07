@@ -20,6 +20,7 @@ class Command(BaseCommand):
             user.set_password(password)
             user.is_staff = True
             user.is_superuser = True
+            user.is_active = True  # Ensure the user is active
             user.save()
             self.stdout.write(self.style.SUCCESS(f"Successfully created manager user: {email}"))
         else:
@@ -28,6 +29,7 @@ class Command(BaseCommand):
             user.set_password(password)
             user.is_staff = True
             user.is_superuser = True
+            user.is_active = True  # Ensure the user is active
             user.save()
             self.stdout.write(self.style.SUCCESS(f"Updated existing manager user: {email}"))
 
