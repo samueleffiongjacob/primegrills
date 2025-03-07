@@ -25,13 +25,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [user, setUser] = useState<UserProfile | null>(null);
 
-  useEffect(() => {
+/*   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
       setIsAuthenticated(true);
     }
-  }, []);
+  }, []); */
 
   const login = async (email: string, password: string): Promise<string | boolean> => {
     try {
@@ -91,7 +91,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const fetchUserProfile = async () => {
     try {
       const csrfToken = getCookie("csrftoken");
-      alert(csrfToken)
 
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user/profile/`, {
         method: "GET",
@@ -115,7 +114,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const userData = await response.json();
       setUser(userData);
       setIsAuthenticated(true);
-      localStorage.setItem('user', JSON.stringify(userData));
+      //localStorage.setItem('user', JSON.stringify(userData));
     } catch (error) {
       console.error("Profile Fetch Error:", error);
       if (String(error).includes("Failed to refresh token")) {
@@ -173,27 +172,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } finally {
       setIsAuthenticated(false);
       setUser(null);
-      localStorage.removeItem('user');
-      localStorage.setItem('anonymous_cart', JSON.stringify([]));
+     /*  localStorage.removeItem('user');
+      localStorage.setItem('anonymous_cart', JSON.stringify([])); */
     }
   };
 
   useEffect(() => {
     const initAuth = async () => {
-      try {
-        await fetchUserProfile();
-      } catch (error) {
-        console.log("Initial profile fetch failed:", error);
-        const refreshed = await refreshAccessToken();
-        if (refreshed) {
+      let retries = 3;
+      while (retries > 0) {
+        try {
           await fetchUserProfile();
-        } else {
-          setIsAuthenticated(false);
-          setUser(null);
+          break; // Exit loop if successful
+        } catch (error) {
+          console.log("Initial profile fetch failed:", error);
+          retries--;
+          if (retries === 0) {
+            setIsAuthenticated(false);
+            setUser(null);
+            break;
+          }
+          await new Promise((resolve) => setTimeout(resolve, 5000)); // Retry after 5 seconds
         }
       }
     };
-
+  
     initAuth();
   }, []);
 
