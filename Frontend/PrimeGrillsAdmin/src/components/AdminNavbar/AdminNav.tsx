@@ -7,7 +7,7 @@ import LoginModal from "../Login";
 import log from "../../assets/images/ladyimage.jpg"; // Default fallback image
 
 const Header = () => {
-  const { user, isAuthenticated, logout, login } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
@@ -21,11 +21,6 @@ const Header = () => {
   };
 
   const handleCloseLoginModal = () => {
-    setIsLoginModalOpen(false);
-  };
-
-  const handleLogin = (email: string, password: string) => {
-    login(email, password);
     setIsLoginModalOpen(false);
   };
 
@@ -123,7 +118,6 @@ const Header = () => {
       <LoginModal
         isOpen={isLoginModalOpen}
         onClose={handleCloseLoginModal}
-        onLogin={handleLogin}
       />
     </header>
   );
