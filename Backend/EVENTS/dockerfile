@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y netcat-openbsd
 RUN pip install --upgrade pip
 
 # dependencies file 
-COPY . requirements.txt /EVENTS/
+COPY  requirements.txt /EVENTS/event_service
 
 # Install dependencies
 #RUN pip install --no-cache-dir -r /EVENTS/requirements.txt # for production
@@ -30,13 +30,17 @@ RUN pip install -r /EVENTS/requirements.txt
 COPY . /EVENTS/event_service/
 
 # Expose the default development port
-EXPOSE 8008
+EXPOSE 8003
 
 # Run Django's development server
-CMD ["python", "manage.py", "consume_auth_events"]
+# CMD ["python", "manage.py", "consume_auth_events"]
 
 # run entrypoint.sh
 # ENTRYPOINT ["/EVENTS/event_service/migrate.sh"]
 
+# Use an environment variable to switch between development and production
+ARG MODE=production
+ENV MODE=${MODE}
+
 # for production
-#CMD ["gunicorn", "--bind", "0.0.0.0:8008", "event_service.wsgi:application"]
+CMD ["sh", "-c", "python manage.py makemigrations && python manage.py migrate && if [ \"$MODE\" = 'development' ]; then python manage.py runserver 0.0.0.0:8000; else gunicorn --bind 0.0.0.0:8000 eventservice.wsgi:application; fi"]

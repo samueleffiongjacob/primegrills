@@ -21,12 +21,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-*d8u02$^e-bsdhjr0_#xe(gh8tsz274(5k)2p^cwzzioqlx309'
+# SECRET_KEY = 'django-insecure-*d8u02$^e-bsdhjr0_#xe(gh8tsz274(5k)2p^cwzzioqlx309'
+SECRET_KEY = os.environ.get("SECRET_KEY", 'django-insecure-*d8u02$^e-bsdhjr0_#xe(gh8tsz274(5k)2p^cwzzioqlx309')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
+DEBUG = bool(os.environ.get("DEBUG", default=0))
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost 127.0.0.1 [::1]").split(" ")
 
 
 # Application definition
@@ -40,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'event_processor',
-    'event_service'
+    'event_service',
+    'event_image'
 ]
 
 MIDDLEWARE = [
@@ -81,9 +85,9 @@ AUTH_EVENT_MODEL = "event_processor.AuthEvent" # relationship in event_processor
 DATABASES = {
     'default': {
         "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.postgresql"),
-        "NAME": os.environ.get("SQL_DATABASE", "primegrillsevents_db"),
-        "USER": os.environ.get("SQL_USER", "primegrills"),
-        "PASSWORD": os.environ.get("SQL_PASSWORD", "primegrills"),
+        "NAME": os.environ.get("SQL_DATABASE", "primegrillsevents"),
+        "USER": os.environ.get("SQL_USER", "prime_grills"),
+        "PASSWORD": os.environ.get("SQL_PASSWORD", "prime"),
         "HOST": os.environ.get("SQL_HOST", "localhost"),
         "PORT": os.environ.get("SQL_PORT", "5432"),
     }
@@ -133,12 +137,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Start event consumer
 """ import os
-if os.environ.get('RUN_MAIN', None) != 'true':
-    import django
-    django.setup()
-    
-    # Start consumer in a separate thread
-    from event_processor.consumers.auth_events_consumer import AuthEventsConsumer
-    consumer = AuthEventsConsumer()
-    consumer.daemon = True
-    consumer.start() """
+    if os.environ.get('RUN_MAIN', None) != 'true':
+        import django
+        django.setup()
+        
+        # Start consumer in a separate thread
+        from event_processor.consumers.auth_events_consumer import AuthEventsConsumer
+        consumer = AuthEventsConsumer()
+        consumer.daemon = True
+        consumer.start() 
+"""

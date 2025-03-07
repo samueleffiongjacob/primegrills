@@ -16,7 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.http import HttpResponse
+
+def home_view(request):
+    return HttpResponse("Welcome to PrimeGrills eVENT!  Comment it later when u are done")
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', home_view, name='home'),   
 ]

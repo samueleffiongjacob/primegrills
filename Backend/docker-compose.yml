@@ -2,24 +2,27 @@
 services:
   auth_service:
     build: ./AUTH
-    container_name: auth_service
+    container_name: authservice
+    networks:
+      - primegrills_network
     ports:
       - "8000:8000"
     volumes:
       - ./AUTH/auth:/AUTH/auth
     env_file:
-      - ./AUTH/.env.dev
+      - ./AUTH/.env
     depends_on:
       primegrillsdb:
         condition: service_healthy
     #environment:
       #- DJANGO_SETTINGS_MODULE=your_project.settings.production
-
-    restart: on-failure
+    restart: always
 
   product_service:
     build: ./PRODUCT
-    container_name: product_service
+    container_name: productservice
+    networks:
+      - primegrills_network
     ports:
       - "8001:8000"
     volumes:
@@ -29,6 +32,27 @@ services:
     depends_on:
       primegrillsdb:
         condition: service_healthy
+      # event_service:
+      #   condition: service_started
+    restart: always
+
+
+  file_manager:
+    build: ./FILE_MANAGER
+    container_name: filemanager
+    networks:
+      - primegrills_network
+    ports:
+      - "8002:8000"
+    volumes:
+      - ./FILE_MANAGER/file_manager:/FILE_MANAGER/file_manager
+    env_file:
+      - ./FILE_MANAGER/.env
+    depends_on:
+      primegrillsdb:
+        condition: service_healthy
+      event_service:
+        condition: service_started
     restart: on-failure
 
   order_service:
@@ -46,35 +70,14 @@ services:
     restart: on-failure
 
 
-#   manager_service:
-#     build: ./manager_service
-#     container_name: manager_service
-#     ports:
-#       - "8001:8000"
-#     volumes:
-#       - ./manager_service:/app
-#     env_file:
-#       - ./manager_service/.env
-#     depends_on:
-#       - db
-
-#   account_service:
-#     build: ./account_service
-#     container_name: account_service
-#     ports:
-#       - "8002:8000"
-#     volumes:
-#       - ./account_service:/app
-#     env_file:
-#       - ./account_service/.env
-#     depends_on:
-#       - db
-
+  # EVENT SERVICE
   event_service:
     build: ./EVENTS
-    container_name: event_service
+    container_name: eventservice
+    networks:
+      - primegrills_network
     ports:
-      - "8008:8008"
+      - "8003:8000"
     volumes:
       - ./EVENTS/event_service:/EVENTS/event_service
     env_file:
@@ -82,7 +85,23 @@ services:
     depends_on:
       primegrillsdb:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     restart: on-failure
+
+
+
+    #   account_service:
+  #     build: ./account_service
+  #     container_name: account_service
+  #     ports:
+  #       - "8002:8000"
+  #     volumes:
+  #       - ./account_service:/app
+  #     env_file:
+  #       - ./account_service/.env
+  #     depends_on:
+  #       - db
 
   primegrillsdb:
     image: postgres:17
@@ -106,6 +125,8 @@ services:
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
+    networks:
+      - primegrills_network
     ports:
       - "5672:5672"   # AMQP protocol port
       - "15672:15672" # Management UI port
@@ -114,26 +135,35 @@ services:
       - RABBITMQ_DEFAULT_PASS=primegrills
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+
+
+  nginx:
+    image: nginx:stable-alpine
+    container_name: nginx_gateway
     networks:
       - primegrills_network
-
-#   nginx:
-#     image: nginx:latest
-#     container_name: nginx_gateway
-#     volumes:
-#       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-#     ports:
-#       - "80:80"
-#     depends_on:
-#       - auth_service
-#       - manager_service
-#       - account_service
-#       - event_service
-#       - rabbitmq
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "80:80"
+    depends_on:
+      - auth_service
+      - manager_service
+      - account_service
+      - event_service
+      - rabbitmq
 
 networks:
   primegrills_network:
    driver: bridge
+
+
 volumes:
   pgdata:
   rabbitmq_data:
