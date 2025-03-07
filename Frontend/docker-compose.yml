@@ -3,9 +3,11 @@ version: "3.8"
 services:
   primegrillsclient:
     build:
-      context: ./PrimeGrillsClient
+      context: ./PrimeGrillsclient
       dockerfile: Dockerfile
     container_name: primegrillsclient
+    networks:
+      - primegrills_network
     ports:
       - "5173:5173"
     volumes:
@@ -13,6 +15,7 @@ services:
       - /app/node_modules
     environment:
       - NODE_ENV=development
+      - VITE_PORT=5173
     command: ["npm", "run", "dev", "--", "--host"]
     restart: unless-stopped
 
@@ -21,6 +24,8 @@ services:
       context: ./PrimeGrillsPos
       dockerfile: Dockerfile
     container_name: primegrillspos
+    networks:
+      - primegrills_network
     ports:
       - "5174:5174"
     volumes:
@@ -28,6 +33,7 @@ services:
       - /app/node_modules
     environment:
       - NODE_ENV=development
+      - VITE_PORT=5174
     command: ["npm", "run", "dev", "--", "--host"]
     restart: unless-stopped
 
@@ -36,6 +42,8 @@ services:
       context: ./PrimeGrillsAdmin
       dockerfile: Dockerfile
     container_name: primegrillsadmin
+    networks:
+      - primegrills_network
     ports:
       - "5175:5175"
     volumes:
@@ -43,14 +51,17 @@ services:
       - /app/node_modules
     environment:
       - NODE_ENV=development
+      - VITE_PORT=5175
     command: ["npm", "run", "dev", "--", "--host"]
     restart: unless-stopped
 
   primegrillsmanager:
     build:
-      context: ./PrimeGrillsManager
+      context: ./PrimeGrillsManagers
       dockerfile: Dockerfile
     container_name: primegrillsmanager
+    networks:
+      - primegrills_network
     ports:
       - "5176:5176"
     volumes:
@@ -58,5 +69,11 @@ services:
       - /app/node_modules
     environment:
       - NODE_ENV=development
+      - VITE_PORT=5176
     command: ["npm", "run", "dev", "--", "--host"]
     restart: unless-stopped
+
+
+networks:
+  primegrills_network:
+    driver: bridge
