@@ -39,11 +39,16 @@ def get_user_cart(request):
         return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(["GET"])
-@permission_classes([IsAuthenticated, IsManager])
 def get_all_users(request):
     """
     Get all users - accessible only by managers
     """
+    print(request)
+    if not request.user.is_authenticated:
+        return Response({"error": "Authentication required"}, status=401)
+        
+    if request.user.user_type != 'staff' and request.user.staff_profile.role != 'Manager':
+        return Response({"error": "Manager access only"}, status=403)
     users = User.objects.filter(user_type='client')  # Filter only client users
     serializer = ClientUserSerializer(users, many=True)
     return Response(serializer.data)
