@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import PaymentMethod, Transaction, DailyReport
+from .models import PaymentMethod, Transaction, DailyReport, PosStaff
 
 class PaymentMethodSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,3 +17,8 @@ class DailyReportSerializer(serializers.ModelSerializer):
         model = DailyReport
         fields = '__all__'
         read_only_fields = ('created_by',)
+
+class PosStaffSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PosStaff
+        fields = '__all__'
