@@ -56,3 +56,5 @@ class DailyReportViewSet(viewsets.ModelViewSet):
         )
         serializer = self.get_serializer(report)
         return Response(serializer.data)
+
+class 

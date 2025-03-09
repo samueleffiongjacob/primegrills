@@ -2,6 +2,18 @@ from django.db import models
 from django.contrib.auth.models import User
 from customers.models import Order, FoodProduct
 
+class PosStaff(models.Model):
+    username = models.CharField(max_length=50, unique=True)
+    email = models.EmailField(unique=True, max_length=255)
+    name = models.CharField(max_length=100, blank=True, null=True)
+    phone = models.CharField(max_length=15, blank=True, null=True)
+    address = models.TextField(blank=True, null=True)
+    profileImage = models.ImageField(upload_to='profile_images/', blank=True, null=True)
+    gender = models.CharField(max_length=10, blank=True, null=True)
+
+    def __str__(self):
+        return f"POS Staff Profile: {self.user.name} ({self.role})"
+
 class PaymentMethod(models.Model):
     name = models.CharField(max_length=50)
     is_active = models.BooleanField(default=True)
