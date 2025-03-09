@@ -3,6 +3,7 @@ import { useAuth } from "../../context/authContext";
 import logo from '../../assets/images/primeLogo.png';
 import { motion } from 'framer-motion';
 import { TrashIcon, SearchIcon } from "lucide-react"; // Replace imported image with icon component
+import { getCookie } from "../../utils/cookie";
 
 interface ClientProps {
   id: number;
@@ -39,10 +40,13 @@ const Clients = () => {
     setError(null);
     
     try {
+      const csrfToken = getCookie("csrftoken");
       const response = await fetch(`${API_BASE_URL}/api/users/all/`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`, // Add auth token for security
-        }
+          'Content-Type': 'application/json',
+          "X-CSRFToken": csrfToken || "",
+        },
+        credentials: "include",
       });
       
       if (!response.ok) {
@@ -119,9 +123,9 @@ const Clients = () => {
 
   // Filter clients based on search term
   const filteredClients = clients.filter(client => 
-    client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    client.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    client.username.toLowerCase().includes(searchTerm.toLowerCase())
+    (client.name?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+    (client.username?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+    (client.email?.toLowerCase() || '').includes(searchTerm.toLowerCase())
   );
 
   // Calculate pagination
@@ -170,40 +174,31 @@ const Clients = () => {
       ) : (
         <>
           <div className="flex flex-col md:flex-row md:justify-between gap-4 mb-6">
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <SearchIcon className="h-5 w-5 text-gray-400" />
-              </div>
-              <input
-                type="text"
-                placeholder="Search by name, email, or username..."
-                className="pl-10 border-[#EE7F61] border rounded-lg p-2 w-full"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-            
-            <div className="flex gap-4">
-              <select 
-                className="border-[#EE7F61] border rounded-lg p-2"
-                value={itemsPerPage}
-                onChange={(e) => {
-                  setItemsPerPage(Number(e.target.value));
-                  setCurrentPage(1); // Reset to first page when changing items per page
-                }}
-                aria-label="Items per page"
-              >
-                <option value={10}>10 per page</option>
-                <option value={25}>25 per page</option>
-                <option value={50}>50 per page</option>
-                <option value={100}>100 per page</option>
-              </select>
-              
               {filteredClients.length > 0 && (
                 <div className="text-gray-600 self-center">
                   Showing {startIndex + 1}-{Math.min(endIndex, filteredClients.length)} of {filteredClients.length}
                 </div>
               )}
+            <div className="flex gap-4 ml-auto">  
+              <div className="mb-4 md:mb-0">
+                <select 
+                  className="border-[#EE7F61] border rounded-lg  p-2 mr-4"
+                  value={itemsPerPage}
+                  onChange={(e) => setItemsPerPage(Number(e.target.value))}
+                >
+                  <option value={10}>10 per page</option>
+                  <option value={25}>25 per page</option>
+                  <option value={50}>50 per page</option>
+                  <option value={100}>100 per page</option>
+                </select>
+              </div>
+              <input
+                type="search"
+                placeholder="Search Staff..."
+                className="w-64 p-2 pl-3 border rounded-lg border-[#EE7F61]"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
           </div>
           

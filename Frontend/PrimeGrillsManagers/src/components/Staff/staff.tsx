@@ -53,16 +53,16 @@ const StaffService = {
     
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || "Failed to create staff");
+      throw new Error(errorData.error || "Failed to create staff");
     }
     
     return response.json();
   },
   
-  async update(data: StaffFormData): Promise<StaffUser> {
+  async update(data: StaffFormData, id: number): Promise<StaffUser> {
     const csrfToken = getCookie("csrftoken");
-    const response = await fetch(`${this.baseUrl}/api/staffs/update/`, {
-      method: 'PUT',
+    const response = await fetch(`${this.baseUrl}/api/manager/staffs/update/${id}/`, {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         "X-CSRFToken": csrfToken || "",
@@ -73,7 +73,7 @@ const StaffService = {
     
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || "Failed to update staff");
+      throw new Error(errorData.error || "Failed to update staff");
     }
     
     return response.json();
@@ -92,7 +92,7 @@ const StaffService = {
     
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || "Failed to delete staff");
+      throw new Error(errorData.error || "Failed to delete staff");
     }
   }
 };
@@ -136,48 +136,7 @@ const Staff = () => {
     } catch (err) {
       console.error("Error fetching users:", err);
       setError("Failed to load staff data. Please try again.");
-      
-      // Fallback mock data for development
-      if (import.meta.env.DEV) {
-        setUsers([
-          { 
-            id: 1, 
-            name: "Joshua George", 
-            email: "joshua@example.com", 
-            username: "joshg",
-            password: '',
-            profileImage: logo, 
-            phone: "555-1234",
-            address: "123 Main St",
-            staff_profile: {
-              role: "Waiter", 
-              gender: "Male",
-              shift: 'Morning', 
-              shiftHours: "8 AM - 4 PM",
-              age: "28",
-              status: "Active"
-            }
-          },
-          { 
-            id: 2, 
-            name: "Suleinman Adamu", 
-            email: "adamu@example.com", 
-            username: "sadamu",
-            password: '',
-            profileImage: logo, 
-            phone: "555-5678",
-            address: "456 Oak Ave",
-            staff_profile: {
-              role: "Chef", 
-              gender: "Male",
-              shift: 'Afternoon', 
-              shiftHours: "4 PM - 12 AM",
-              age: "32",
-              status: "Active"
-            }
-          }
-        ]);
-      }
+
     } finally {
       setLoading(false);
     }
@@ -195,7 +154,7 @@ const Staff = () => {
 
   const handleEditUser = (user: StaffUser) => {
     setSelectedUser({
-      id: user.id,
+      id: user.id, // Ensure the id is set
       name: user.name,
       email: user.email,
       username: user.username,
@@ -216,7 +175,12 @@ const Staff = () => {
       if (formMode === 'add') {
         await StaffService.create(formData);
       } else {
-        await StaffService.update(formData);
+        // Pass the id to the update method when in edit mode
+        if (selectedUser && selectedUser.id) {
+          await StaffService.update(formData, selectedUser.id);
+        } else {
+          throw new Error("No user selected for editing");
+        }
       }
       await fetchUsers();
       setFormOpen(false);

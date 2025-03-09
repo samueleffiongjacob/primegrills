@@ -123,17 +123,8 @@ const StaffForm: React.FC<StaffFormProps> = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    
-    // Validate the field
-    const errorMessage = validateField(name.includes('.') ? name.split('.')[1] : name, value);
-    
-    // Update errors
-    setErrors(prev => ({
-      ...prev,
-      [name]: errorMessage
-    }));
   
-    // Check if the field is part of staff_profile
+    // Update form data without validating
     if (name.startsWith('staff_profile.')) {
       const field = name.split('.')[1]; // Extract the nested field name
       setFormData(prev => ({
@@ -150,6 +141,20 @@ const StaffForm: React.FC<StaffFormProps> = ({
         [name]: value,
       }));
     }
+  };
+  
+  // Validate on blur
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+  
+    // Validate the field
+    const errorMessage = validateField(name.includes('.') ? name.split('.')[1] : name, value);
+  
+    // Update errors
+    setErrors(prev => ({
+      ...prev,
+      [name]: errorMessage,
+    }));
   };
 
   const validateForm = (): boolean => {
@@ -255,6 +260,7 @@ const StaffForm: React.FC<StaffFormProps> = ({
             name={fieldName}
             value={value as string}
             onChange={handleChange}
+            onBlur={handleBlur}
             className={`w-full p-2 border rounded ${error ? 'border-red-500' : 'border-gray-300'} focus:ring-[#EE7F61] focus:border-[#EE7F61]`}
             required={required}
           >
@@ -269,6 +275,7 @@ const StaffForm: React.FC<StaffFormProps> = ({
             name={fieldName}
             value={value as string}
             onChange={handleChange}
+            onBlur={handleBlur}
             className={`w-full p-2 border rounded ${error ? 'border-red-500' : 'border-gray-300'} focus:ring-[#EE7F61] focus:border-[#EE7F61]`}
             required={required}
           />
@@ -333,6 +340,7 @@ const StaffForm: React.FC<StaffFormProps> = ({
                 name="staff_profile.status"
                 value={formData.staff_profile.status}
                 onChange={handleChange}
+                onBlur={handleBlur}
                 className="w-full p-2 border rounded border-gray-300 focus:ring-[#EE7F61] focus:border-[#EE7F61]"
                 required
               >
