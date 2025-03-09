@@ -1,96 +1,191 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../../context/authContext";
 import logo from '../../assets/images/primeLogo.png';
-import { motion } from 'framer-motion';
-import StaffForm, { StaffFormData } from "./StaffForm"
+import { motion, AnimatePresence } from 'framer-motion';
+import StaffForm, { StaffFormData } from "./StaffForm";
 import pencil from '../../assets/images/pencil.png';
-import trash from "../../assets/images/trash.png";
+import trash from '../../assets/images/trash.png';
+import { getCookie } from "../../utils/cookie";
 
-interface BackendUser {
+// Improved typing for backend data
+interface StaffProfile {
+  role: string;
+  gender: string;
+  shift: string;
+  shiftHours: string;
+  age: string;
+  status: string;
+}
+
+interface StaffUser {
   id: number;
   name: string;
   email: string;
   username: string;
-  roles: string;
-  image: string;
-  shift: string;
-  shiftHours: string;
-  address: string;
-  age: string;
+  password: string;
+  profileImage?: string;
   phone: string;
+  address: string;
+  staff_profile: StaffProfile;
 }
 
-interface StaffUser extends BackendUser {
-  status: "Active" | "Inactive";
-}
+// API service for better organization
+const StaffService = {
+  baseUrl: import.meta.env.VITE_BACKEND_URL || "http://localhost:8000",
+  
+  async getAll(): Promise<StaffUser[]> {
+    const response = await fetch(`${this.baseUrl}/api/staffs/all/`);
+    if (!response.ok) throw new Error("Failed to fetch staff");
+    return response.json();
+  },
+  
+  async create(data: StaffFormData): Promise<StaffUser> {
+    const csrfToken = getCookie("csrftoken");
+    const response = await fetch(`${this.baseUrl}/register_staff/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        "X-CSRFToken": csrfToken || "",
+      },
+      credentials: "include",
+      body: JSON.stringify(data)
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || "Failed to create staff");
+    }
+    
+    return response.json();
+  },
+  
+  async update(data: StaffFormData): Promise<StaffUser> {
+    const csrfToken = getCookie("csrftoken");
+    const response = await fetch(`${this.baseUrl}/api/staffs/update/`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        "X-CSRFToken": csrfToken || "",
+      },
+      credentials: "include",
+      body: JSON.stringify(data)
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || "Failed to update staff");
+    }
+    
+    return response.json();
+  },
+  
+  async delete(id: number): Promise<void> {
+    const csrfToken = getCookie("csrftoken");
+    const response = await fetch(`${this.baseUrl}/api/staffs/delete/${id}/`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        "X-CSRFToken": csrfToken || "",
+      },
+      credentials: "include"
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || "Failed to delete staff");
+    }
+  }
+};
+
+// Component configurations
+const ITEMS_PER_PAGE_OPTIONS = [10, 25, 50, 100];
 
 const Staff = () => {
   const { user: currentUser, isAdmin, isAuthenticated } = useAuth();
   const [users, setUsers] = useState<StaffUser[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [itemsPerPage, setItemsPerPage] = useState(100);
+  const [itemsPerPage, setItemsPerPage] = useState(25);
   const [formOpen, setFormOpen] = useState(false);
   const [formMode, setFormMode] = useState<'add' | 'edit'>('add');
   const [selectedUser, setSelectedUser] = useState<StaffFormData | undefined>(undefined);
-  //const [actionLoading, setActionLoading] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
 
-  useEffect(() => {
-    fetchUsers();
-  }, [isAuthenticated, currentUser?.email, currentUser?.status]);
-
-  const fetchUsers = async () => {
+  // Memoized fetch function
+  const fetchUsers = useCallback(async () => {
     if (!isAuthenticated) return;
     
     setLoading(true);
+    setError(null);
+    
     try {
-      const response = await fetch("http://localhost:8000/auth/api/staffs/all/");
-      if (!response.ok) throw new Error("Failed to fetch users");
+      const staffUsers = await StaffService.getAll();
       
-      const backendUsers: BackendUser[] = await response.json();
-      const processedUsers: StaffUser[] = backendUsers.map(user => ({
+      // Process users to apply current user's status if needed
+      const processedUsers = staffUsers.map(user => ({
         ...user,
-        status: user.email === currentUser?.email && currentUser?.status === "Active"
-          ? "Active"
-          : "Inactive",
-      }));
-      setUsers(processedUsers);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-      setUsers([
-        { 
-          id: 1, 
-          name: "Joshua George", 
-          email: "rufus.kenny09@gmail.com", 
-          username: "joshg",
-          roles: "Waiter", 
-          status: "Active", 
-          image: logo, 
-          shift: 'Morning', 
-          shiftHours: "8 AM - 4 PM",
-          address: "123 Main St",
-          age: "28",
-          phone: "555-1234"
+        profileImage: user.profileImage || logo, // Default image if missing
+        staff_profile: {
+          ...user.staff_profile
+        
         },
-        { 
-          id: 2, 
-          name: "Suleinman Adamu", 
-          email: "grilled@example.com", 
-          username: "sadamu",
-          roles: "Waiter", 
-          status: "Inactive", 
-          image: logo, 
-          shift: 'Afternoon', 
-          shiftHours: "4 PM - 12 AM",
-          address: "456 Oak Ave",
-          age: "32",
-          phone: "555-5678"
-        }
-      ]);
+      }));
+      
+      setUsers(processedUsers);
+    } catch (err) {
+      console.error("Error fetching users:", err);
+      setError("Failed to load staff data. Please try again.");
+      
+      // Fallback mock data for development
+      if (import.meta.env.DEV) {
+        setUsers([
+          { 
+            id: 1, 
+            name: "Joshua George", 
+            email: "joshua@example.com", 
+            username: "joshg",
+            password: '',
+            profileImage: logo, 
+            phone: "555-1234",
+            address: "123 Main St",
+            staff_profile: {
+              role: "Waiter", 
+              gender: "Male",
+              shift: 'Morning', 
+              shiftHours: "8 AM - 4 PM",
+              age: "28",
+              status: "Active"
+            }
+          },
+          { 
+            id: 2, 
+            name: "Suleinman Adamu", 
+            email: "adamu@example.com", 
+            username: "sadamu",
+            password: '',
+            profileImage: logo, 
+            phone: "555-5678",
+            address: "456 Oak Ave",
+            staff_profile: {
+              role: "Chef", 
+              gender: "Male",
+              shift: 'Afternoon', 
+              shiftHours: "4 PM - 12 AM",
+              age: "32",
+              status: "Active"
+            }
+          }
+        ]);
+      }
     } finally {
       setLoading(false);
     }
-  };
+  }, [isAuthenticated, currentUser?.email, currentUser?.staff_profile.status]);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
 
   const handleAddUser = () => {
     setSelectedUser(undefined);
@@ -99,82 +194,74 @@ const Staff = () => {
   };
 
   const handleEditUser = (user: StaffUser) => {
-    setSelectedUser(user);
+    setSelectedUser({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      username: user.username,
+      password: '', // Don't send password for edit
+      phone: user.phone,
+      address: user.address,
+      staff_profile: {
+        ...user.staff_profile
+      },
+    });
     setFormMode('edit');
     setFormOpen(true);
   };
 
   const handleSubmitUser = async (formData: StaffFormData) => {
-   // setActionLoading(true);
+    setActionLoading(true);
     try {
-      const endpoint = formMode === 'add' 
-        ? "http://localhost:8000/auth/register_staff/" 
-        : `http://localhost:8000/auth/api/staffs/update/`;
-      
-      const method = formMode === 'add' ? 'POST' : 'PUT';
-      
-      const response = await fetch(endpoint, {
-        method,
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Failed to ${formMode} user`);
+      if (formMode === 'add') {
+        await StaffService.create(formData);
+      } else {
+        await StaffService.update(formData);
       }
-      
-      // Refresh user list after successful operation
       await fetchUsers();
-      
+      setFormOpen(false);
     } catch (error) {
       console.error(`Error ${formMode === 'add' ? 'adding' : 'updating'} user:`, error);
       throw error;
     } finally {
-      //setActionLoading(false);
+      setActionLoading(false);
     }
   };
 
   const handleDeleteUser = async (id: number) => {
-    //setActionLoading(true);
+    setActionLoading(true);
     try {
-      const response = await fetch(`http://localhost:8000/auth/api/staffs/delete/${id}/`, {
-        method: 'DELETE'
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to delete user');
-      }
-      
-      // Refresh user list after successful deletion
+      await StaffService.delete(id);
       await fetchUsers();
-      
     } catch (error) {
       console.error('Error deleting user:', error);
       throw error;
     } finally {
-      //setActionLoading(false);
+      setActionLoading(false);
     }
   };
 
+  // Filter users based on search term
   const filteredUsers = users.filter(user => 
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.roles.toLowerCase().includes(searchTerm.toLowerCase())
+    (user.name?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+    (user.staff_profile?.role?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+    (user.email?.toLowerCase() || '').includes(searchTerm.toLowerCase())
   );
 
-  const canViewUsers = isAuthenticated && (currentUser?.status === "Active" || isAdmin);
+  // Permission checks
+  const canViewUsers = isAuthenticated && (currentUser?.staff_profile.status === "Active" || isAdmin);
   const canManageUsers = isAuthenticated && isAdmin;
 
   return (
     <div className="flex max-h-[85vh] bg-gray-100 flex-col">
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="py-5 bg-white border-b flex items-center justify-between px-6">
-          <h1 className="text-xl font-semibold">Staff</h1>
+          <h1 className="text-xl font-semibold">Staff Management</h1>
           {canManageUsers && (
             <button
               onClick={handleAddUser}
               className="bg-[#EE7F61] text-white px-4 py-2 rounded-lg hover:bg-[#e06a4c] focus:outline-none focus:ring-2 focus:ring-[#EE7F61]"
+              disabled={actionLoading}
             >
               Add New Staff
             </button>
@@ -183,106 +270,167 @@ const Staff = () => {
         <main className="flex-1 overflow-auto p-6">
           {loading ? (
             <motion.div 
-              className="flex justify-self-center mt-[10%] items-center h-full"
+              className="flex justify-center items-center h-64"
               animate={{ rotate: 360 }}
               transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
             >
               <img src={logo} className="w-16 h-16" alt="Loading..." />
             </motion.div>
-          ) : canViewUsers ? (
-            <>
-              <div className="mb-6 flex flex-wrap gap-4">
-                <div className="flex gap-4 ml-auto">  
-                  <div className="mb-4 md:mb-0">
-                    <select 
-                      className="border-[#EE7F61] border rounded-lg  p-2 mr-4"
-                      value={itemsPerPage}
-                      onChange={(e) => setItemsPerPage(Number(e.target.value))}
-                    >
-                      <option value={10}>10 per page</option>
-                      <option value={25}>25 per page</option>
-                      <option value={50}>50 per page</option>
-                      <option value={100}>100 per page</option>
-                    </select>
-                  </div>
-                  <input
-                    type="search"
-                    placeholder="Search Staff..."
-                    className="w-64 p-2 pl-3 border rounded-lg border-[#EE7F61]"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </div>
-              </div>
-              <div className="bg-white rounded-lg shadow overflow-hidden">
-                <table className="table-auto w-full border-collapse">
-                  <thead>
-                    <tr className="bg-[#EE7F61] text-white p-4">
-                      <th className="py-2 px-4 text-left">S/N</th>
-                      <th className="py-2 px-4 text-left">Staff Name</th>
-                      <th className="py-2 px-4 text-left">Roles</th>
-                      <th className="py-2 px-4 text-left">Status</th>
-                      <th className="py-2 px-4 text-left">Image</th>
-                      <th className="py-2 px-4 text-left">Shift</th>
-                      <th className="py-2 px-4 text-left">Hours</th>
-                      {canManageUsers && <th className="py-2 px-4 text-center">Actions</th>}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredUsers.slice(0, itemsPerPage).map((user, index) => (
-                      <motion.tr 
-                        key={user.id} 
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.3, delay: index * 0.05 }}
-                        className={`${index % 2 === 0 ? "bg-gray-50" : "bg-white"}` }
-                        >
-                        <td className="py-2 px-4">{index + 1}.</td>
-                        <td className="py-2 px-4">{user.name}</td>
-                        <td className="py-2 px-4">{user.roles}</td>
-                        <td className="py-2 px-4">
-                          <span className={`px-2 py-1 rounded-full text-xs ${user.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>{user.status}</span>
-                        </td>
-                        <td className="py-2 px-4">
-                          <img src={user.image} alt={user.name} className="w-10 h-10 rounded-full border" />
-                        </td>
-                        <td className="py-2 px-4">{user.shift}</td>
-                        <td className="text-gray-500 text-sm">({user.shiftHours})</td>
-                        {canManageUsers && (
-                          <td className="py-2 px-4 text-center">
-                            <button
-                              onClick={() => handleEditUser(user)}
-                              className="p-2 hover:text-[#bf360c] hover:bg-orange-50 rounded"
-                              >
-                                <img src={pencil} alt="pencil-icon" className="h-5 w-5"/>
-                              </button>
-
-                               {/* Delete Button */}
-                              <button 
-                                className="p-2 hover:text-[#bf360c] hover:bg-orange-50 rounded"
-                                onClick={() => handleDeleteUser(user.id)}
-                              >
-                                <img src={trash} alt="trash-icon" className="h-5 w-5"/>
-                              </button>
-                          </td>
-                          
-                        )}
-                      </motion.tr >
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </>
-          ) : (
+          ) : !canViewUsers ? (
             <div className="flex flex-col items-center justify-center h-full">
               <div className="bg-white p-8 rounded-lg shadow text-center">
                 <h2 className="text-xl font-semibold mb-4">Access Restricted</h2>
-                <p className="mb-4">Please log in to view user data.</p>
-                {currentUser && currentUser.status === "Inactive" && (
+                <p className="mb-4">Please log in with appropriate permissions to view staff data.</p>
+                {currentUser && currentUser.staff_profile.status === "Inactive" && (
                   <p className="text-red-600">Your account is inactive. Please contact an administrator.</p>
                 )}
               </div>
             </div>
+          ) : (
+            <>
+              {error && (
+                <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6">
+                  <p>{error}</p>
+                  <button 
+                    onClick={fetchUsers} 
+                    className="mt-2 text-sm underline"
+                  >
+                    Try again
+                  </button>
+                </div>
+              )}
+              
+              <div className="mb-6 flex flex-wrap gap-4 items-center">
+                <div className="flex items-center gap-4 ml-auto">  
+                  <div>
+                    <label htmlFor="itemsPerPage" className="mr-2 text-sm text-gray-600">Show:</label>
+                    <select 
+                      id="itemsPerPage"
+                      className="border border-gray-300 rounded-lg p-2"
+                      value={itemsPerPage}
+                      onChange={(e) => setItemsPerPage(Number(e.target.value))}
+                    >
+                      {ITEMS_PER_PAGE_OPTIONS.map(value => (
+                        <option key={value} value={value}>{value} per page</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="search"
+                      placeholder="Search staff..."
+                      className="w-64 p-2 pl-3 border rounded-lg border-gray-300 focus:ring-[#EE7F61] focus:border-[#EE7F61]"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    {searchTerm && (
+                      <button 
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
+                        onClick={() => setSearchTerm('')}
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-white rounded-lg shadow overflow-hidden">
+                {filteredUsers.length === 0 ? (
+                  <div className="p-8 text-center text-gray-500">
+                    <p>No staff members found{searchTerm ? ' matching your search criteria' : ''}.</p>
+                    {searchTerm && (
+                      <button 
+                        onClick={() => setSearchTerm('')}
+                        className="mt-2 text-sm text-[#EE7F61]"
+                      >
+                        Clear search
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="table-auto w-full border-collapse">
+                      <thead>
+                        <tr className="bg-[#EE7F61] text-white">
+                          <th className="py-3 px-4 text-left">ID</th>
+                          <th className="py-3 px-4 text-left">Staff Name</th>
+                          <th className="py-3 px-4 text-left">Email</th>
+                          <th className="py-3 px-4 text-left">Role</th>
+                          <th className="py-3 px-4 text-left">Status</th>
+                          <th className="py-3 px-4 text-left">Image</th>
+                          <th className="py-3 px-4 text-left">Shift</th>
+                          <th className="py-3 px-4 text-left">Hours</th>
+                          {canManageUsers && <th className="py-3 px-4 text-center">Actions</th>}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <AnimatePresence>
+                          {filteredUsers.slice(0, itemsPerPage).map((user, index) => (
+                            <motion.tr 
+                              key={user.id} 
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              exit={{ opacity: 0 }}
+                              transition={{ duration: 0.2, delay: index * 0.03 }}
+                              className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}
+                            >
+                              <td className="py-3 px-4 text-gray-600">#{user.id}</td>
+                              <td className="py-3 px-4 font-medium">{user.name}</td>
+                              <td className="py-3 px-4 text-gray-700">{user.email}</td>
+                              <td className="py-3 px-4">{user.staff_profile.role}</td>
+                              <td className="py-3 px-4">
+                                <span className={`px-2 py-1 rounded-full text-xs ${
+                                  user.staff_profile.status === 'Active' 
+                                    ? 'bg-green-100 text-green-800' 
+                                    : 'bg-red-100 text-red-800'
+                                }`}>
+                                  {user.staff_profile.status}
+                                </span>
+                              </td>
+                              <td className="py-3 px-4">
+                                <img 
+                                  src={user.profileImage || logo} 
+                                  alt={`${user.name} profile`} 
+                                  className="w-10 h-10 rounded-full object-cover border" 
+                                />
+                              </td>
+                              <td className="py-3 px-4">{user.staff_profile.shift}</td>
+                              <td className="py-3 px-4 text-gray-600">{user.staff_profile.shiftHours}</td>
+                              {canManageUsers && (
+                                <td className="py-3 px-4 text-center">
+                                  <button
+                                    onClick={() => handleEditUser(user)}
+                                    className="p-2 hover:text-[#bf360c] hover:bg-orange-50 rounded mr-1"
+                                    aria-label={`Edit ${user.name}`}
+                                    title="Edit staff member"
+                                  >
+                                    <img src={pencil} alt="Edit" className="h-5 w-5"/>
+                                  </button>
+                                  <button 
+                                    className="p-2 hover:text-red-600 hover:bg-red-50 rounded"
+                                    onClick={() => handleDeleteUser(user.id)}
+                                    aria-label={`Delete ${user.name}`}
+                                    title="Delete staff member"
+                                  >
+                                    <img src={trash} alt="Delete" className="h-5 w-5"/>
+                                  </button>
+                                </td>
+                              )}
+                            </motion.tr>
+                          ))}
+                        </AnimatePresence>
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+                
+                {/* Pagination info */}
+                <div className="py-3 px-4 border-t border-gray-200 text-sm text-gray-500">
+                  Showing {Math.min(filteredUsers.length, itemsPerPage)} of {filteredUsers.length} staff members
+                </div>
+              </div>
+            </>
           )}
         </main>
       </div>

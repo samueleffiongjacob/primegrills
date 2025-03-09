@@ -15,15 +15,31 @@ export interface StaffFormData {
   name: string;
   email: string;
   username: string;
-  roles: string;
-  status: "Active" | "Inactive";
-  image: string;
-  shift: string;
-  shiftHours: string;
-  address: string;
-  age: string;
+  password: string;
   phone: string;
+  address: string;
+  staff_profile: {
+    role: string;
+    status: string;
+    shift: string;
+    shiftHours: string;
+    gender: string;
+    age: string;
+  };
 }
+
+// Form field configuration for easy maintenance and validation
+const FORM_CONFIG = {
+  shifts: [
+    { value: 'Morning', hours: '8 AM - 4 PM' },
+    { value: 'Afternoon', hours: '12 PM - 8 PM' },
+    { value: 'Evening', hours: '4 PM - 12 AM' },
+    { value: 'Night', hours: '12 AM - 8 AM' }
+  ],
+  roles: ['Waiter', 'Chef', 'Manager', 'Admin'],
+  genders: ['Male', 'Female', 'Other'],
+  statuses: ['Active', 'Inactive'] as const
+};
 
 const StaffForm: React.FC<StaffFormProps> = ({
   isOpen,
@@ -33,47 +49,156 @@ const StaffForm: React.FC<StaffFormProps> = ({
   initialData,
   mode
 }) => {
-  const [formData, setFormData] = useState<StaffFormData>({
+  const initialFormState: StaffFormData = {
     name: '',
     email: '',
     username: '',
-    roles: '',
-    status: 'Inactive',
-    image: '',
-    shift: 'Morning',
-    shiftHours: '8 AM - 4 PM',
+    password: '',
+    phone: '',
     address: '',
-    age: '',
-    phone: ''
-  });
+    staff_profile: {
+      role: '',
+      status: 'Inactive',
+      shift: 'Morning',
+      shiftHours: '8 AM - 4 PM',
+      gender: '',
+      age: '',
+    },
+  };
   
+  const [formData, setFormData] = useState<StaffFormData>(initialFormState);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
+  // Reset form when initialData changes
   useEffect(() => {
     if (initialData) {
       setFormData(initialData);
+    } else {
+      setFormData(initialFormState);
     }
-  }, [initialData]);
+    setErrors({});
+    setSubmitError(null);
+  }, [initialData, isOpen]);
+
+  // Auto-update shiftHours when shift changes
+  useEffect(() => {
+    const selectedShift = FORM_CONFIG.shifts.find(s => s.value === formData.staff_profile.shift);
+    if (selectedShift && formData.staff_profile.shiftHours !== selectedShift.hours) {
+      setFormData(prev => ({
+        ...prev,
+        staff_profile: {
+          ...prev.staff_profile,
+          shiftHours: selectedShift.hours
+        }
+      }));
+    }
+  }, [formData.staff_profile.shift]);
+
+  const validateField = (name: string, value: string): string => {
+    if (!value.trim()) return `${name.charAt(0).toUpperCase() + name.slice(1)} is required`;
+    
+    if (name === 'email' && !/^\S+@\S+\.\S+$/.test(value)) {
+      return 'Please enter a valid email address';
+    }
+    
+    if (name === 'phone' && !/^[+\d\s()-]{7,15}$/.test(value)) {
+      return 'Please enter a valid phone number';
+    }
+    
+    if (name === 'age') {
+      const age = parseInt(value);
+      if (isNaN(age) || age < 18 || age > 80) {
+        return 'Age must be between 18 and 80';
+      }
+    }
+    
+    if (name === 'password' && mode === 'add' && value.length < 6) {
+      return 'Password must be at least 6 characters';
+    }
+    
+    return '';
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    
+    // Validate the field
+    const errorMessage = validateField(name.includes('.') ? name.split('.')[1] : name, value);
+    
+    // Update errors
+    setErrors(prev => ({
       ...prev,
-      [name]: value
+      [name]: errorMessage
     }));
+  
+    // Check if the field is part of staff_profile
+    if (name.startsWith('staff_profile.')) {
+      const field = name.split('.')[1]; // Extract the nested field name
+      setFormData(prev => ({
+        ...prev,
+        staff_profile: {
+          ...prev.staff_profile,
+          [field]: value,
+        },
+      }));
+    } else {
+      // Handle top-level fields
+      setFormData(prev => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
+  };
+
+  const validateForm = (): boolean => {
+    const newErrors: Record<string, string> = {};
+    
+    // Validate top-level fields
+    ['name', 'email', 'username', 'phone', 'address'].forEach(field => {
+      const error = validateField(field, formData[field as keyof typeof formData] as string);
+      if (error) newErrors[field] = error;
+    });
+    
+    // Validate password for new staff
+    if (mode === 'add') {
+      const error = validateField('password', formData.password);
+      if (error) newErrors['password'] = error;
+    }
+    
+    // Validate staff_profile fields
+    ['role', 'gender', 'age'].forEach(field => {
+      const error = validateField(field, formData.staff_profile[field as keyof typeof formData.staff_profile] as string);
+      if (error) newErrors[`staff_profile.${field}`] = error;
+    });
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
     
+    if (!validateForm()) {
+      setSubmitError('Please fix the errors in the form');
+      return;
+    }
+    
+    setLoading(true);
+    setSubmitError(null);
+  
     try {
-      await onSubmit(formData);
+      // Structure the data to match the backend's expectations
+      const structuredData = {
+        ...formData,
+        is_staff: true, // Ensure this is set for staff users
+      };
+  
+      await onSubmit(structuredData);
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setSubmitError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setLoading(false);
     }
@@ -90,7 +215,7 @@ const StaffForm: React.FC<StaffFormProps> = ({
           onClose();
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred during deletion');
+        setSubmitError(err instanceof Error ? err.message : 'An error occurred during deletion');
       } finally {
         setLoading(false);
       }
@@ -98,6 +223,61 @@ const StaffForm: React.FC<StaffFormProps> = ({
   };
 
   if (!isOpen) return null;
+
+  const FormField = ({ 
+    label, 
+    name, 
+    type = 'text', 
+    options = [], 
+    required = true 
+  }: { 
+    label: string; 
+    name: string; 
+    type?: string; 
+    options?: string[]; 
+    required?: boolean;
+  }) => {
+    const fieldName = name as keyof typeof formData | `staff_profile.${keyof typeof formData.staff_profile}`;
+    const value = name.startsWith('staff_profile.') 
+      ? formData.staff_profile[name.split('.')[1] as keyof typeof formData.staff_profile]
+      : formData[name as keyof typeof formData];
+    
+    const error = errors[fieldName];
+    
+    return (
+      <div className="space-y-1">
+        <label className="block text-sm font-medium text-gray-700">
+          {label} {required && <span className="text-red-500">*</span>}
+        </label>
+        
+        {type === 'select' ? (
+          <select
+            name={fieldName}
+            value={value as string}
+            onChange={handleChange}
+            className={`w-full p-2 border rounded ${error ? 'border-red-500' : 'border-gray-300'} focus:ring-[#EE7F61] focus:border-[#EE7F61]`}
+            required={required}
+          >
+            <option value="">Select {label}</option>
+            {options.map(option => (
+              <option key={option} value={option}>{option}</option>
+            ))}
+          </select>
+        ) : (
+          <input
+            type={type}
+            name={fieldName}
+            value={value as string}
+            onChange={handleChange}
+            className={`w-full p-2 border rounded ${error ? 'border-red-500' : 'border-gray-300'} focus:ring-[#EE7F61] focus:border-[#EE7F61]`}
+            required={required}
+          />
+        )}
+        
+        {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+      </div>
+    );
+  };
 
   return (
     <div className="fixed inset-0 bg-[#171943] bg-opacity-50 flex items-center justify-center z-50">
@@ -112,137 +292,53 @@ const StaffForm: React.FC<StaffFormProps> = ({
           <button 
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700"
+            aria-label="Close"
           >
             ✕
           </button>
         </div>
         
-        {error && (
+        {submitError && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4">
-            {error}
+            {submitError}
           </div>
         )}
         
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} noValidate>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Name</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className="w-full p-2 border rounded border-gray-300 focus:ring-[#EE7F61] focus:border-[#EE7F61]"
-                required
-              />
-            </div>
+            <FormField label="Name" name="name" />
+            <FormField label="Email" name="email" type="email" />
+            <FormField label="Username" name="username" />
+            <FormField 
+              label="Password" 
+              name="password" 
+              type="password" 
+              required={mode === 'add'}
+            />
+            <FormField label="Gender" name="staff_profile.gender" type="select" options={FORM_CONFIG.genders} />
+            <FormField label="Role" name="staff_profile.role" type="select" options={FORM_CONFIG.roles} />
+            <FormField label="Phone" name="phone" type="tel" />
+            <FormField label="Age" name="staff_profile.age" type="number" />
+            <FormField label="Address" name="address" />
+            <FormField 
+              label="Shift" 
+              name="staff_profile.shift" 
+              type="select" 
+              options={FORM_CONFIG.shifts.map(s => s.value)} 
+            />
             
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Email</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="w-full p-2 border rounded border-gray-300 focus:ring-[#EE7F61] focus:border-[#EE7F61]"
-                required
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Username</label>
-              <input
-                type="text"
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-                className="w-full p-2 border rounded border-gray-300 focus:ring-[#EE7F61] focus:border-[#EE7F61]"
-                required
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Role</label>
+            <div className="space-y-1">
+              <label className="block text-sm font-medium text-gray-700">Status</label>
               <select
-                name="roles"
-                value={formData.roles}
+                name="staff_profile.status"
+                value={formData.staff_profile.status}
                 onChange={handleChange}
                 className="w-full p-2 border rounded border-gray-300 focus:ring-[#EE7F61] focus:border-[#EE7F61]"
                 required
               >
-                <option value="">Select Role</option>
-                <option value="Waiter">Waiter</option>
-                <option value="Chef">Chef</option>
-                <option value="Manager">Manager</option>
-                <option value="Admin">Admin</option>
-              </select>
-            </div>
-            
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Phone</label>
-              <input
-                type="tel"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                className="w-full p-2 border rounded border-gray-300 focus:ring-[#EE7F61] focus:border-[#EE7F61]"
-                required
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Age</label>
-              <input
-                type="number"
-                name="age"
-                value={formData.age}
-                onChange={handleChange}
-                className="w-full p-2 border rounded border-gray-300 focus:ring-[#EE7F61] focus:border-[#EE7F61]"
-                required
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Address</label>
-              <input
-                type="text"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                className="w-full p-2 border rounded border-gray-300 focus:ring-[#EE7F61] focus:border-[#EE7F61]"
-                required
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Shift</label>
-              <select
-                name="shift"
-                value={formData.shift}
-                onChange={handleChange}
-                className="w-full p-2 border rounded border-gray-300 focus:ring-[#EE7F61] focus:border-[#EE7F61]"
-                required
-              >
-                <option value="Morning">Morning</option>
-                <option value="Afternoon">Afternoon</option>
-                <option value="Evening">Evening</option>
-                <option value="Night">Night</option>
-              </select>
-            </div>
-            
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Shift Hours</label>
-              <select
-                name="shiftHours"
-                value={formData.shiftHours}
-                onChange={handleChange}
-                className="w-full p-2 border rounded border-gray-300 focus:ring-[#EE7F61] focus:border-[#EE7F61]"
-                required
-              >
-                <option value="8 AM - 4 PM">8 AM - 4 PM</option>
-                <option value="4 PM - 12 AM">4 PM - 12 AM</option>
-                <option value="12 PM - 8 PM">12 PM - 8 PM</option>
-                <option value="12 AM - 8 AM">12 AM - 8 AM</option>
+                {FORM_CONFIG.statuses.map(status => (
+                  <option key={status} value={status}>{status}</option>
+                ))}
               </select>
             </div>
           </div>
