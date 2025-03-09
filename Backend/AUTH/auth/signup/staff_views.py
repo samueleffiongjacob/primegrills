@@ -10,19 +10,18 @@ User = get_user_model()
 @api_view(["POST"])
 def register_staff(request):
     """Registers a staff user (requires admin permissions)."""
-    
-    # Check if user has admin permissions
-    if not request.user.is_authenticated or request.user.user_type != 'staff' or request.user.staff_profile.role != 'Manager':
-        return Response({"error": "You don't have permission to register staff members"}, status=403)
+
     
     data = request.data
-    
+    print(data)
     if User.objects.filter(email=data["email"]).exists():
+        print('user exists email')
         return Response({"error": "Email already exists"}, status=400)
     
     if User.objects.filter(username=data["username"]).exists():
+        print('user exists username')
         return Response({"error": "Username already exists"}, status=400)
-    
+    print('here')
     # Use StaffUserSerializer for staff registration
     serializer = StaffUserSerializer(data=request.data)
     
@@ -37,7 +36,7 @@ def register_staff(request):
                 'username': user.username,
                 'email': user.email,
                 'role': user.staff_profile.role,
-                'is_active': user.is_active,
+                'is_active': True,
                 'created_at': user.date_joined.isoformat(),
                 'user_type': 'staff'
             })

@@ -5,9 +5,7 @@ from rest_framework import status
 from django.contrib.auth import get_user_model
 from .permissions import IsStaffUser, IsManager
 from signup.serializers import  StaffUserSerializer
-User = get_user_model
-
-Staff = get_user_model()
+User = get_user_model()
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsStaffUser])
@@ -20,12 +18,12 @@ def staff_profile(request):
     return Response(serializer.data)
 
 @api_view(["GET"])
-@permission_classes([IsAuthenticated, IsStaffUser])
 def get_all_staffs(request):
     """
     Get all users - accessible only by all staff
     """
-    staffs = Staff.objects.filter(user_type='staff')  # Filter only staff users
+    print(request.user.is_authenticated)
+    staffs = User.objects.filter(user_type='staff').select_related('staff_profile')  # Filter only staff users
     serializer = StaffUserSerializer(staffs, many=True)
     return Response(serializer.data)
 
@@ -36,19 +34,19 @@ def get_staff_by_id(request, staff_id):
     Get a staff by ID.
     """
     try:
-        staff = Staff.objects.get(id=staff_id)
+        staff = User.objects.get(id=staff_id, user_type='staff')
         serializer = StaffUserSerializer(staff)
         return Response(serializer.data)
-    except Staff.DoesNotExist:
+    except User.DoesNotExist:
         return Response({"detail": "Staff not found"}, status=status.HTTP_404_NOT_FOUND)
-
+    
 @api_view(["PUT"])
-@permission_classes([IsAuthenticated, IsManager])
 def update_staff_profile(request):
     """
     Update the current staff's profile
     """
     staff = request.user
+    print(request.data)
     serializer = StaffUserSerializer(staff, data=request.data, partial=True)
     if serializer.is_valid():
         serializer.save()

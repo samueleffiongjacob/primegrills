@@ -37,23 +37,6 @@ services:
     restart: always
 
 
-  file_manager:
-    build: ./FILE_MANAGER
-    container_name: filemanager
-    networks:
-      - primegrills_network
-    ports:
-      - "8002:8000"
-    volumes:
-      - ./FILE_MANAGER/file_manager:/FILE_MANAGER/file_manager
-    env_file:
-      - ./FILE_MANAGER/.env
-    depends_on:
-      primegrillsdb:
-        condition: service_healthy
-      event_service:
-        condition: service_started
-    restart: on-failure
 
   order_service:
     build: ./ORDER
@@ -154,8 +137,7 @@ services:
       - "80:80"
     depends_on:
       - auth_service
-      - manager_service
-      - account_service
+     # - account_service
       - event_service
       - rabbitmq
 

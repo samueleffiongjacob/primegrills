@@ -8,7 +8,9 @@ from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework_simplejwt.exceptions import TokenError
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 
 def get_csrf(request):
     token = get_token(request)

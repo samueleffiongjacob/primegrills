@@ -83,7 +83,7 @@ class StaffProfile(models.Model):
     """Extended profile for staff users."""
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='staff_profile')
     # Staff-specific fields
-    age = models.PositiveIntegerField(blank=True, null=True)
+    age = models.CharField(max_length=3, blank=True, null=True)
     gender = models.CharField(max_length=10, blank=True, null=True)
     role = models.CharField(max_length=50, blank=True, null=True)  # e.g., Admin, Manager, Support
     shift = models.CharField(max_length=50, blank=True, null=True)

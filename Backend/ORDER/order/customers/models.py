@@ -6,6 +6,7 @@ class Customer(models.Model):
     username = models.CharField(max_length=100)
     phone = models.CharField(max_length=15)
     address = models.TextField()
+    profileImage = models.ImageField(upload_to='profile_images/', blank=True, null=True)
     city = models.CharField(max_length=50)
     state = models.CharField(max_length=50)
     zip = models.CharField(max_length=10)

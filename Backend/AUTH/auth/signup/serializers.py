@@ -67,10 +67,10 @@ class StaffUserSerializer(UserSerializer):
         # Create user
         user = User.objects.create_user(**validated_data)
         
-        # Update staff profile
-        for attr, value in staff_profile_data.items():
-            setattr(user.staff_profile, attr, value)
-        user.staff_profile.save()
+        # Create the staff profile
+        StaffProfile.objects.create(user=user, **staff_profile_data)
+        
+        return user
         
         return user
     
@@ -79,9 +79,11 @@ class StaffUserSerializer(UserSerializer):
         if 'staff_profile' in validated_data:
             staff_profile_data = validated_data.pop('staff_profile')
             
+            # Update or create the staff profile
+            staff_profile, created = StaffProfile.objects.get_or_create(user=instance)
             for attr, value in staff_profile_data.items():
-                setattr(instance.staff_profile, attr, value)
-            instance.staff_profile.save()
+                setattr(staff_profile, attr, value)
+            staff_profile.save()
         
         # Update user fields
         return super().update(instance, validated_data)
