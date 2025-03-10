@@ -3,19 +3,15 @@ import { useAuth } from '../context/authContext';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  requiredRole?: string;
+  requiredRole?: string;  // Keep the prop but don't use it
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole }) => {
-  const { isAuthenticated, isAuthorized } = useAuth();
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+  const { isAuthenticated } = useAuth();
   const location = useLocation();
 
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-
-  if (requiredRole && !isAuthorized(requiredRole)) {
-    return <Navigate to="/unauthorized" replace />;
   }
 
   return <>{children}</>;

@@ -1,5 +1,8 @@
 /* eslint-disable react-refresh/only-export-components */
+// import { getCookie } from "@utils/cookie.ts";
+// import axios from "axios";
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { authService } from '../services/authService';
 
 // Define the user type
 export interface User {
@@ -21,7 +24,7 @@ interface AuthContextType {
   isAdmin: boolean;
   isAuthenticated: boolean;
   isAuthorized: (requiredRole?: string) => boolean;
-  login: (email: string, password: string, userData: Omit<User, "email" | "password">) => void;
+  login: (email: string, password: string) => void;
   logout: () => void;
   redirectPath: string;
   setRedirectPath: (path: string) => void;
@@ -70,22 +73,34 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   };
 
-  // Modified login function to always set redirectPath to root
-  const login = (email: string, password: string, userData: Omit<User, "email" | "password">) => {
-    const newUser: User = { email, password, ...userData };
-    setUser(newUser);
-    setIsAuthenticated(true);
-    setIsAdmin(true);
-    localStorage.setItem("user", JSON.stringify(newUser));
-    setRedirectPath('/');  // Always redirect to root
+  const login = async (email: string, password: string) => {
+    try {
+      const response = await authService.login(email, password);
+      
+      if (response.user) {
+        setUser(response.user);
+        setIsAuthenticated(true);
+        setIsAdmin(response.user.role === "posstaff");
+        localStorage.setItem("user", JSON.stringify(response.user));
+        setRedirectPath('/');
+        return response;
+      }
+      throw new Error(response.message || 'Login failed');
+    } catch (error) {
+      console.error("Login failed:", error);
+      throw error;
+    }
   };
 
-  // Logout function - clears user state and localStorage
-  const logout = () => {
-    setUser(null);
-    setIsAuthenticated(false);
-    setIsAdmin(false);
-    localStorage.removeItem("user");
+  const logout = async () => {
+    try {
+      await authService.logout();
+    } finally {
+      setUser(null);
+      setIsAuthenticated(false);
+      setIsAdmin(false);
+      localStorage.removeItem("user");
+    }
   };
 
   return (
