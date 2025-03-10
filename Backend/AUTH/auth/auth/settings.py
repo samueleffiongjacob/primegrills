@@ -24,8 +24,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("SECRET_KEY", 'django-insecure-cyu5k$z&v937syhr&g@)qi(t!+^9n-ch4y32x7uq)5)q+byrcu' )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
-DEBUG = bool(os.environ.get("DEBUG", default=0))
+DEBUG = True
+#DEBUG = bool(os.environ.get("DEBUG", default=0))
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost 127.0.0.1 [::1]").split(" ")
 
@@ -72,6 +72,7 @@ MIDDLEWARE = [
 
     'allauth.account.middleware.AccountMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'signinandout.middleware.token_auto_refresh.JWTRefreshMiddleware'
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -127,9 +128,9 @@ WSGI_APPLICATION = 'auth.wsgi.application'
 DATABASES = {
     'default': {
         "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.postgresql"),
-        "NAME": os.environ.get("SQL_DATABASE", "primegrillsauth_db"),
-        "USER": os.environ.get("SQL_USER", "primegrills"),
-        "PASSWORD": os.environ.get("SQL_PASSWORD", "primegrills"),
+        "NAME": os.environ.get("SQL_DATABASE", "primegrillsauth"),
+        "USER": os.environ.get("SQL_USER", "prime_grills"),
+        "PASSWORD": os.environ.get("SQL_PASSWORD", "prime"),
         "HOST": os.environ.get("SQL_HOST", "localhost"),
         "PORT": os.environ.get("SQL_PORT", "5432"),
     }
@@ -183,7 +184,8 @@ AUTH_USER_MODEL = "signup.User" # relationship in singup
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'signinandout.middleware.cookie_auth.CookieJWTAuthentication'
+        'signinandout.middleware.cookie_auth.CookieJWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ),
 }
 

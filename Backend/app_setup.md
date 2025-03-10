@@ -89,4 +89,6 @@ cd Backend/EVENTS/event_service
 python manage.py makemigrations
 python manage.py migrate
 python manage.py consume_auth_events
+docker-compose up -d rabbitmq
 deactivate
+// manager@primegrills.com

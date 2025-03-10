@@ -34,18 +34,19 @@ const StaffService = {
   baseUrl: import.meta.env.VITE_BACKEND_URL || "http://localhost:8000",
   
   async getAll(): Promise<StaffUser[]> {
-    const response = await fetch(`${this.baseUrl}/api/staffs/all/`);
+    const response = await fetch(`${this.baseUrl}/api/staffs/all/`, {
+      method: 'GET',
+      credentials: "include",
+    });
     if (!response.ok) throw new Error("Failed to fetch staff");
     return response.json();
   },
   
   async create(data: StaffFormData): Promise<StaffUser> {
-    const csrfToken = getCookie("csrftoken");
     const response = await fetch(`${this.baseUrl}/register_staff/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        "X-CSRFToken": csrfToken || "",
       },
       credentials: "include",
       body: JSON.stringify(data)
@@ -60,12 +61,11 @@ const StaffService = {
   },
   
   async update(data: StaffFormData, id: number): Promise<StaffUser> {
-    const csrfToken = getCookie("csrftoken");
+    console.log(JSON.stringify(data))
     const response = await fetch(`${this.baseUrl}/api/manager/staffs/update/${id}/`, {
-      method: 'POST',
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        "X-CSRFToken": csrfToken || "",
       },
       credentials: "include",
       body: JSON.stringify(data)
@@ -266,6 +266,10 @@ const Staff = () => {
               
               <div className="mb-6 flex flex-wrap gap-4 items-center">
                 <div className="flex items-center gap-4 ml-auto">  
+                  {/* Pagination info */}
+                  <div className="py-3 px-4 border-t justify-self-start border-gray-200 text-sm text-gray-500">
+                    Showing {Math.min(filteredUsers.length, itemsPerPage)} of {filteredUsers.length} staff members
+                  </div>
                   <div>
                     <label htmlFor="itemsPerPage" className="mr-2 text-sm text-gray-600">Show:</label>
                     <select 
@@ -389,10 +393,7 @@ const Staff = () => {
                   </div>
                 )}
                 
-                {/* Pagination info */}
-                <div className="py-3 px-4 border-t border-gray-200 text-sm text-gray-500">
-                  Showing {Math.min(filteredUsers.length, itemsPerPage)} of {filteredUsers.length} staff members
-                </div>
+                
               </div>
             </>
           )}

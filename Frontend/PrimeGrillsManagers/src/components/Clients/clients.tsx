@@ -2,8 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../../context/authContext";
 import logo from '../../assets/images/primeLogo.png';
 import { motion } from 'framer-motion';
-import { TrashIcon, SearchIcon } from "lucide-react"; // Replace imported image with icon component
-import { getCookie } from "../../utils/cookie";
+import { TrashIcon} from "lucide-react"; // Replace imported image with icon component
 
 interface ClientProps {
   id: number;
@@ -40,11 +39,9 @@ const Clients = () => {
     setError(null);
     
     try {
-      const csrfToken = getCookie("csrftoken");
       const response = await fetch(`${API_BASE_URL}/api/users/all/`, {
         headers: {
           'Content-Type': 'application/json',
-          "X-CSRFToken": csrfToken || "",
         },
         credentials: "include",
       });
@@ -59,30 +56,6 @@ const Clients = () => {
     } catch (error) {
       console.error("Error fetching clients:", error);
       setError("Failed to load clients. Please try again later.");
-      
-      // Only use mock data in development
-      if (process.env.NODE_ENV === 'development') {
-        setClients([
-          { 
-            id: 1, 
-            name: "Joshua George", 
-            email: "rufus.kenny09@gmail.com", 
-            username: "joshg", 
-            image: logo, 
-            address: "123 Main St",
-            phone: "555-1234"
-          },
-          { 
-            id: 2, 
-            name: "Suleinman Adamu", 
-            email: "grilled@example.com", 
-            username: "sadamu",
-            image: logo,
-            address: "456 Oak Ave",
-            phone: "555-5678"
-          }
-        ]);
-      }
     } finally {
       setLoading(false);
     }
@@ -194,10 +167,11 @@ const Clients = () => {
               </div>
               <input
                 type="search"
-                placeholder="Search Staff..."
+                placeholder="Search Clients ..."
                 className="w-64 p-2 pl-3 border rounded-lg border-[#EE7F61]"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                
               />
             </div>
           </div>

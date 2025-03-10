@@ -10,7 +10,13 @@ User = get_user_model()
 @api_view(["POST"])
 def register_staff(request):
     """Registers a staff user (requires admin permissions)."""
-
+    
+    # First check if user is authenticated
+    if not request.user.is_authenticated:
+        return Response({"error": "Authentication required"}, status=401)
+    # Check if user has admin permissions
+    if not request.user.user_type != 'staff' and request.user.staff_profile.role != 'Manager':
+        return Response({"error": "You don't have permission to register staff members"}, status=403)
     
     data = request.data
     print(data)

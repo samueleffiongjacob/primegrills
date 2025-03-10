@@ -71,23 +71,26 @@ class StaffUserSerializer(UserSerializer):
         StaffProfile.objects.create(user=user, **staff_profile_data)
         
         return user
-        
-        return user
     
     def update(self, instance, validated_data):
         # Handle nested staff profile data if provided
         if 'staff_profile' in validated_data:
             staff_profile_data = validated_data.pop('staff_profile')
             
-            # Update or create the staff profile
+            # Get or create the staff profile
             staff_profile, created = StaffProfile.objects.get_or_create(user=instance)
+            
+            # Update profile fields
             for attr, value in staff_profile_data.items():
                 setattr(staff_profile, attr, value)
             staff_profile.save()
         
         # Update user fields
-        return super().update(instance, validated_data)
-
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        
+        instance.save()
+        return instance
 
 class CartItemSerializer(serializers.ModelSerializer):
     """Serializer for user's cart items"""

@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { useAuth } from "../context/authContext";
 import { Camera } from "lucide-react";
-import profile from '../assets/images/ladyimage.jpg'
+import profile from '../assets/images/ladyimage.jpg';
 
 const Profile = () => {
   const { user } = useAuth();
@@ -14,10 +14,7 @@ const Profile = () => {
     image: user?.profileImage || profile
   });
   
-  // State for image preview
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  
-  // Track original data to detect changes
   const [originalData, setOriginalData] = useState({...formData});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,16 +22,29 @@ const Profile = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Create preview URL for the selected image
       const previewUrl = URL.createObjectURL(file);
       setImagePreview(previewUrl);
-      
-      // In a real app, you'd upload the file to a server
-      // For now, we'll just store the preview URL
       setFormData(prev => ({ ...prev, image: previewUrl }));
+
+      const formData = new FormData();
+      formData.append("profileImage", file);
+
+      try {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user/profile/upload-image/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": 'application/json',
+          },
+          credentials: "include",
+          body: JSON.stringify(formData)
+        });
+        console.log(response.json());
+      } catch (error) {
+        console.error("Error uploading image:", error);
+      }
     }
   };
 
@@ -44,31 +54,24 @@ const Profile = () => {
 
   const handleEdit = (field: string) => {
     setEditingField(field);
-    // Store original data when starting to edit
     setOriginalData({...formData});
   };
 
   const handleSave = () => {
-    // Here you can implement the update logic
-    // For a real app, you would send the updated data to your backend
     setEditingField(null);
-    // Update original data to match the new values
     setOriginalData({...formData});
     
-    // Clear image preview after saving
     if (editingField === "image") {
       setImagePreview(null);
     }
   };
 
   const handleCancelImageEdit = () => {
-    // Revert to original image
     setFormData(prev => ({ ...prev, image: originalData.image }));
     setImagePreview(null);
     setEditingField(null);
   };
 
-  // Check if the current field has been modified
   const isFieldModified = (field: string) => {
     return editingField === field && formData[field as keyof typeof formData] !== originalData[field as keyof typeof originalData];
   };
@@ -93,7 +96,6 @@ const Profile = () => {
           )}
         </div>
         
-        {/* Hidden file input */}
         <input
           type="file"
           ref={fileInputRef}
@@ -102,7 +104,6 @@ const Profile = () => {
           onChange={handleFileChange}
         />
         
-        {/* Image editing controls */}
         {editingField === "image" && (
           <div className="flex gap-2 mb-4">
             <button
