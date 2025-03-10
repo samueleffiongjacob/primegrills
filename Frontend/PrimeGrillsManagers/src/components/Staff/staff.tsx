@@ -266,6 +266,10 @@ const Staff = () => {
               
               <div className="mb-6 flex flex-wrap gap-4 items-center">
                 <div className="flex items-center gap-4 ml-auto">  
+                  {/* Pagination info */}
+                  <div className="py-3 px-4 border-t justify-self-start border-gray-200 text-sm text-gray-500">
+                    Showing {Math.min(filteredUsers.length, itemsPerPage)} of {filteredUsers.length} staff members
+                  </div>
                   <div>
                     <label htmlFor="itemsPerPage" className="mr-2 text-sm text-gray-600">Show:</label>
                     <select 
@@ -389,10 +393,7 @@ const Staff = () => {
                   </div>
                 )}
                 
-                {/* Pagination info */}
-                <div className="py-3 px-4 border-t border-gray-200 text-sm text-gray-500">
-                  Showing {Math.min(filteredUsers.length, itemsPerPage)} of {filteredUsers.length} staff members
-                </div>
+                
               </div>
             </>
           )}
