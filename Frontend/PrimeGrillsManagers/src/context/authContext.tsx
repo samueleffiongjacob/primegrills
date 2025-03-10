@@ -41,11 +41,11 @@ const AuthContext = createContext<AuthContextType>({
   loading: true
 });
 
-interface AuthResponse {
-  message: string;
-  error?: string;
-  user?: User;
-}
+// interface AuthResponse {
+//   message: string;
+//   error?: string;
+//   user?: User;
+// }
 
 // Access token configuration
 const TOKEN_DURATION = 60 * 60 * 1000; // 1 hour (assuming this is your token validity)
@@ -241,6 +241,39 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         throw new Error("Login failed");
       }
 
+      // GET THE STATUS FROM SERVER
+      const responses = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/staffs/update/`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({ status:'active' }),
+      });
+
+      if (!responses.ok) {
+        throw new Error("NO STATUS AVAILABE");
+      }
+
+      // const responses = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/staffs/update/`, {
+      //   method: "GET",
+      //   credentials: "include",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      // });
+      
+      // if (!responses.ok) {
+      //   throw new Error("Failed to fetch status from server");
+      // }
+      
+      // const login_statusData = await responses.json(); // server responds with { status: "active" }
+      // if (login_statusData.status !== "active") {
+      //   throw new Error("User is not active");
+      // }
+            
+
       // Fetch user data after successful login
       await fetchUserData();
       
@@ -258,6 +291,39 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const csrfToken = getCookie("csrftoken");
       setLoading(true);
       
+      const responses = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/staffs/update/`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({ status:'inactive' }),
+      });
+
+      if (!responses.ok) {
+        throw new Error("NO STATUS AVAILABE");
+      }
+
+
+      // const logout_responses = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/staffs/update/`, {
+      //   method: "GET",
+      //   credentials: "include",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      // });
+      
+      // if (!logout_responses.ok) {
+      //   throw new Error("Failed to fetch status from server");
+      // }
+      
+      // const logout_statusData = await logout_responses.json(); // Assuming server responds with { status: "inactive" }
+      // if (logout_statusData.status !== "inactive") {
+      //   throw new Error("User logout status mismatch");
+      // }
+      
+
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/logout_staff/`, {
         method: "POST",
         headers: {
