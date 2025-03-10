@@ -53,8 +53,8 @@ def update_staff_profile(request):
     data = request.data
     
     # Define which fields belong to which model
-    user_fields = ['username', 'email', 'name', 'phone', 'address', 'profileImage']
-    profile_fields = ['age', 'gender', 'role', 'shift', 'shiftHours', 'status']
+    user_fields = ['phone', 'address', 'profileImage']
+    profile_fields = ['status']
     
     # Update User model fields
     user_updated = False
@@ -74,10 +74,10 @@ def update_staff_profile(request):
         # Create profile if it doesn't exist
         profile = StaffProfile(user=staff)
     
-    for field in profile_fields:
-        if field in data:
-            setattr(profile, field, data[field])
-            profile_updated = True
+    if 'staff_profile' in data:
+        for field in profile_fields:
+            if field in data['staff_profile']:
+                setattr(profile, field, data['staff_profile'][field])
     
     if profile_updated:
         profile.save()
