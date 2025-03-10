@@ -21,7 +21,7 @@ from signup.user_views import register_user_with_verification,  verify_email, re
 from signup.staff_views import register_staff
 from signinandout.user_views import login_user, logout_user, get_csrf
 from signinandout.staff_views import login_staff, logout_staff
-from signinandout.token_views import CookieTokenRefreshView
+from signinandout.token_views import token_refresh
 
 
 # Add a simple home page view
@@ -34,7 +34,7 @@ urlpatterns = [
     path("register_staff/", register_staff, name="register_staff"),
     path("login/", login_user, name="login"),
     path("login_staff/", login_staff, name="login_staff"),
-    path("token/refresh/", CookieTokenRefreshView.as_view(), name="token_refresh"),
+    path("token/refresh/", token_refresh, name="token_refresh"),
     path('logout/', logout_user, name='logout'),
     path('logout_staff/', logout_staff, name='logout_staff'),
     path('csrf/', get_csrf, name='get_csrf'),

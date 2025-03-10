@@ -23,6 +23,7 @@ def login_staff(request):
     print('logging staff in ...')
     data = request.data
     user = authenticate(request, email=data.get("email"), password=data.get("password"))
+    print(user)
 
     if user:
         refresh = RefreshToken.for_user(user)
@@ -36,6 +37,10 @@ def login_staff(request):
         
         response = JsonResponse({
             "message": "Login successful",
+            "user": {
+                "id": user.id,
+                "email": user.email,
+            }
         })
 
         # Set access token in HTTP-only cookie
