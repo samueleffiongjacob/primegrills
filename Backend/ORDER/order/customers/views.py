@@ -1,3 +1,4 @@
+import uuid
 from django.shortcuts import render
 from rest_framework import viewsets, permissions, filters, status
 from rest_framework.decorators import action
@@ -76,15 +77,17 @@ class OrderViewSet(viewsets.ModelViewSet):
     @transaction.atomic
     def create_with_items(self, request):
         # Get or create customer
-        customer_data = request.data.get('customer')
-        if not customer_data or 'email' not in customer_data:
-            return Response({'error': 'Customer email is required'}, 
-                          status=status.HTTP_400_BAD_REQUEST)
+        # customer_data = request.data.get('customer')
+        # if not customer_data or 'email' not in customer_data:
+        #     return Response({'error': 'Customer email is required'}, 
+        #                   status=status.HTTP_400_BAD_REQUEST)
 
-        customer, _ = Customer.objects.get_or_create(
-            email=customer_data['email'],
-            defaults=customer_data
-        )
+        # customer, _ = Customer.objects.get_or_create(
+        #     email=customer_data['email'],
+        #     defaults=customer_data
+        # )
+
+        customer = request.user
 
         # Create order
         order_data = {
@@ -140,14 +143,14 @@ class OrderViewSet(viewsets.ModelViewSet):
 
         # Update order total
         order.total_amount = total_amount
-        order.save()
+        self.perform_create(order)
 
         return Response({
             'order': OrderSerializer(order).data,
             'items': OrderItemSerializer(order_items, many=True).data
         }, status=status.HTTP_201_CREATED)
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['put'])
     def update_payment_status(self, request, pk=None):
         order = self.get_object()
         payment_status = request.data.get('payment')
@@ -175,6 +178,12 @@ class OrderViewSet(viewsets.ModelViewSet):
         orders = Order.objects.all()
         serializer = self.get_serializer(orders, many=True)
         return Response(serializer.data)
+    
+    def perform_create(self, serializer):
+        order_id = f"ORD-{uuid.uuid4().hex[:8].upper()}"
+        serializer.save(
+            order_id=order_id
+        )
 
 class OrderItemViewSet(viewsets.ModelViewSet):
     queryset = OrderItem.objects.all()
