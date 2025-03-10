@@ -103,7 +103,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = async (email: string, password: string): Promise<void> => {
     try {
       setLoading(true);
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/api/login-staff`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/login_staff/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -138,7 +138,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = async (): Promise<void> => {
     try {
       setLoading(true);
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/logout-staff`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/logout_staff/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

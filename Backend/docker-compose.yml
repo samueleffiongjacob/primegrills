@@ -18,77 +18,63 @@ services:
       #- DJANGO_SETTINGS_MODULE=your_project.settings.production
     restart: always
 
-  product_service:
-    build: ./PRODUCT
-    container_name: productservice
-    networks:
-      - primegrills_network
-    ports:
-      - "8001:8000"
-    volumes:
-      - ./PRODUCT/product:/PRODUCT/product
-    env_file:
-      - ./PRODUCT/.env
-    depends_on:
-      primegrillsdb:
-        condition: service_healthy
-      # event_service:
-      #   condition: service_started
-    restart: always
+  # product_service:
+  #   build: ./PRODUCT
+  #   container_name: productservice
+  #   networks:
+  #     - primegrills_network
+  #   ports:
+  #     - "8001:8000"
+  #   volumes:
+  #     - ./PRODUCT/product:/PRODUCT/product
+  #   env_file:
+  #     - ./PRODUCT/.env
+  #   depends_on:
+  #     primegrillsdb:
+  #       condition: service_healthy
+  #     # event_service:
+  #     #   condition: service_started
+  #   restart: always
 
 
 
-  order_service:
-    build: ./ORDER
-    container_name: order_service
-    ports:
-      - "8002:8000"
-    volumes:
-      - ./ORDER/order:/ORDER/order
-    env_file:
-      - ./ORDER/.env
-    depends_on:
-      primegrillsdb:
-        condition: service_healthy
-    restart: on-failure
+  # order_service:
+  #   build: ./ORDER
+  #   container_name: order_service
+  #   ports:
+  #     - "8002:8000"
+  #   volumes:
+  #     - ./ORDER/order:/ORDER/order
+  #   env_file:
+  #     - ./ORDER/.env
+  #   depends_on:
+  #     primegrillsdb:
+  #       condition: service_healthy
+  #   restart: on-failure
 
 
   # EVENT SERVICE
-  event_service:
-    build: ./EVENTS
-    container_name: eventservice
-    networks:
-      - primegrills_network
-    ports:
-      - "8003:8000"
-    volumes:
-      - ./EVENTS/event_service:/EVENTS/event_service
-    env_file:
-      - ./EVENTS/.env.dev
-    depends_on:
-      primegrillsdb:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    restart: on-failure
-
-
-
-    #   account_service:
-  #     build: ./account_service
-  #     container_name: account_service
-  #     ports:
-  #       - "8002:8000"
-  #     volumes:
-  #       - ./account_service:/app
-  #     env_file:
-  #       - ./account_service/.env
-  #     depends_on:
-  #       - db
+  # event_service:
+  #   build: ./EVENTS
+  #   container_name: eventservice
+  #   networks:
+  #     - primegrills_network
+  #   ports:
+  #     - "8003:8000"
+  #   volumes:
+  #     - ./EVENTS/event_service:/EVENTS/event_service
+  #   env_file:
+  #     - ./EVENTS/.env.dev
+  #   depends_on:
+  #     primegrillsdb:
+  #       condition: service_healthy
+  #     rabbitmq:
+  #       condition: service_healthy
+  #   restart: always
 
   primegrillsdb:
     image: postgres:17
-    container_name: postgres_db
+    container_name: primegrillsdb
     restart: always
     environment:
       POSTGRES_USER: primegrills
@@ -96,7 +82,7 @@ services:
       # POSTGRES_DB: primegrills_microservices_db
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - ./DATABASE/init.sql:/docker-entrypoint-initdb.d/init.sql # Ensure init.sql runs for database to create
+      - ./DATABASE/init.sql:/docker-entrypoint-initdb.d/init.sql # Ensure init.sql runs for database to create db
     ports:
       - "5432:5432"
     healthcheck:
@@ -126,20 +112,20 @@ services:
     restart: always
 
 
-  nginx:
-    image: nginx:stable-alpine
-    container_name: nginx_gateway
-    networks:
-      - primegrills_network
-    volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-    ports:
-      - "80:80"
-    depends_on:
-      - auth_service
-     # - account_service
-      - event_service
-      - rabbitmq
+  # nginx:
+  #   image: nginx:stable-alpine
+  #   container_name: nginx_gateway
+  #   networks:
+  #     - primegrills_network
+  #   volumes:
+  #     - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+  #   ports:
+  #     - "80:80"
+  #   depends_on:
+  #     - auth_service
+  #    # - account_service
+  #     - event_service
+  #     - rabbitmq
 
 networks:
   primegrills_network:
