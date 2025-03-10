@@ -331,21 +331,7 @@ const StaffForm: React.FC<StaffFormProps> = ({
                 className="w-full p-2 border rounded border-gray-300 bg-gray-100"
               />
             </div>
-            <div className="space-y-1">
-              <label className="block text-sm font-medium text-gray-700">Status</label>
-              <select
-                name="staff_profile.status"
-                value={formData.staff_profile.status}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className="w-full p-2 border rounded border-gray-300 focus:ring-[#EE7F61] focus:border-[#EE7F61]"
-                required
-              >
-                {FORM_CONFIG.statuses.map(status => (
-                  <option key={status} value={status}>{status}</option>
-                ))}
-              </select>
-            </div>
+         
           </div>
 
           <div className="mt-6 flex justify-between">
