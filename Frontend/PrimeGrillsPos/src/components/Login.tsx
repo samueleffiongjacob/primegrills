@@ -3,75 +3,53 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { MdEmail } from 'react-icons/md';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/authContext';
+import { showToast } from '@utils/toast';
 
 // INTERNAL IMPORTS
 // import { loginStaff } from '../api/auth';
 // import { useAuth } from '../context/authContext';
-import { User } from '../context/authContext';
-
 
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onLogin: (email: string, password: string, userData: Omit<User, 'email' | 'password'>) => void;
 }
-const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose}) => {
+
+const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { redirectPath, login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!email || !password) return alert("All fields are required");
-    if (password.length < 6) return alert("Password must be at least 6 characters");
-
-    // Assuming you fetch or have userData
-  const userData = {
-    id: 1,
-    name: "John Doe",
-    username: "johndoe",
-    address: "123 Main St",
-    phoneNumber: "123-456-7890",
-    status: "Active",
-    role: "admin"
-  };
-
-  //login function from AuthContext
-  login(email, password, userData)
-    alert('Login Success')
-
-
-     /* try {
-      const response = await loginStaff(email, password);
-      if (!response.success) {
-        alert(response.message);
-        return;
-    } else {
-      // Use the login function from AuthContext
-      login(email, {
-        status: "Active",
-      });
-
-      // store session token 
-      if (response.token) {
-      localStorage.setItem('authToken', response.token);
-      }
-
-      onLogin(email, password);
+    if (!email || !password) {
+      showToast.error("All fields are required");
+      return;
     }
-  } catch (error) {
-    console.error("Login failed:", error);
-    alert("Login failed. Please try again.");
-  } */
+    
+    if (password.length < 6) {
+      showToast.error("Password must be at least 6 characters");
+      return;
+    }
 
-    // After successful login, redirect to the appropriate path
-    const from = location.state?.from?.pathname || redirectPath;
-    navigate(from, { replace: true });
-    onClose();
+    setIsLoading(true);
+
+    try {
+      await login(email, password);
+      const { from } = location.state as { from: { pathname: string } } || { from: { pathname: redirectPath } };
+      navigate(from.pathname, { replace: true });
+      onClose();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any | unknown) {
+      console.error("Login failed:", error);
+      showToast.error(error?.message || "Login failed. Please try again."  );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (!isOpen) return null;
@@ -126,9 +104,10 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose}) => {
             {/* Log In Button */}
             <button
               type="submit"
-              className="w-full py-3 bg-[#EE7F61] text-white rounded-xl hover:bg-orange-500 transition-colors"
+              disabled={isLoading}
+              className="w-full py-3 bg-[#EE7F61] text-white rounded-xl hover:bg-orange-500 transition-colors disabled:opacity-50"
             >
-              Log In
+              {isLoading ? "Logging in..." : "Log In"}
             </button>
           </form>
 
