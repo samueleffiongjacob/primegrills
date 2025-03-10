@@ -98,6 +98,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       if (response.ok) {
         const userData = await response.json();
+        
         setUser(userData);
         setIsAuthenticated(true);
         setIsAdmin(userData.staff_profile.role === "Manager");
