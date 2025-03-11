@@ -36,7 +36,7 @@ const FORM_CONFIG = {
     { value: 'Evening', hours: '4 PM - 12 AM' },
     { value: 'Night', hours: '12 AM - 8 AM' }
   ],
-  roles: ['Waiter', 'Chef', 'Manager', 'Admin'],
+  roles: ['Waiter', 'Chef', 'Manager', 'Admin', 'Pos', 'kitchen'],
   genders: ['Male', 'Female', 'Other'],
   statuses: ['Active', 'Inactive'] as const
 };

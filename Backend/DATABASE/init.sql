@@ -20,15 +20,8 @@ SELECT 'CREATE DATABASE primegrillsauth_db OWNER primegrills'
 WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'primegrillsauth_db')\gexec
 
 -- Create `primegrillsmanager_db` only if it does not exist (FIXED)
-SELECT 'CREATE DATABASE primegrillsmanager_db OWNER primegrills'
-WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'primegrillsmanager_db')\gexec
-
 SELECT 'CREATE DATABASE primegrillsorder_db OWNER primegrills'
 WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'primegrillsorder_db')\gexec
-
--- Create `primegrillsaccount_db` only if it does not exist
-SELECT 'CREATE DATABASE primegrillsaccount_db OWNER primegrills'
-WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'primegrillsaccount_db')\gexec
 
 -- Create `primegrillsevents_db` only if it does not exist
 SELECT 'CREATE DATABASE primegrillsevents_db OWNER primegrills'
@@ -44,12 +37,8 @@ WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'primegrillsproduct_db
 
 -- Grant privileges on `primegrillsauth_db` to `primegrills`
 GRANT ALL PRIVILEGES ON DATABASE primegrillsauth_db TO primegrills;
-GRANT ALL PRIVILEGES ON DATABASE primegrillsmanager_db TO primegrills;
 
 GRANT ALL PRIVILEGES ON DATABASE primegrillsorder_db TO primegrills;
-
--- Grant privileges on `primegrillsccount_db` to `primegrills`
-GRANT ALL PRIVILEGES ON DATABASE primegrillsaccount_db TO primegrills;
 
 -- Grant privileges on `primegrillsevents_db` to `primegrills`
 GRANT ALL PRIVILEGES ON DATABASE primegrillsevents_db TO primegrills;
