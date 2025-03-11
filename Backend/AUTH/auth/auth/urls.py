@@ -35,6 +35,7 @@ urlpatterns = [
     path("register_staff/", RegisterStaffView.as_view(), name="register-staff"),
     path("login/", login_user, name="login"),
     path("login_staff/", login_staff, name="login_staff"),
+    path("login_manager/", login_staff, name="login_manager"),
     path("token/refresh/", token_refresh, name="token_refresh"),
     path('logout/', logout_user, name='logout'),
     path('logout_staff/', logout_staff, name='logout_staff'),

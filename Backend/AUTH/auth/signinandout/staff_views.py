@@ -104,3 +104,57 @@ def logout_staff(request):
         return Response({"error": "Invalid token"}, status=400)
     except Exception as e:
         return Response({"error": f"Logout failed: {str(e)}"}, status=500)
+    
+# login_manager function - stores both tokens in HTTP-only cookies
+@api_view(["POST"])
+def login_manager(request):
+    print('Logging staff in ...')
+    data = request.data
+    email = data.get("email")
+    password = data.get("password")
+
+    if not email or not password:
+        return Response({"error": "Email and password are required"}, status=400)
+
+    # Check if the user exists
+    if email != "manager@primegrills.com":
+        print('hjjj')
+        return Response({"error": "Invalid email"}, status=400)
+
+    # Check if the password is correct
+    user = authenticate(request, email=email, password=password)
+    if not user:
+        return Response({"error": "Incorrect password"}, status=400)  # Specific error for password
+
+    # Update the staff profile status to "Active"
+    try:
+        staff_profile = user.staff_profile
+        staff_profile.status = "Active"
+        staff_profile.save()
+    except StaffProfile.DoesNotExist:
+        return Response({"error": "Staff profile not found"}, status=400)
+
+    # Generate JWT tokens
+    refresh = RefreshToken.for_user(user)
+    access_token = str(refresh.access_token)
+
+    # Emit user logged-in event
+    publisher = get_publisher()
+    publisher.publish_event('staff.loggedin', {'user_id': user.id})
+
+    response = JsonResponse({
+        "message": "Login successful",
+        "user": {
+            "id": user.id,
+            "email": user.email,
+            "role": user.staff_profile.role,
+            "status": user.staff_profile.status
+        }
+    })
+
+    # Set HTTP-only cookies
+    response.set_cookie("access_token", access_token, httponly=True, samesite="Lax", secure=True, max_age=15 * 60)
+    response.set_cookie("refresh_token", str(refresh), httponly=True, samesite="Lax", secure=True, max_age=6 * 60 * 60)
+    response.set_cookie("csrftoken", get_token(request), samesite="Lax", secure=True)
+
+    return response
