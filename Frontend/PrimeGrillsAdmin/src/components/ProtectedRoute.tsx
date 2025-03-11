@@ -4,36 +4,15 @@ import { useAuth } from "../context/authContext";
 import LoginModal from "./Login";
 
 // Define possible user roles for better type checking
-export type UserRole = "admin" | "accountant" | "waiter" | "kitchen" | "cleaner";
-
-// Define the user interface
-interface User {
-  id?: number;
-  name?: string;
-  email?: string;
-  role: UserRole;
-  status?: string;
-}
-
-// Define auth context interface to match useAuth hook
-interface AuthContextType {
-  user: User | null;
-  isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  logout?: () => Promise<void>;
-  isAdmin?: boolean;
-  isAuthorized?: (requiredRole?: string) => boolean;
-  loading?: boolean;
-}
 
 interface ProtectedRouteProps {
   children: JSX.Element;
-  roles: UserRole[]; 
+  roles: string[]
 }
 
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, roles }) => {
-  const { user, isAuthenticated} = useAuth() as AuthContextType;
+  const { user, isAuthenticated} = useAuth()
   const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
 
   if (!isAuthenticated) {
@@ -60,8 +39,10 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, roles 
     );
   }
 
+  console.log(user?.staff_profile?.role)
+  console.log(roles)
   // Check if user role is allowed (with proper null checking)
-  if (!user || !roles.includes(user.role as UserRole)) {
+  if (!user || !roles.includes((user?.staff_profile?.role).toLowerCase())) {
     return (
       <div className="flex flex-col items-center mt-[25vh] justify-center h-full">
         <div className="bg-white p-8 rounded-lg shadow text-center">

@@ -10,7 +10,7 @@ import ReportIssue from '../components/Report/report';
 import ComplaintPolicy from '../components/Report/complaintPolicy';
 import Settings from '../components/Settings/settings';
 import User from '../components/User/user';
-import { ProtectedRoute, UserRole } from '../components/ProtectedRoute';
+import { ProtectedRoute } from '../components/ProtectedRoute';
 import MessagesPage from '../pages/messages';
 import Profile from '../pages/profile';
 import PayPoint from '../pages/paypoint';
@@ -27,14 +27,14 @@ const RoleBasedRedirect: FC = () => {
     return <Navigate to="/login" replace />;
   }
 
-  return (user.role === "admin" || user.role === "accountant") 
+  return (user.staff_profile.role === "admin" || user.staff_profile.role === "accountant") 
     ? <Navigate to="/dashboard" replace /> 
     : <Navigate to="/profile" replace />;
 };
 
 const Navigations: FC = () => {
   // Define roles as a constant array of the UserRole type
-  const allRoles: UserRole[] = ["admin", "accountant", "waiter", "kitchen", "cleaner"];
+  const allRoles = ["admin", "accountant", "waiter", "kitchen", "cleaner", "kitchen", "chef", "pos", 'manager'];
   
   return (
     <ProtectedRoute roles={allRoles}>
@@ -51,7 +51,7 @@ const Navigations: FC = () => {
                 <Route 
                   path="/dashboard" 
                   element={
-                    <ProtectedRoute roles={["admin", "accountant"] as UserRole[]}>
+                    <ProtectedRoute roles={["admin", "accountant"]}>
                       <Dashboard />
                     </ProtectedRoute>
                   } 
@@ -60,7 +60,7 @@ const Navigations: FC = () => {
                 <Route 
                   path="/menu" 
                   element={
-                    <ProtectedRoute roles={["admin", "accountant", "waiter", "kitchen", "cleaner"] as UserRole[]}>
+                    <ProtectedRoute roles={["admin", "accountant", "waiter", "kitchen", "cleaner"]}>
                       <MenuDashboard />
                     </ProtectedRoute>
                   } 
@@ -78,7 +78,7 @@ const Navigations: FC = () => {
                 <Route 
                   path="/category" 
                   element={
-                    <ProtectedRoute roles={["admin", "accountant"] as UserRole[]}>
+                    <ProtectedRoute roles={["admin", "accountant"]}>
                       <Category />
                     </ProtectedRoute>
                   } 
@@ -114,7 +114,7 @@ const Navigations: FC = () => {
                 <Route 
                   path="/paypoints" 
                   element={
-                    <ProtectedRoute roles={["admin", "accountant"] as UserRole[]}>
+                    <ProtectedRoute roles={["admin", "accountant"]}>
                       <PayPoint />
                     </ProtectedRoute>
                   } 
@@ -123,7 +123,7 @@ const Navigations: FC = () => {
                 <Route 
                   path="/pos" 
                   element={
-                    <ProtectedRoute roles={["admin", "accountant"] as UserRole[]}>
+                    <ProtectedRoute roles={["admin", "accountant"] }>
                       <TransactionsTable />
                     </ProtectedRoute>
                   } 
@@ -132,7 +132,7 @@ const Navigations: FC = () => {
                 <Route 
                   path="/settings" 
                   element={
-                    <ProtectedRoute roles={["admin"] as UserRole[]}>
+                    <ProtectedRoute roles={["admin"]}>
                       <Settings />
                     </ProtectedRoute>
                   } 
@@ -141,7 +141,7 @@ const Navigations: FC = () => {
                 <Route 
                   path="/orders" 
                   element={
-                    <ProtectedRoute roles={["admin", "accountant", "kitchen"] as UserRole[]}>
+                    <ProtectedRoute roles={["admin", "accountant", "kitchen"]}>
                       <OrdersDashboard />
                     </ProtectedRoute>
                   } 

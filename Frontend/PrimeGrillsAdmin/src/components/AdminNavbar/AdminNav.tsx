@@ -30,7 +30,7 @@ const Header = () => {
   };
 
   // Get the user role to display
-  const userRole = user?.role || "";
+  const userRole = user?.staff_profile.role || "";
   const displayRole = userRole.charAt(0).toUpperCase() + userRole.slice(1);
 
   // Get the user's profile image URL or use the default fallback image
@@ -53,7 +53,7 @@ const Header = () => {
           <div className="flex items-center gap-2">
             <div className="text-right text-sm">
               <div className="flex items-center gap-2">
-                <p className="font-medium">{user?.name || "Rudu"}</p>
+                <p className="font-medium">{user?.username || ""}</p>
                 <span className="px-2 py-0.5 bg-blue-900 rounded-full text-xs">
                   {displayRole}
                 </span>
@@ -73,12 +73,12 @@ const Header = () => {
               />
               <AvatarFallback>
                 {/* Fallback to the user's initials if no image is available */}
-                {user?.name
-                  ? user.name
+                {user?.username
+                  ? user.username
                       .split(" ")
                       .map((part) => part[0])
                       .join("")
-                  : "AD"}
+                  : user?.name}
               </AvatarFallback>
             </Avatar>
             <ChevronDown className="text-white" />
@@ -100,7 +100,7 @@ const Header = () => {
                       Logout
                     </li>
                     <li className="px-4 py-2 bg-green-100 text-green-800">
-                      Status: {user?.status}
+                      Status: {user?.staff_profile.status}
                     </li>
                   </>
                 ) : (
