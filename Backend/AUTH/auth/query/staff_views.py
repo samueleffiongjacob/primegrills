@@ -21,11 +21,12 @@ def staff_profile(request):
 
 
 @api_view(["GET"])
-@permission_classes([IsAuthenticated, IsManager])
+@permission_classes([IsAuthenticated, IsStaffUser])
 def get_all_staffs(request):
     """
     Get all users - accessible only by all staff
     """
+    print(request.user.is_authenticated)
     staffs = User.objects.filter(user_type='staff').select_related('staff_profile')  # Filter only staff users
     serializer = StaffUserSerializer(staffs, many=True)
     return Response(serializer.data)
@@ -53,7 +54,7 @@ def update_staff_profile(request):
     data = request.data
     
     # Define which fields belong to which model
-    user_fields = ['phone', 'address', 'profileImage']
+    user_fields = ['username','phone', 'address']
     profile_fields = ['status']
     
     # Update User model fields
@@ -101,7 +102,7 @@ def update_staff_profile(request):
             'status': profile.status
         }
     }
-    
+    print(response_data)
     return Response(response_data)
 
 

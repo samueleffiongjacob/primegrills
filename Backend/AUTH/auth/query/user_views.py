@@ -74,6 +74,7 @@ def update_user_profile(request):
         return Response(serializer.data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def upload_profile_image(request):
@@ -81,6 +82,7 @@ def upload_profile_image(request):
     Upload a profile image for the authenticated user.
     """
     user = request.user
+    print(user)
 
     # Check if a file is included in the request
     if "profileImage" not in request.FILES:
@@ -93,12 +95,7 @@ def upload_profile_image(request):
     user.profileImage = profile_image
     user.save()
 
-    # Return the updated profile image URL
-    return Response({
-        "message": "Profile image uploaded successfully",
-        "profileImage": user.profileImage.url if user.profileImage else None
-    }, status=status.HTTP_200_OK)
-
+    return Response({"message": "Profile image updated successfully"}, status=status.HTTP_200_OK)
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])

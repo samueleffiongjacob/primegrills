@@ -12,8 +12,10 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+@api_view(["GET"])
 def get_csrf(request):
     token = get_token(request)
+    print(token)
     return JsonResponse({"csrfToken": token})
 
 # login_user function - stores both tokens in HTTP-only cookies
