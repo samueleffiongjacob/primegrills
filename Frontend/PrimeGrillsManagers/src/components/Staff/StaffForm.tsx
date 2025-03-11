@@ -114,7 +114,7 @@ const StaffForm: React.FC<StaffFormProps> = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-
+  
     // Update form data without validating
     if (name.startsWith('staff_profile.')) {
       const field = name.split('.')[1]; // Extract the nested field name
@@ -126,13 +126,13 @@ const StaffForm: React.FC<StaffFormProps> = ({
         },
       }));
     } else {
-      // Handle top-level fields
       setFormData(prev => ({
         ...prev,
         [name]: value,
       }));
     }
   };
+  
 
   // Validate on blur
   const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -190,7 +190,6 @@ const StaffForm: React.FC<StaffFormProps> = ({
         delete structuredData.username;
         delete structuredData.password;
         delete structuredData.email;
-        delete structuredData.staff_profile.status;
       }
 
       await onSubmit(structuredData);
@@ -199,7 +198,7 @@ const StaffForm: React.FC<StaffFormProps> = ({
       setSubmitError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setLoading(false);
-    }
+    };
   };
 
   const handleDelete = async () => {

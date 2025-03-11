@@ -70,11 +70,9 @@ const Clients = () => {
     setError(null);
     
     try {
-      const response = await fetch(`${API_BASE_URL}/api/delete/user/${id}/`, {
+      const response = await fetch(`${API_BASE_URL}/api/user/delete/${id}/`, {
         method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        }
+        credentials: "include",
       });
       
       if (!response.ok) {

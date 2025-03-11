@@ -55,7 +55,7 @@ const Header = () => {
           <div className="flex items-center gap-2">
             <div className="text-right text-sm">
               <div className="flex items-center gap-2">
-                <p className="font-medium">{user?.name || "Rudu"}</p>
+                <p className="font-medium">{user?.username || "User"}</p>
                 <span className="px-2 py-0.5 bg-blue-900 rounded-full text-xs">
                   {displayRole}
                 </span>
@@ -80,7 +80,7 @@ const Header = () => {
                       .split(" ")
                       .map((part) => part[0])
                       .join("")
-                  : "AD"}
+                  : "PM"}
               </AvatarFallback>
             </Avatar>
             <ChevronDown className="text-white" />

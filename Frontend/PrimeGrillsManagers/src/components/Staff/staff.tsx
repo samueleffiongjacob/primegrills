@@ -111,7 +111,10 @@ const Staff = () => {
   const [formMode, setFormMode] = useState<'add' | 'edit'>('add');
   const [selectedUser, setSelectedUser] = useState<StaffFormData | undefined>(undefined);
   const [actionLoading, setActionLoading] = useState(false);
-
+  // Filter users based on search term
+  const [statusFilter, setStatusFilter] = useState("");
+  const [shiftFilter, setShiftFilter] = useState("");
+  
   // Memoized fetch function
   const fetchUsers = useCallback(async () => {
     if (!isAuthenticated) return;
@@ -205,11 +208,16 @@ const Staff = () => {
     }
   };
 
-  // Filter users based on search term
+
+  
+  // Filter users based on search term, status, and shift
   const filteredUsers = users.filter(user => 
     (user.name?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
     (user.staff_profile?.role?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
     (user.email?.toLowerCase() || '').includes(searchTerm.toLowerCase())
+  ).filter(user => 
+    (statusFilter ? user.staff_profile.status === statusFilter : true) &&
+    (shiftFilter ? user.staff_profile.shift === shiftFilter : true)
   );
 
   // Permission checks
@@ -265,6 +273,28 @@ const Staff = () => {
               )}
               
               <div className="mb-6 flex flex-wrap gap-4 items-center">
+                 {/* Status Filter */}
+                <select 
+                  className="border border-gray-300 rounded-lg p-2"
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                >
+                  <option value="">All Status</option>
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
+                </select>
+                
+                {/* Shift Filter */}
+                <select 
+                  className="border border-gray-300 rounded-lg p-2"
+                  value={shiftFilter}
+                  onChange={(e) => setShiftFilter(e.target.value)}
+                >
+                  <option value="">All Shifts</option>
+                  <option value="Morning">Morning</option>
+                  <option value="Evening">Evening</option>
+                  <option value="Night">Night</option>
+                </select>
                 <div className="flex items-center gap-4 ml-auto">  
                   {/* Pagination info */}
                   <div className="py-3 px-4 border-t justify-self-start border-gray-200 text-sm text-gray-500">
