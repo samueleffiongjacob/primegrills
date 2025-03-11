@@ -72,7 +72,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setIsAuthenticated(true);
         
         // Set admin status based on role
-        if (userData.staff_profile.role === "Admin") {
+        if (userData.staff_profile.role === "Manager") {
           setIsAdmin(true);
         }
         
@@ -252,12 +252,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   // Helper function to get CSRF token from cookies
-  const getCsrfToken = (): string => {
-    return document.cookie
-      .split("; ")
-      .find(row => row.startsWith("csrftoken="))
-      ?.split("=")[1] || "";
-  };
+  // const getCsrfToken = (): string => {
+  //   return document.cookie
+  //     .split("; ")
+  //     .find(row => row.startsWith("csrftoken="))
+  //     ?.split("=")[1] || "";
+  // };
 
   return (
     <AuthContext.Provider value={{ 
