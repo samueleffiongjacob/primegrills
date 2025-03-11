@@ -18,7 +18,7 @@ from django.http import HttpResponse # comment letter
 from django.contrib import admin
 from django.urls import path, include
 from signup.user_views import register_user_with_verification,  verify_email, resend_verification_email
-from signup.staff_views import register_staff, RegisterStaffView
+from signup.staff_views import register_staff , RegisterStaffView
 from signinandout.user_views import login_user, logout_user, get_csrf
 from signinandout.staff_views import login_staff, logout_staff
 from signinandout.token_views import token_refresh
@@ -31,7 +31,7 @@ def home_view(request):
 urlpatterns = [
     path('', home_view, name='home'),  # comment later
     path('admin/', admin.site.urls),
-    #path("register_staff/", register_staff, name="register_staff"),
+    # path("register_staff/", register_staff, name="register_staff"),
     path("register_staff/", RegisterStaffView.as_view(), name="register-staff"),
     path("login/", login_user, name="login"),
     path("login_staff/", login_staff, name="login_staff"),

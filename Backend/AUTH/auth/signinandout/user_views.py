@@ -36,6 +36,7 @@ def login_user(request):
         user = User.objects.get(email=email)
         # If the user is not active (e.g., email not verified)
         if not user.is_active:
+            print(user.is_active)
             return Response({"error": "Email not verified"}, status=400)
     except User.DoesNotExist:
         return Response({"error": "Invalid credentials"}, status=400)

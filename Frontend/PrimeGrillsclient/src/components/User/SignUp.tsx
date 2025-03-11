@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { FcGoogle } from 'react-icons/fc';
-import { FaFacebook, FaApple, FaUser, FaUserCircle, FaEnvelope, FaPhone, FaMapMarkerAlt, FaCheckCircle } from 'react-icons/fa';
+import { 
+  FaFacebook, 
+  FaApple, FaUser, 
+  FaUserCircle, FaEnvelope, FaPhone, 
+  FaMapMarkerAlt, FaCheckCircle ,FaEye, 
+  FaEyeSlash
+} from 'react-icons/fa';
 
 // INTERNAL IMPORTS
 import { signUpUser } from '../../api/auth';
@@ -15,7 +21,7 @@ interface SignUpModalProps {
 const SignUpModal: React.FC<SignUpModalProps> = ({
   isOpen,
   onClose,
-  onSignUp,
+  // onSignUp,
   onToggleLogin,
 }) => {
   const [username, setUsername] = useState('');
@@ -27,6 +33,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [signupSuccess, setSignupSuccess] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   // Error State
   const [errors, setErrors] = useState<{
@@ -54,7 +61,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
     if (!fullName) newErrors.fullName = "Full name is required";
     if (!email) newErrors.email = "Email is required";
     else if (!/\S+@\S+\.\S+/.test(email)) newErrors.email = "Invalid email format";
-    if (!phoneNumber) newErrors.phoneNumber = "Phone number is required";
+    if ( phoneNumber.length !== 11 ) newErrors.phoneNumber = "Phone number is required";
     if (!address) newErrors.address = "Address is required";
     if (!password) newErrors.password = "Password is required";
     else if (password.length < 6) newErrors.password = "Password must be at least 6 characters";
@@ -230,6 +237,29 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
             <div className="relative">
               <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">🔒</span>
               <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+                className={`w-full pl-10 pr-4 py-1.5 rounded-xl border ${
+                  errors.password ? 'border-red-500' : 'border-gray-200'
+                } focus:outline-none focus:ring-2 focus:ring-orange-400`}
+                disabled={isLoading}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400"
+                disabled={isLoading}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+              {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
+            </div>
+
+            {/* <div className="relative">
+              <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">🔒</span>
+              <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -239,10 +269,32 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
                 } focus:outline-none focus:ring-2 focus:ring-orange-400`}
               />
               {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
-            </div>
+            </div> */}
 
             {/* Confirm Password */}
             <div className="relative">
+              <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">🔒</span>
+              <input
+                type={showPassword ? "text" : "password"}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Password"
+                className={`w-full pl-10 pr-4 py-1.5 rounded-xl border ${
+                  errors.confirmPassword ? 'border-red-500' : 'border-gray-200'
+                } focus:outline-none focus:ring-2 focus:ring-orange-400`}
+                disabled={isLoading}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400"
+                disabled={isLoading}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+              {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.password}</p>}
+            </div>
+            {/* <div className="relative">
               <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">🔒</span>
               <input
                 type="password"
@@ -254,7 +306,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
                 } focus:outline-none focus:ring-2 focus:ring-orange-400`}
               />
               {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword}</p>}
-            </div>
+            </div> */}
 
             <button
               type="submit"
@@ -277,6 +329,9 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
             </button>
             <button className="p-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition">
               <FaApple className="w-6 h-6" />
+            </button>
+            <button className="p-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft" width="24px" />
             </button>
           </div>
 
