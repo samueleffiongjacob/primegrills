@@ -34,6 +34,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onTog
       }
     } catch (error) {
       setError("Failed to send verification email.");
+      console.log(error)
     } finally {
       setIsLoading(false);
     }
@@ -71,7 +72,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onTog
       } else {
         setError("Login failed. Please retry");
       }
-    } catch (error: any) {
+    } catch (error) {
       setError(error instanceof Error ? error.message : "Login failed");
     } finally {
       setIsLoading(false);
@@ -193,6 +194,9 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onTog
             </button>
             <button className="p-3 border border-gray-200 rounded-xl hover:bg-gray-50" disabled={isLoading}>
               <FaApple className="w-6 h-6" />
+            </button>
+            <button className="p-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft" width="24px" />
             </button>
           </div>
 

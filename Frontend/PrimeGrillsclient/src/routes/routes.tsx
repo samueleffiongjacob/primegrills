@@ -19,9 +19,9 @@ import BottomNavigation from '../components/BottomNavigation.js';
 import FeedbackPage from '../Pages/FeedbackPage.js';
 import CheckoutPage from '../Pages/Checkout/ChekoutPage.js';
 import LoginModal from '../components/User/Login.js';
-import SignUpModal from '../components/User/SignUp.js';
+// import SignUpModal from '../components/User/SignUp.js';
 import VerifyEmail from '../components/User/VerifyEmail.js';
-import { ForgotPasswordModal, ResetPasswordComponent } from '../components/User/Reset_Password.js';
+import {  ResetPasswordComponent } from '../components/User/Reset_Password.js';
 import ReservationForm from '../Pages/Reservations.js';
 import FAQPage from '../Pages/FAQPage.js';
 
@@ -43,7 +43,7 @@ const Navigations = () => {
   };
 
   // Function to handle successful login
-  const handleLogin = (email: string, password: string) => {
+  const handleLogin = () => {
     // Any additional logic after login
     setLoginModalOpen(false); // Close the modal after successful login
   };
@@ -65,7 +65,6 @@ const Navigations = () => {
         <Routes>
             {/* Desktop specific */}
             <Route path='/services' element={< Services/>} />
-
             <Route path='/menu/all' element={< AllMenuPage/>} />
             <Route path='/menu/pastries' element={< PastriesPage/>} />
             <Route path='/menu/drinks' element={< BarsPage/>} />
@@ -77,7 +76,6 @@ const Navigations = () => {
             <Route path='/cart' element={<CartPage toggleLoginModal={toggleLoginModal} />}  />
             <Route path='/checkout' element={< CheckoutPage />} />
             <Route path="/" element={<LandingPage />} /> 
-            <Route path="/" element={<LandingPage />} />
             <Route path="/menu-category" element={<Menu />} />
             <Route path="/reservation" element={<ReservationForm/>} />
             <Route path="/faqs" element={<FAQPage/>} />

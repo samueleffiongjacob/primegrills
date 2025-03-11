@@ -13,14 +13,14 @@ import ProfileSidePanel from "../User/ProfileSidePanel";
 import { SearchBar } from "./SearchBar";
 import { useAuth } from "../../context/AuthContext";
 
-interface UserProfile {
-  username: string;
-  name: string;
-  email: string;
-  phone: string;
-  memberSince: string;
-  profileImage: string | null; // Add profileImage to the UserProfile interface
-}
+// interface UserProfile {
+//   username: string;
+//   name: string;
+//   email: string;
+//   phone: string;
+//   memberSince: string;
+//   profileImage: string | null; // Add profileImage to the UserProfile interface
+// }
 
 interface NavLinkProps {
   to: To; // Route path
@@ -83,9 +83,9 @@ const Navbar = () => {
   const navItems = [
     { title: "Home", path: "/" },
     {
-      title: "Menu Category",
+      title: "Menu",
       subItems: [
-        { title: "Menu", path: "/menu-category" },
+        { title: "Menu-Category", path: "/menu-category" },
         { title: "All Menu", path: "/menu/all" },
         { title: "Special Dishes", path: "/menu/special" },
         { title: "Popular Dishes", path: "/menu/popular" },

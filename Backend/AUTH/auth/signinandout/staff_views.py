@@ -66,7 +66,7 @@ def login_staff(request):
     })
 
     # Set HTTP-only cookies
-    response.set_cookie("access_token", access_token, httponly=True, samesite="Lax", secure=True, max_age=15 * 60)
+    response.set_cookie("access_token", access_token, httponly=True, samesite="Lax", secure=True, max_age=60 * 60 * 60)
     response.set_cookie("refresh_token", str(refresh), httponly=True, samesite="Lax", secure=True, max_age=6 * 60 * 60)
     response.set_cookie("csrftoken", get_token(request), samesite="Lax", secure=True)
 
