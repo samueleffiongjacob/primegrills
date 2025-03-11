@@ -188,7 +188,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = async (email: string, password: string): Promise<void> => {
     try {
       setLoading(true);
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/login_staff/`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/login_manager/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
