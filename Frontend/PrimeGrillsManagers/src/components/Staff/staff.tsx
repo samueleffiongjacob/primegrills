@@ -399,8 +399,8 @@ const Staff = () => {
                               <td className="py-3 px-4">{user.staff_profile.shift}</td>
                               <td className="py-3 px-4 text-gray-600">{user.staff_profile.shiftHours}</td>
                               <td className="py-3 px-4 text-gray-600">
-                                <div className="flex items-center absolute">
-                                  <LoginHistoryModal userId={user.id} trigger="click" />
+                                <div className="flex items-center">
+                                  <LoginHistoryModal userId={user.id} trigger="click"/>
                                 </div>
                               </td>
                               {canManageUsers && (
