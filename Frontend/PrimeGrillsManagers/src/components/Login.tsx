@@ -110,21 +110,27 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
       </div>
 
       {unauthorizedModal && (
-        <div className="fixed inset-0 bg-opacity-100 backdrop-blur-xs flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-md text-center shadow-lg">
-            <span className="text-red-500 text-5xl font-bold px-4 rounded-full bg-amber-50">X</span>
-            <h2 className="text-lg text-red-500 font-semibold mt-4">Unauthorized</h2>
-            <p className="text-gray-700 mt-2">
+        <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-8 w-full max-w-xl text-center shadow-2xl transform transition-all">
+            <div className="mx-auto w-20 h-20 flex items-center justify-center bg-red-100 rounded-full mb-6">
+              <span className="text-red-500 text-6xl font-bold">×</span>
+            </div>
+            
+            <h2 className="text-2xl text-red-600 font-bold mb-4">Access Denied</h2>
+            
+            <p className="text-gray-700 text-lg mb-3">
               Sorry, but this email does not belong to a manager at PRIME GRILLS.
             </p>
-            <p className="text-gray-600 mt-2">
+            
+            <p className="text-gray-600 mb-8">
               Please visit the consultant's office for further assistance with manager details and instructions.
             </p>
+            
             <button
               onClick={() => setUnauthorizedModal(false)}
-              className="mt-4 px-4 py-2 bg-[#EE7F61] text-white rounded-md hover:bg-orange-500 transition"
+              className="w-full max-w-xs py-3 bg-[#EE7F61] text-white text-lg font-medium rounded-xl hover:bg-orange-500 transition-colors duration-300 shadow-md"
             >
-              OK
+              Understood
             </button>
           </div>
         </div>

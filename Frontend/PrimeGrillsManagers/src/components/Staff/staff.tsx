@@ -6,6 +6,7 @@ import StaffForm, { StaffFormData } from "./StaffForm";
 import pencil from '../../assets/images/pencil.png';
 import trash from '../../assets/images/trash.png';
 import { getCookie } from "../../utils/cookie";
+import LoginHistoryModal from "../LoginHistory";
 
 // Improved typing for backend data
 interface StaffProfile {
@@ -24,6 +25,7 @@ interface StaffUser {
   username: string;
   password: string;
   profileImage?: string;
+  last_login?: string;
   phone: string;
   address: string;
   staff_profile: StaffProfile;
@@ -98,7 +100,7 @@ const StaffService = {
 };
 
 // Component configurations
-const ITEMS_PER_PAGE_OPTIONS = [10, 25, 50, 100];
+const ITEMS_PER_PAGE_OPTIONS = [5, 10, 25, 50, 100];
 
 const Staff = () => {
   const { user: currentUser, isAdmin, isAuthenticated } = useAuth();
@@ -359,6 +361,7 @@ const Staff = () => {
                           <th className="py-3 px-4 text-left">Image</th>
                           <th className="py-3 px-4 text-left">Shift</th>
                           <th className="py-3 px-4 text-left">Hours</th>
+                          <th className="py-3 px-4 text-left">Login Activity</th>
                           {canManageUsers && <th className="py-3 px-4 text-center">Actions</th>}
                         </tr>
                       </thead>
@@ -395,6 +398,11 @@ const Staff = () => {
                               </td>
                               <td className="py-3 px-4">{user.staff_profile.shift}</td>
                               <td className="py-3 px-4 text-gray-600">{user.staff_profile.shiftHours}</td>
+                              <td className="py-3 px-4 text-gray-600">
+                                <div className="flex items-center absolute">
+                                  <LoginHistoryModal userId={user.id} trigger="click" />
+                                </div>
+                              </td>
                               {canManageUsers && (
                                 <td className="py-3 px-4 text-center">
                                   <button

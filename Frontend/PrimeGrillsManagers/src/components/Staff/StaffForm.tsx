@@ -70,6 +70,7 @@ const StaffForm: React.FC<StaffFormProps> = ({
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
   // Reset form when initialData changes
   useEffect(() => {
@@ -80,6 +81,7 @@ const StaffForm: React.FC<StaffFormProps> = ({
     }
     setErrors({});
     setSubmitError(null);
+    setFormSubmitted(false);
   }, [initialData, isOpen]);
 
   // Auto-update shiftHours when shift changes
@@ -99,14 +101,25 @@ const StaffForm: React.FC<StaffFormProps> = ({
   const validateField = (name: string, value: string): string => {
     if (!value.trim()) return `${name.charAt(0).toUpperCase() + name.slice(1)} is required`;
 
-    if (name === 'phone' && !/^[+\d\s()-]{7,15}$/.test(value)) {
-      return 'Please enter a valid phone number';
+    if (name === 'phone') {
+      // More comprehensive phone validation
+      // Allows international format with + and country code
+      // Also allows common formats like (123) 456-7890, 123-456-7890, etc.
+      if (!/^(\+\d{1,3})?[-.\s]?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$/.test(value)) {
+        return 'Please enter a valid phone number';
+      }
     }
 
     if (name === 'age') {
       const age = parseInt(value);
       if (isNaN(age)) return 'Age must be a number';
       if (age < 18 || age > 80) return 'Age must be between 18 and 80';
+    }
+
+    if (name === 'email' && value.trim() !== '') {
+      // Only validate email if provided
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(value)) return 'Please enter a valid email address';
     }
 
     return '';
@@ -131,21 +144,18 @@ const StaffForm: React.FC<StaffFormProps> = ({
         [name]: value,
       }));
     }
-  };
-  
 
-  // Validate on blur
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-
-    // Validate the field
-    const errorMessage = validateField(name.includes('.') ? name.split('.')[1] : name, value);
-
-    // Update errors
-    setErrors(prev => ({
-      ...prev,
-      [name]: errorMessage,
-    }));
+    // Only show errors after form has been submitted once
+    if (formSubmitted) {
+      // Validate and update the specific field error
+      const fieldName = name.includes('.') ? name.split('.')[1] : name;
+      const errorMessage = validateField(fieldName, value);
+      
+      setErrors(prev => ({
+        ...prev,
+        [name]: errorMessage,
+      }));
+    }
   };
 
   const validateForm = (): boolean => {
@@ -156,6 +166,21 @@ const StaffForm: React.FC<StaffFormProps> = ({
       const error = validateField(field, formData[field as keyof typeof formData] as string);
       if (error) newErrors[field] = error;
     });
+
+    // Validate email, username, password only in add mode
+    if (mode === 'add') {
+      ['email', 'username', 'password'].forEach(field => {
+        const value = formData[field as keyof typeof formData] as string;
+        if (field === 'email' && value) {
+          const error = validateField(field, value);
+          if (error) newErrors[field] = error;
+        }
+        if (['username', 'password'].includes(field)) {
+          const error = validateField(field, value);
+          if (error) newErrors[field] = error;
+        }
+      });
+    }
 
     // Validate staff_profile fields
     ['role', 'gender', 'age'].forEach(field => {
@@ -169,6 +194,7 @@ const StaffForm: React.FC<StaffFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFormSubmitted(true);
 
     if (!validateForm()) {
       setSubmitError('Please fix the errors in the form');
@@ -252,7 +278,6 @@ const StaffForm: React.FC<StaffFormProps> = ({
             name={fieldName}
             value={value as string}
             onChange={handleChange}
-            onBlur={handleBlur}
             className={`w-full p-2 border rounded ${error ? 'border-red-500' : 'border-gray-300'} focus:ring-[#EE7F61] focus:border-[#EE7F61]`}
             required={required}
           >
@@ -267,7 +292,6 @@ const StaffForm: React.FC<StaffFormProps> = ({
             name={fieldName}
             value={value as string}
             onChange={handleChange}
-            onBlur={handleBlur}
             className={`w-full p-2 border rounded ${error ? 'border-red-500' : 'border-gray-300'} focus:ring-[#EE7F61] focus:border-[#EE7F61]`}
             required={required}
           />

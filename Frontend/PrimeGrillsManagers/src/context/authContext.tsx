@@ -8,6 +8,7 @@ export interface User {
   email: string;
   address: string;
   phone: string;
+  last_login?: string | null;
   profileImage?: string;
   staff_profile: {
     role: string;
