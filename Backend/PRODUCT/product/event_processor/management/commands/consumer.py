@@ -7,8 +7,6 @@ from django.utils.timezone import now
 from django.core.management.base import BaseCommand
 from event_processor.models import AuthEvent
 from event_processor.services.event_processor import process_event
-from customers.serializers import CustomerSerializer, FoodProductSerializer # Import the serializer
-from pos.serializers import PosStaffSerializer
 
 # Ensure Django settings are loaded
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'event_service.settings')
@@ -30,25 +28,19 @@ def callback(ch, method, properties, body):
         # Extract user data from the event
         user_data = event_user_data.get("user", {})
         if user_data:
+            print(user_data)
             # Use the serializer to validate and save the customer data
-            if user_data.get("role") == "posstaff":
-                serializer = PosStaffSerializer(data=user_data, context={"event_type": event_type})
-            elif user_data.get("role") == "customer":
-                serializer = CustomerSerializer(data=user_data, context={"event_type": event_type})
-            elif event_type == "menu_created" or event_type == "menu_updated":
-                serializer = FoodProductSerializer(data=user_data, context={"event_type": event_type}, many=True, partial=True)
-            else:
-                raise ValueError(f"Invalid role: {user_data.get('role')} or event type not menu_created")
+        
             
-            if serializer.is_valid():
-                serializer.save()
-                logger.info(f"Processed customer: {user_data.get('email')}")
-            else:
-                logger.error(f"Invalid customer data: {serializer.errors}")
-                raise ValueError(f"Invalid customer data: {serializer.errors}")
+            # if serializer.is_valid():
+            #     serializer.save()
+            #     logger.info(f"Processed customer: {user_data.get('email')}")
+            # else:
+            #     logger.error(f"Invalid customer data: {serializer.errors}")
+            #     raise ValueError(f"Invalid customer data: {serializer.errors}")
 
         # Forward relevant data to Query Service
-        # process_event(event_type, event_user_data)
+        process_event(event_type, event_user_data)
 
         # Acknowledge message
         ch.basic_ack(delivery_tag=method.delivery_tag)
@@ -73,12 +65,12 @@ class Command(BaseCommand):
         channel = connection.channel()
 
         # Declare queue
-        channel.queue_declare(queue="processed_auth_events_queue", durable=True)
+        channel.queue_declare(queue="consumer", durable=True)
 
         # Bind queue to exchange
-        channel.queue_bind(exchange="processed_auth_events", queue="processed_auth_events_queue", routing_key="#")
+        channel.queue_bind(exchange="consumer", queue="consumer", routing_key="#")
 
         # Consume messages
-        channel.basic_consume(queue="processed_auth_events_queue", on_message_callback=callback, auto_ack=False)
+        channel.basic_consume(queue="consumer", on_message_callback=callback, auto_ack=False)
         logger.info("Started event consumer...")
         channel.start_consuming()

@@ -31,6 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'pika',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,11 +40,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'django_filters',
     'channels',
     'customers',
     'corsheaders',
-    'pos',  # Add this line
+    'pos',
+    'orders',  # Add this line
 ]
+
+ASGI_APPLICATION = 'pos.asgi.application'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

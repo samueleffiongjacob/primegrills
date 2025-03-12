@@ -5,8 +5,9 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.utils import timezone
 from datetime import datetime
+from django.db import transaction
 
-from ORDER.order.pos.models import Transaction
+from pos.models import Transaction as PosTransaction
 from .models import Orders
 from .serializers import OrdersSerializer
 
@@ -33,9 +34,8 @@ class OrdersViewSet(viewsets.ModelViewSet):
         order.save()
         return Response({'status': 'order cancelled'})
     
-
     @action(detail=False, methods=['post'])
-    @Transaction.atomic
+    @transaction.atomic
     def create_order(self, request):
         order = self.get_object()
         # Add order processing logic here
@@ -84,7 +84,7 @@ class OrdersViewSet(viewsets.ModelViewSet):
         return Response({'status': 'order created'}, status=status.HTTP_201_CREATED)
     
     @action(detail=True, methods=['get'])
-    def get_order(self, request, pk=None):
+    def get_orders(self, request, pk=None):
         order = self.get_object()
         serializer = OrdersSerializer(order)
         return Response(serializer.data)
