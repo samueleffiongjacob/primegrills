@@ -73,8 +73,8 @@ const Header = () => {
               />
               <AvatarFallback>
                 {/* Fallback to the user's initials if no image is available */}
-                {user?.username
-                  ? user.username
+                {user?.name
+                  ? user.name
                       .split(" ")
                       .map((part) => part[0])
                       .join("")
