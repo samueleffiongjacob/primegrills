@@ -77,6 +77,9 @@ def login_staff(request):
     refresh = RefreshToken.for_user(user)
     access_token = str(refresh.access_token)
 
+    # Update last_login using Django's signal handler
+    update_last_login(None, user)
+    
     LoginHistory.objects.create(
         user=user,
         action='login'
@@ -143,6 +146,9 @@ def login_pos(request):
     # Generate JWT tokens
     refresh = RefreshToken.for_user(user)
     access_token = str(refresh.access_token)
+
+    # Update last_login using Django's signal handler
+    update_last_login(None, user)
 
     LoginHistory.objects.create(
         user=user,
