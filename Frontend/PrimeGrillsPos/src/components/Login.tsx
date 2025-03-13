@@ -37,7 +37,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
       await login(email, password);
       toast.success('Login Success');
       onClose();
-    } catch (error: any) {
+    } catch (error: any | unknown) {
       console.error("Login failed:", error);
       
       if (error.message === "Invalid email") {

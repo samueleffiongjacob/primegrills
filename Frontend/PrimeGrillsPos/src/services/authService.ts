@@ -1,11 +1,11 @@
 import axios from 'axios';
 
-const API_URL = `${import.meta.env.VITE_BACKEND_URL}/api/auth`;
+const API_URL = `${import.meta.env.VITE_BACKEND_URL}/`;
 
 export const authService = {
   async login(email: string, password: string) {
     try {
-    const response = await axios.post(`${API_URL}/login`, 
+    const response = await axios.post(`${API_URL}/login_staff`, 
       { email, password },
       { withCredentials: true }
     );
@@ -19,7 +19,7 @@ export const authService = {
   },
 
   async logout() {
-    const response = await axios.post(`${API_URL}/logout`, {}, 
+    const response = await axios.post(`${API_URL}/logout_staff`, {}, 
       { withCredentials: true }
     );
     return response.data;
