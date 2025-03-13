@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { MdEmail } from 'react-icons/md';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { useAuth } from '../context/authContext';
+import { showToast } from '@utils/toast';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -16,26 +16,32 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [unauthorizedModal, setUnauthorizedModal] = useState(false);
   const { login, loading } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { redirectPath } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!email || !password) {
-      toast.error("All fields are required");
+      showToast.error("All fields are required");
       return;
     }
     if (!/\S+@\S+\.\S+/.test(email)) {
-      toast.error("Invalid email format");
+      showToast.error("Invalid email format");
       return;
     }
     if (password.length < 6) {
-      toast.error("Password must be at least 6 characters");
+      showToast.error("Password must be at least 6 characters");
       return;
     }
 
     try {
       await login(email, password);
-      toast.success('Login Success');
+      const { from } = location.state as { from: { pathname: string } } || { from: { pathname: redirectPath } };
+      navigate(from.pathname, { replace: true });
+      showToast.success('Login Success');
+     
       onClose();
     } catch (error: any | unknown) {
       console.error("Login failed:", error);
@@ -43,9 +49,9 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
       if (error.message === "Invalid email") {
         setUnauthorizedModal(true);
       } else if (error.message === "Incorrect password") {
-        toast.error("Incorrect password");
+        showToast.error("Incorrect password");
       } else {
-        toast.error("Login failed. Please try again.");
+        showToast.error("Login failed. Please try again.");
       }
     }
   };
@@ -54,12 +60,11 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
   return (
     <>
-      <ToastContainer />
       <div className="fixed inset-0 bg-opacity-100 backdrop-blur-xs flex items-center justify-center z-50">
         <div className="bg-[#171943] rounded-2xl p-6 w-full max-w-lg relative">
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 cursor-pointer text-gray-100 hover:text-[#EE7F61]"
+            className="absolute top-4 right-4 cursor-pointer text-gray-100 hover:text-[#EE7F61] opacity-0"
           >
             ✕
           </button>
@@ -119,11 +124,11 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
             <h2 className="text-2xl text-red-600 font-bold mb-4">Access Denied</h2>
             
             <p className="text-gray-700 text-lg mb-3">
-              Sorry, but this email does not belong to a manager at PRIME GRILLS.
+              Sorry, but this email does not belong to any POS Merchant at PRIME GRILLS.
             </p>
             
             <p className="text-gray-600 mb-8">
-              Please visit the consultant's office for further assistance with manager details and instructions.
+              Please visit the manager's office for further assistance with account creation and instructions.
             </p>
             
             <button

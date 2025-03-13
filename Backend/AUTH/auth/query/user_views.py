@@ -1,12 +1,12 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
+from django.conf import settings
 from rest_framework import status
+from django.core.files.storage import default_storage
 from django.contrib.auth import get_user_model
 from signup.serializers import CartItemSerializer, ClientUserSerializer # serializer for CartItem
 from .permissions import IsManager, IsStaffUser
-
-
 
 User = get_user_model()
 
@@ -86,16 +86,29 @@ def upload_profile_image(request):
 
     # Check if a file is included in the request
     if "profileImage" not in request.FILES:
+        print('no image')
         return Response({"error": "No file uploaded"}, status=status.HTTP_400_BAD_REQUEST)
 
     # Get the uploaded file
     profile_image = request.FILES["profileImage"]
 
-    # Update the user's profileImage field
-    user.profileImage = profile_image
+ # Validate the file (optional: check file size, type, etc.)
+    if profile_image.size > 5 * 1024 * 1024:  # 5MB limit
+        print('too large')
+        return Response({"error": "File size exceeds 5MB"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Save the file to the storage
+    file_path = default_storage.save(f"profile_images/{user.id}_{profile_image.name}", profile_image)
+
+    # Construct the full URL for the uploaded image
+    image_url = f"{settings.MEDIA_URL}{file_path}"
+
+    # Update the user's profileImage field with the URL
+    user.profileImage = image_url
     user.save()
 
-    return Response({"message": "Profile image updated successfully"}, status=status.HTTP_200_OK)
+    # Return the image URL in the response
+    return Response({"message": "Profile image updated successfully", "imageUrl": image_url}, status=status.HTTP_200_OK)
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])

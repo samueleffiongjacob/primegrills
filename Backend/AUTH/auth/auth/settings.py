@@ -16,6 +16,10 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -129,9 +133,9 @@ WSGI_APPLICATION = 'auth.wsgi.application'
 DATABASES = {
     'default': {
         "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.postgresql"),
-        "NAME": os.environ.get("SQL_DATABASE", "primegrillsauth_db"),
-        "USER": os.environ.get("SQL_USER", "primegrills"),
-        "PASSWORD": os.environ.get("SQL_PASSWORD", "primegrills"),
+        "NAME": os.environ.get("SQL_DATABASE","primegrillsauth"), #"primegrillsauth_db",
+        "USER": os.environ.get("SQL_USER","prime_grills"), #"primegrills",
+        "PASSWORD": os.environ.get("SQL_PASSWORD","prime"), #"primegrills",
         "HOST": os.environ.get("SQL_HOST", "localhost"),
         "PORT": os.environ.get("SQL_PORT", "5432"),
     }
