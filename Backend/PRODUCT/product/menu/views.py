@@ -40,8 +40,7 @@ class MenuViewSet(viewsets.ModelViewSet):
         menu = serializer.save()
         menu.updated_at = timezone.now()
         menu.save()
-        process_event("menu_updated", menu
-)
+        process_event("menu_updated", menu)
         return Response(
             {"message": f"Menu item '{menu.name}' partially updated successfully", "data": serializer.data},
             status=status.HTTP_200_OK
