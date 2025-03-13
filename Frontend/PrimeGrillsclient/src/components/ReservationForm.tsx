@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 interface ReservationFormData {
   name: string;
@@ -24,6 +25,7 @@ const ReservationForm: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+ 
 
   const availableTimeSlots = ['11:00 AM', '11:30 AM', '12:00 PM', '12:30 PM', '1:00 PM', '1:30 PM', 
                               '5:00 PM', '5:30 PM', '6:00 PM', '6:30 PM', '7:00 PM', '7:30 PM', '8:00 PM'];
@@ -126,8 +128,7 @@ const ReservationForm: React.FC = () => {
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:border-transparent"
-              style={{ focusRing: '#EE7F61' }}
+              className="w-full px-3 py-2 border border-gray-300 focus:ring-[#EE7F61] rounded-md focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:border-transparent"
             />
           </div>
           <div>
@@ -160,8 +161,8 @@ const ReservationForm: React.FC = () => {
               onChange={handleChange}
               required
               min={new Date().toISOString().split('T')[0]}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:border-transparent"
-              style={{ focusRing: '#EE7F61' }}
+              className="w-full px-3 py-2 border border-gray-300 focus:ring-[#EE7F61] rounded-md focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:border-transparent"
+              
             />
           </div>
           <div>
@@ -174,8 +175,8 @@ const ReservationForm: React.FC = () => {
               value={formData.partySize}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:border-transparent"
-              style={{ focusRing: '#EE7F61' }}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#EE7F61] focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:border-transparent"
+         
             >
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
                 <option key={num} value={num}>{num} {num === 1 ? 'guest' : 'guests'}</option>
@@ -217,19 +218,28 @@ const ReservationForm: React.FC = () => {
             value={formData.specialRequests}
             onChange={handleChange}
             rows={3}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:border-transparent"
-            style={{ focusRing: '#EE7F61' }}
+            className="w-full px-3 py-2 border border-gray-300 focus:ring-[#EE7F61] rounded-md focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:border-transparent"
+            
           ></textarea>
         </div>
         
+        <Link to={'/reservation-pay'}>
         <button
           type="submit"
+          className="w-full py-3 px-4 bg-[#EE7F61] hover:bg-[#e06d50] focus:ring-[#EE7F61] text-white font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          
+        >
+          Proceed to payment
+        </button>
+        </Link>
+        {/* <button
+          type="submit"
           disabled={isSubmitting || !formData.date || !formData.time}
-          className="w-full py-3 px-4 bg-[#EE7F61] hover:bg-[#e06d50] text-white font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          style={{ focusRing: '#EE7F61' }}
+          className="w-full py-3 px-4 bg-[#EE7F61] hover:bg-[#e06d50] focus:ring-[#EE7F61] text-white font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          
         >
           {isSubmitting ? 'Processing...' : 'Complete Reservation'}
-        </button>
+        </button> */}
       </form>
     </div>
   );

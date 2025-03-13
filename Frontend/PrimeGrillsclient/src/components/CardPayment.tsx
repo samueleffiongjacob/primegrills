@@ -1,30 +1,35 @@
 import { useState } from 'react';
-import { CreditCard, Calendar, Lock } from 'lucide-react';
+import { CreditCard, Calendar, Lock, Shield, CheckCircle2 } from 'lucide-react';
 
-interface BankTransferPaymentProps {
-  onPaymentSuccess: () => void; // Define the type for the onPaymentSuccess prop
+interface CardPaymentFormProps {
+  onPaymentSuccess: () => void;
 }
-// interface formData {
-//   cardNumber: string;
-//   expiryDate: string;
-//   cvv: string;
-// }
 
 interface FormErrors {
   cardNumber?: string;
   expiryDate?: string;
   cvv?: string;
+  cardholderName?: string;
 }
 
-
-const CardPaymentForm: React.FC<BankTransferPaymentProps> = ({ onPaymentSuccess }) => {
+const CardPaymentForm: React.FC<CardPaymentFormProps> = ({ onPaymentSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
+    cardholderName: '',
     cardNumber: '',
     expiryDate: '',
     cvv: ''
   });
   const [errors, setErrors] = useState<FormErrors>({});
+  const [focusedField, setFocusedField] = useState<string | null>(null);
+
+  const handleFocus = (field: string) => {
+    setFocusedField(field);
+  };
+
+  const handleBlur = () => {
+    setFocusedField(null);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -53,7 +58,7 @@ const CardPaymentForm: React.FC<BankTransferPaymentProps> = ({ onPaymentSuccess 
     if (errors[name as keyof FormErrors]) {
       setErrors({
         ...errors,
-        [name]: null
+        [name]: undefined
       });
     }
   };
@@ -61,6 +66,10 @@ const CardPaymentForm: React.FC<BankTransferPaymentProps> = ({ onPaymentSuccess 
   const validateForm = () => {
     const newErrors: FormErrors = {};
     
+    if (!formData.cardholderName.trim()) {
+      newErrors.cardholderName = 'Cardholder name is required';
+    }
+
     if (!formData.cardNumber.replace(/\s/g, '').trim()) {
       newErrors.cardNumber = 'Card number is required';
     } else if (formData.cardNumber.replace(/\s/g, '').length < 16) {
@@ -95,14 +104,42 @@ const CardPaymentForm: React.FC<BankTransferPaymentProps> = ({ onPaymentSuccess 
     }
   };
 
+  // Determine card type based on first few digits
+  const getCardType = () => {
+    const number = formData.cardNumber.replace(/\s/g, '');
+    if (number.startsWith('4')) return 'Visa';
+    if (/^5[1-5]/.test(number)) return 'Mastercard';
+    if (/^3[47]/.test(number)) return 'American Express';
+    if (/^6(?:011|5)/.test(number)) return 'Discover';
+    return null;
+  };
+
+  const cardType = getCardType();
+
   return (
-    <div className="p-6 border rounded-lg bg-white shadow-sm">
-      <h2 className="text-xl font-semibold mb-4 text-gray-800">Payment Information</h2>
-      <form onSubmit={handleConfirm}>
-        <div className="mb-4">
+    <div>
+      <form onSubmit={handleConfirm} className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Cardholder Name</label>
+          <div className={`relative transition-all rounded-lg ${focusedField === 'cardholderName' ? 'ring-2 ring-amber-500 ring-opacity-50' : ''}`}>
+            <input
+              type="text"
+              name="cardholderName"
+              value={formData.cardholderName}
+              onChange={handleChange}
+              onFocus={() => handleFocus('cardholderName')}
+              onBlur={handleBlur}
+              placeholder="Name on card"
+              className={`w-full py-3 px-4 pr-10 border ${errors.cardholderName ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none transition-all duration-200`}
+            />
+          </div>
+          {errors.cardholderName && <p className="mt-1 text-sm text-red-600">{errors.cardholderName}</p>}
+        </div>
+
+        <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Card Number</label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+          <div className={`relative transition-all rounded-lg ${focusedField === 'cardNumber' ? 'ring-2 ring-amber-500 ring-opacity-50' : ''}`}>
+            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
               <CreditCard className="h-5 w-5 text-gray-400" />
             </div>
             <input
@@ -110,18 +147,25 @@ const CardPaymentForm: React.FC<BankTransferPaymentProps> = ({ onPaymentSuccess 
               name="cardNumber"
               value={formData.cardNumber}
               onChange={handleChange}
+              onFocus={() => handleFocus('cardNumber')}
+              onBlur={handleBlur}
               placeholder="XXXX XXXX XXXX XXXX"
-              className={`w-full pl-10 pr-3 py-2 border ${errors.cardNumber ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition`}
+              className={`w-full pl-10 pr-16 py-3 border ${errors.cardNumber ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none transition-all duration-200`}
             />
+            {cardType && (
+              <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                <span className="text-xs font-medium bg-gray-100 py-1 px-2 rounded text-gray-700">{cardType}</span>
+              </div>
+            )}
           </div>
           {errors.cardNumber && <p className="mt-1 text-sm text-red-600">{errors.cardNumber}</p>}
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Expiry Date</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <div className={`relative transition-all rounded-lg ${focusedField === 'expiryDate' ? 'ring-2 ring-amber-500 ring-opacity-50' : ''}`}>
+              <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
                 <Calendar className="h-5 w-5 text-gray-400" />
               </div>
               <input
@@ -129,26 +173,31 @@ const CardPaymentForm: React.FC<BankTransferPaymentProps> = ({ onPaymentSuccess 
                 name="expiryDate"
                 value={formData.expiryDate}
                 onChange={handleChange}
+                onFocus={() => handleFocus('expiryDate')}
+                onBlur={handleBlur}
                 placeholder="MM/YY"
-                className={`w-full pl-10 pr-3 py-2 border ${errors.expiryDate ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition`}
+                className={`w-full pl-10 pr-3 py-3 border ${errors.expiryDate ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none transition-all duration-200`}
               />
             </div>
             {errors.expiryDate && <p className="mt-1 text-sm text-red-600">{errors.expiryDate}</p>}
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">CVV</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                <Lock className="h-5 w-5 text-gray-400" />
-              </div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              <span className="flex items-center">
+                CVV <Lock className="h-3 w-3 ml-1 text-gray-400" />
+              </span>
+            </label>
+            <div className={`relative transition-all rounded-lg ${focusedField === 'cvv' ? 'ring-2 ring-amber-500 ring-opacity-50' : ''}`}>
               <input
                 type="text"
                 name="cvv"
                 value={formData.cvv}
                 onChange={handleChange}
+                onFocus={() => handleFocus('cvv')}
+                onBlur={handleBlur}
                 placeholder="XXX"
-                className={`w-full pl-10 pr-3 py-2 border ${errors.cvv ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition`}
+                className={`w-full px-4 py-3 border ${errors.cvv ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none transition-all duration-200`}
               />
             </div>
             {errors.cvv && <p className="mt-1 text-sm text-red-600">{errors.cvv}</p>}
@@ -158,7 +207,7 @@ const CardPaymentForm: React.FC<BankTransferPaymentProps> = ({ onPaymentSuccess 
         <button
           type="submit"
           disabled={loading}
-          className={`w-full ${loading ? 'bg-amber-400' : 'bg-[#EE7F61] hover:bg-[#e46a4a]'} text-white py-3 rounded-md font-semibold transition-colors duration-300 flex items-center justify-center`}
+          className={`w-full mt-6 ${loading ? 'bg-gray-400' : 'bg-gradient-to-r from-amber-500 to-[#EE7F61] hover:from-amber-600 hover:to-[#e46a4a]'} text-white py-3 px-4 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center shadow-sm`}
         >
           {loading ? (
             <>
@@ -174,8 +223,24 @@ const CardPaymentForm: React.FC<BankTransferPaymentProps> = ({ onPaymentSuccess 
         </button>
       </form>
       
-      <div className="mt-4 flex items-center justify-center">
-        <p className="text-xs text-gray-500">Your payment information is encrypted and secure</p>
+      <div className="mt-6 flex items-center justify-center space-x-2 text-gray-500">
+        <Shield className="h-4 w-4" />
+        <p className="text-xs">Your payment information is secured with SSL encryption</p>
+      </div>
+      
+      <div className="mt-3 flex flex-wrap items-center justify-center gap-3">
+        <div className="flex items-center space-x-1">
+          <CheckCircle2 className="h-3 w-3 text-green-600" />
+          <span className="text-xs text-gray-600">PCI DSS Compliant</span>
+        </div>
+        <div className="flex items-center space-x-1">
+          <CheckCircle2 className="h-3 w-3 text-green-600" />
+          <span className="text-xs text-gray-600">256-bit Encryption</span>
+        </div>
+        <div className="flex items-center space-x-1">
+          <CheckCircle2 className="h-3 w-3 text-green-600" />
+          <span className="text-xs text-gray-600">3D Secure</span>
+        </div>
       </div>
     </div>
   );

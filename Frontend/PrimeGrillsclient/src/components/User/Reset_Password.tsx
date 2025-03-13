@@ -192,7 +192,7 @@ const ResetPasswordComponent: React.FC<ResetPasswordComponentProps> = ({ onSucce
     setIsLoading(true);
 
     try {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/reset_password/`, {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/reset_password/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
