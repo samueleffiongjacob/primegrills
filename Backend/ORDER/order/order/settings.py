@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
+    'rest_framework.authtoken',
     'django_filters',
     'channels',
     'customers',
@@ -48,9 +50,12 @@ INSTALLED_APPS = [
     'orders',  # Add this line
 ]
 
-ASGI_APPLICATION = 'pos.asgi.application'
+
+
+APPEND_SLASH = False
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -80,6 +85,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'order.wsgi.application'
 
+ASGI_APPLICATION = 'order.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -89,9 +95,9 @@ import os
 DATABASES = {
     'default': {
         "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.postgresql"),
-        "NAME": os.environ.get("SQL_DATABASE", "primegrillsorder"),
-        "USER": os.environ.get("SQL_USER", "prime_grills"),
-        "PASSWORD": os.environ.get("SQL_PASSWORD", "prime"),
+        "NAME": os.environ.get("SQL_DATABASE", "primegrillsorder_db"),
+        "USER": os.environ.get("SQL_USER", "primegrills"),
+        "PASSWORD": os.environ.get("SQL_PASSWORD", "primegrills"),
         "HOST": os.environ.get("SQL_HOST", "localhost"),
         "PORT": os.environ.get("SQL_PORT", "5432"),
     }
@@ -153,8 +159,9 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
 }
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",
+#     "http://127.0.0.1:3000",
+# ]
+
+CORS_ALLOW_ALL_ORIGINS = True

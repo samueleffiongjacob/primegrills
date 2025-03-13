@@ -51,6 +51,7 @@ class OrdersViewSet(viewsets.ModelViewSet):
             'total': request.data.get('total') or 0,
             }
         order = OrdersSerializer(data=orders)
+        
         if  not order.is_valid():
             return Response(order.errors, status=status.HTTP_400_BAD_REQUEST)
         
