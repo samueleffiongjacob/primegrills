@@ -3,6 +3,7 @@ import { MdOutlineNotificationsNone } from 'react-icons/md';
 import { SearchContext } from '../context/SearchContext';
 import primeLogo from '@assets/images/primeLogo.png';
 import test1 from '@assets/images/test1.jpeg'
+import { useAuth } from '../context/authContext';
 
 type dateOptionsType = {
     [key: string]: string;
@@ -16,6 +17,7 @@ function HeaderBar() {
     day: 'numeric'
   };
 
+  const {user} = useAuth();
   const { searchQuery, setSearchQuery } = useContext(SearchContext);
   const today = new Date().toLocaleDateString('en-US', dateOptions);
 
@@ -46,7 +48,7 @@ function HeaderBar() {
                 src={test1} 
                 alt="Profile" 
                 className="h-22 w-22 rounded-full" />
-                <p className="text-gray-200 text-md font-bold">Janet, Cashier</p>
+                <p className="text-gray-200 text-md font-bold">{user?.username}, {user?.staff_profile.role}</p>
               </div>
 
               <MdOutlineNotificationsNone className='text-gray-200 text-lg h-10 w-10' />
