@@ -8,7 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
     """Base serializer for all users"""
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'password', 'phone', 'address', 'name', 'profileImage', 'user_type')
+        fields = ('id', 'username', 'email', 'password', 'phone', 'address', 'name', 'last_login', 'profileImage', 'user_type')
         extra_kwargs = {
             'password': {'write_only': True},
             'user_type': {'read_only': True}  # Prevent changing user type via API

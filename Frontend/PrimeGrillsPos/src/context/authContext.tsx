@@ -28,6 +28,8 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isAuthorized: (requiredRole?: string) => boolean;
   login: (email: string, password: string) => Promise<void>;
+  redirectPath: string;
+  setRedirectPath: (path: string) => void;
   logout: () => Promise<void>;
   loading: boolean;
 }
@@ -39,6 +41,8 @@ const AuthContext = createContext<AuthContextType>({
   isAdmin: false,
   isAuthenticated: false,
   isAuthorized: () => false,
+  redirectPath: '/',
+  setRedirectPath: () => {},
   login: async () => {},
   logout: async () => {},
   loading: true
@@ -50,7 +54,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [redirectPath, setRedirectPath] = useState<string>('/');
+  const [loading, setLoading] = useState(false);
   const [tokenExpiration, setTokenExpiration] = useState<Date | null>(null);
   const SIX_HOURS = 6 * 60 * 60 * 1000; // 6 hours for auto-logout
 
@@ -59,7 +64,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       setLoading(true);
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/staff/profile/`, {
-        method: "GET",
+        method: "GET",   
         headers: {
           "Content-Type": "application/json",
         },
@@ -71,11 +76,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.log(userData);
         setUser(userData);
         setIsAuthenticated(true);
-        
-        // Set admin status based on role
-        if (userData.staff_profile.role === "Manager") {
-          setIsAdmin(true);
-        }
+        setIsAdmin(userData.staff_profile.role === "pos");
+        setRedirectPath('/');
         
         // Set token expiration (assuming we've just refreshed the token)
         setTokenExpiration(new Date(new Date().getTime() + 15 * 60 * 1000));
@@ -189,7 +191,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = async (email: string, password: string): Promise<void> => {
     try {
       setLoading(true);
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/login_staff/`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/login_pos/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -269,6 +271,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       isAuthorized, 
       login, 
       logout,
+      redirectPath,
+      setRedirectPath,
       loading
     }}>
       {children}
