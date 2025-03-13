@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.hashers import check_password
 from .permissions import IsStaffUser, IsManager
 from signup.serializers import  StaffUserSerializer
 from signup.models import StaffProfile
@@ -44,67 +45,79 @@ def get_staff_by_id(request, staff_id):
     except User.DoesNotExist:
         return Response({"detail": "Staff not found"}, status=status.HTTP_404_NOT_FOUND)
     
-@api_view(["PUT"])
-@permission_classes([IsAuthenticated, IsStaffUser])
+
+from signup.se import UserSerializer, StaffProfileSerializer
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def update_staff_profile(request):
     """
-    Update the current staff's profile - Manual Update Version
+    Endpoint for updating the user's profile.
+    """
+    user = request.user
+    data = request.data
+
+    # Use UserSerializer to update user fields
+    user_serializer = UserSerializer(user, data=data, partial=True)
+    if not user_serializer.is_valid():
+        return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # Save user updates
+    user_serializer.save()
+
+    # Update StaffProfile if the user is a staff member
+    if user.user_type == "staff":
+        try:
+            profile = user.staff_profile
+        except StaffProfile.DoesNotExist:
+            profile = StaffProfile(user=user)
+
+        profile_serializer = StaffProfileSerializer(profile, data=data.get("staff_profile", {}), partial=True)
+        if not profile_serializer.is_valid():
+            return Response(profile_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        profile_serializer.save()
+
+    # Return the updated user data
+    response_data = user_serializer.data
+    if user.user_type == "staff":
+        response_data["staff_profile"] = profile_serializer.data
+
+    return Response(response_data, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated, IsStaffUser])
+def update_staff_password(request):
+    """
+    Update the current staff's password
     """
     staff = request.user
     data = request.data
-    
-    # Define which fields belong to which model
-    user_fields = ['username','phone', 'address']
-    profile_fields = ['status']
-    
-    # Update User model fields
-    user_updated = False
-    for field in user_fields:
-        if field in data:
-            setattr(staff, field, data[field])
-            user_updated = True
-    
-    if user_updated:
-        staff.save()
-    
-    # Update StaffProfile fields
-    profile_updated = False
-    try:
-        profile = staff.staff_profile
-    except StaffProfile.DoesNotExist:
-        # Create profile if it doesn't exist
-        profile = StaffProfile(user=staff)
-    
-    if 'staff_profile' in data:
-        for field in profile_fields:
-            if field in data['staff_profile']:
-                setattr(profile, field, data['staff_profile'][field])
-    
-    if profile_updated:
-        profile.save()
-    
-    # Return the updated user data
-    response_data = {
-        'id': staff.id,
-        'username': staff.username,
-        'email': staff.email,
-        'name': staff.name,
-        'phone': staff.phone,
-        'address': staff.address,
-        'user_type': staff.user_type,
-        'is_staff': staff.is_staff,
-        'staff_profile': {
-            'age': profile.age,
-            'gender': profile.gender,
-            'role': profile.role,
-            'shift': profile.shift,
-            'shiftHours': profile.shiftHours,
-            'status': profile.status
-        }
-    }
-    print(response_data)
-    return Response(response_data)
 
+    # Validate and update password if provided
+    if 'current_password' in data and 'new_password' in data:
+        current_password = data['current_password']
+        new_password = data['new_password']
+
+        # Check if the current password is correct
+        if not check_password(current_password, staff.password):
+            return Response(
+                {"error": "Current password is incorrect."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Validate the new password
+        if len(new_password) < 6:
+            return Response(
+                {"error": "New password must be at least 8 characters long."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Update the password
+        staff.set_password(new_password)
+        staff.save()   
+
+    return Response({"success": "Password changed successfully"}, status=status.HTTP_200_OK)
 
 @api_view(["DELETE"])
 @permission_classes([IsAuthenticated, IsManager])

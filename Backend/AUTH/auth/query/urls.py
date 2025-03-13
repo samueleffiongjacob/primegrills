@@ -25,6 +25,7 @@ urlpatterns = [
     path('staffs/all/', staff_views.get_all_staffs, name='get-all-staffs'),
     path('staffs/<int:user_id>/', staff_views.get_staff_by_id, name='get-staff-by-id'),
     path('staffs/profile/update/', staff_views.update_staff_profile, name='update-staff-profile'),
+    path('staffs/profile/update-password/', staff_views.update_staff_password, name='update-staff-password'),
     path('manager/staffs/update/<int:user_id>/', staff_views.manager_update_staff, name='manager-update-staff'),
     path('staffs/delete/<int:staff_id>/', staff_views.delete_staff, name='delete-staff'),
 ]
