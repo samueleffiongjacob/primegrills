@@ -28,12 +28,12 @@ def send_to_query_service(event_type, event_data):
         channel = connection.channel()
 
         # Declare exchange
-        channel.exchange_declare(exchange="processed_auth_events", exchange_type="topic", durable=True)
+        channel.exchange_declare(exchange="menus_event", exchange_type="topic", durable=True)
 
         # Publish processed event data
         message = json.dumps({"type": event_type, "data": event_data})
         channel.basic_publish(
-            exchange="processed_auth_events",
+            exchange="menus_event",
             routing_key=event_type,
             body=message,
             properties=pika.BasicProperties(

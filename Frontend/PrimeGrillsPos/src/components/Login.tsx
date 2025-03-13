@@ -43,7 +43,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
       showToast.success('Login Success');
      
       onClose();
-    } catch (error: any) {
+    } catch (error: any | unknown) {
       console.error("Login failed:", error);
       
       if (error.message === "Invalid email") {

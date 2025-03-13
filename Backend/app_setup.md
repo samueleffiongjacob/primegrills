@@ -56,7 +56,7 @@ pip freeze > requirements.txt # only whenu are done for the days developmet soth
 pip install -r requirements.txt # git pull before running to have access to all dependency
 python manage.py makemigrations
 python manage.py migrate
-python manage.py createsuperuser
+python manage.py create_manager
 python manage.py runserver 8000
 deactivate  # Exit the virtual environment
 
