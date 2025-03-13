@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { UserCircleIcon, BellIcon, ShieldCheckIcon, PhoneIcon, MapPinIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../context/authContext';
 import { toast } from 'react-hot-toast'; // Assuming you use react-hot-toast for notifications
+import { showToast } from '@utils/toast';
 
 const Settings: React.FC = () => {
   const { user, setUser } = useAuth();
   
   // Form state
   const [formData, setFormData] = useState({
+    name: user?.name || '',
     username: user?.username || '',
     phoneNumber: user?.phone || '',
     address: user?.address || '',
@@ -35,6 +37,7 @@ const Settings: React.FC = () => {
     if (user) {
       setFormData(prev => ({
         ...prev,
+        name: user.name || '',
         username: user.username || '',
         phoneNumber: user.phone || '',
         address: user.address || '',
@@ -128,6 +131,7 @@ const Settings: React.FC = () => {
     if (!validateForm()) return;
     
     const profileData = {
+      username: formData.username,
       phoneNumber: formData.phoneNumber,
       address: formData.address,
     };
@@ -145,15 +149,17 @@ const Settings: React.FC = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setUser({ ...user, ...data.user });
-        toast.success('Profile updated successfully');
+        console.log(data)
+        setUser({ ...user, ...data });
+        showToast.success('Profile updated successfully');
       } else {
         const errorData = await response.json();
-        toast.error(errorData.message || 'Failed to update profile');
+        console.log(errorData)
+        showToast.error(errorData.error || 'Failed to update profile');
       }
     } catch (error) {
       console.error('Error updating profile:', error);
-      toast.error('An error occurred while updating profile');
+      showToast.error('An error occurred while updating profile');
     } finally {
       setIsLoading(false);
     }
@@ -168,6 +174,7 @@ const Settings: React.FC = () => {
     try {
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/staffs/profile/update-password/`, {
         method: 'POST',
+
         headers: {
           'Content-Type': 'application/json',
         },
@@ -268,8 +275,19 @@ const Settings: React.FC = () => {
                         <input
                           type="text"
                           name="username"
-                          className="w-full px-4 py-2 border rounded-md bg-gray-100 cursor-not-allowed"
+                          className="w-full px-4 py-2 border rounded-md bg-gray-100 "
                           value={formData.username}
+                          onChange={handleInputChange}
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                        <input
+                          type="text"
+                          name="name"
+                          className="w-full px-4 py-2 border rounded-md bg-gray-100 cursor-not-allowed"
+                          value={formData.name}
                           readOnly
                         />
                       </div>

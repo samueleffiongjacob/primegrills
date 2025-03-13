@@ -45,7 +45,7 @@ function HeaderBar() {
             <div className="flex min-w-[376px] items-center space-x-4 border-l-6 pl-4 border-primary">
               <div className="flex items-center space-x-2">
                 <img 
-                src={test1} 
+                src={user?.profileImage} 
                 alt="Profile" 
                 className="h-22 w-22 rounded-full" />
                 <p className="text-gray-200 text-md font-bold">{user?.username}, {user?.staff_profile.role}</p>
