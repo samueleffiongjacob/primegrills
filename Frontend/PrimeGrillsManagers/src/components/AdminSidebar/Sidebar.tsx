@@ -10,7 +10,7 @@ import {
   Calendar,
   Users,
   Settings,
-  FileBarChart,
+  // FileBarChart,
   X,
   CircleUser
 } from "lucide-react";
@@ -64,7 +64,7 @@ const navItems = [
   { to: "/pos", icon: ShoppingCart, label: "POS"},
   { to: "/paypoints", icon: Calendar, label: "PayPoints"},
   { to: "/settings", icon: Settings, label: "Settings" },
-  { to: "/report", icon: FileBarChart, label: "Report"},
+  // { to: "/report", icon: FileBarChart, label: "Report"},
 ];
 
 const Sidebar = () => {
