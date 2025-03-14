@@ -6,8 +6,8 @@ from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Sum
 from django.db import transaction
-from .models import Customer, FoodProduct, Order, OrderItem
-from .serializers import CustomerSerializer, FoodProductSerializer, OrderSerializer, OrderItemSerializer
+from .models import Customer, FoodProduct, CustomerOrder, CustomerOrderItem
+from .serializers import CustomerSerializer, FoodProductSerializer, CustomerOrderSerializer, CustomerOrderItemSerializer
 
 class CustomerViewSet(viewsets.ModelViewSet):
     queryset = Customer.objects.all()
@@ -48,8 +48,8 @@ class FoodProductViewSet(viewsets.ModelViewSet):
     filterset_fields = ['is_available']
 
 class OrderViewSet(viewsets.ModelViewSet):
-    queryset = Order.objects.all()
-    serializer_class = OrderSerializer
+    queryset = CustomerOrder.objects.all()
+    serializer_class = CustomerOrderSerializer
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     filterset_fields = ['status', 'customer']
 
@@ -65,7 +65,7 @@ class OrderViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def my_orders(self, request):
-        orders = Order.objects.filter(customer=request.user)
+        orders = CustomerOrder.objects.filter(customer=request.user)
         page = self.paginate_queryset(orders)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
@@ -98,7 +98,7 @@ class OrderViewSet(viewsets.ModelViewSet):
             'total_amount': 0  # Will be calculated from items
         }
         
-        order_serializer = OrderSerializer(data=order_data)
+        order_serializer = CustomerOrderSerializer(data=order_data)
         if not order_serializer.is_valid():
             return Response(order_serializer.errors, 
                           status=status.HTTP_400_BAD_REQUEST)
@@ -128,7 +128,7 @@ class OrderViewSet(viewsets.ModelViewSet):
                     'subtotal': product.price * quantity
                 })
                 
-                item_serializer = OrderItemSerializer(data=item_data)
+                item_serializer = CustomerOrderItemSerializer(data=item_data)
                 if item_serializer.is_valid():
                     order_items.append(item_serializer.save())
                     total_amount += item_data['subtotal']
@@ -146,8 +146,8 @@ class OrderViewSet(viewsets.ModelViewSet):
         self.perform_create(order)
 
         return Response({
-            'order': OrderSerializer(order).data,
-            'items': OrderItemSerializer(order_items, many=True).data
+            'order': CustomerOrderSerializer(order).data,
+            'items': CustomerOrderItemSerializer(order_items, many=True).data
         }, status=status.HTTP_201_CREATED)
 
     @action(detail=True, methods=['put'])
@@ -163,19 +163,19 @@ class OrderViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def pending_orders(self, request):
-        orders = Order.objects.filter(status='PENDING')
+        orders = CustomerOrder.objects.filter(status='PENDING')
         serializer = self.get_serializer(orders, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'])
     def unpaid_orders(self, request):
-        orders = Order.objects.filter(payment='PENDING')
+        orders = CustomerOrder.objects.filter(payment='PENDING')
         serializer = self.get_serializer(orders, many=True)
         return Response(serializer.data)
     
     @action(detail=False, methods=['get'])
     def all_orders(self, request):
-        orders = Order.objects.all()
+        orders = CustomerOrder.objects.all()
         serializer = self.get_serializer(orders, many=True)
         return Response(serializer.data)
     
@@ -186,7 +186,7 @@ class OrderViewSet(viewsets.ModelViewSet):
         )
 
 class OrderItemViewSet(viewsets.ModelViewSet):
-    queryset = OrderItem.objects.all()
-    serializer_class = OrderItemSerializer
+    queryset = CustomerOrderItem.objects.all()
+    serializer_class = CustomerOrderItemSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['order', 'food_product']
