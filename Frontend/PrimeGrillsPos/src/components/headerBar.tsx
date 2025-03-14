@@ -2,7 +2,6 @@ import { useContext } from 'react';
 import { MdOutlineNotificationsNone } from 'react-icons/md';
 import { SearchContext } from '../context/SearchContext';
 import primeLogo from '@assets/images/primeLogo.png';
-import test1 from '@assets/images/test1.jpeg'
 import { useAuth } from '../context/authContext';
 
 type dateOptionsType = {
@@ -40,8 +39,11 @@ function HeaderBar() {
             placeholder="Search for Food, Drinks, Snacks, etc." 
             className="w-1/2 h-20 border-4 active:border-primary bg-secondary border-primary rounded-4xl px-2" />
 
+            {/* Date before profile */}
             <p className="text-gray-200 text-md font-semibold">{today}</p>
 
+            {/* Dropdown Menu */}
+            
             <div className="flex min-w-[376px] items-center space-x-4 border-l-6 pl-4 border-primary">
               <div className="flex items-center space-x-2">
                 <img 
