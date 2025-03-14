@@ -99,6 +99,7 @@ const Navbar = () => {
     { title: "Reservation", path: "/reservation" },
     { title: "Offers", path: "/offers" },
     { title: "Feedback", path: "/feedback" },
+    { title: "Faqs", path: "/faqs" },
   ];
 
   return (

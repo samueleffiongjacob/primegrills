@@ -35,10 +35,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = async (email: string, password: string): Promise<string | boolean> => {
     try {
-      await fetch(`${import.meta.env.VITE_BACKEND_URL}/csrf/`, {
-        method: "GET",
-        credentials: "include",
-      });
 
       const csrfToken = getCookie("csrftoken");
 

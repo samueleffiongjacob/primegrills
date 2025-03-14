@@ -66,7 +66,9 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onTog
         setShowResend(true);
         return;
       } else if (result === "Invalid credentials") {
-        setError("Invalid email or password");
+        setError("Invalid email");
+      }  else if (result === "Incorrect password") {
+        setError("Incorrect password");
       } else if (result === true) {
         onLogin(email, password);
       } else {

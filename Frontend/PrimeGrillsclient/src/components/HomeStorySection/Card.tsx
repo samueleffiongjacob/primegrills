@@ -35,7 +35,7 @@ const Card = () => {
   const CardSection = [
     {
       Image: Icon1,
-      title: 'Fine Dining Experience',
+      title: 'Fine Dining ',
       value: 'Enjoy an exquisite culinary journey with our top-notch chefs crafting memorable dishes that delight the senses and elevate dining to an art form.',
     },
     {
@@ -58,7 +58,7 @@ const Card = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6"> 
       {CardSection.map((card, index) => (
-        <motion.div key={index} className="bg-white rounded-2xl m-3 border-t border-t-gray-300 shadow-gray-400 shadow-lg p-2 flex flex-col items-center
+        <motion.div key={index} className="bg-white lg:min-w-56 rounded-2xl m-3 border-t border-t-gray-300 shadow-gray-400 shadow-lg p-2 flex flex-col items-center
          text-[#EE7F61] py-3 lg:py-5"
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -70,8 +70,8 @@ const Card = () => {
               }}
           >
           <img src={card.Image} alt={card.title} className="w-12 h-12 mb-2 shadow-[#EE7F61] shadow-2xl bg-transparent" />
-          <h3 className="text-lg uppercase font-bold mb-2">{card.title}</h3>
-          <p className="text-center font-semibold p-2 text-xs" dangerouslySetInnerHTML={{ __html: card.value }} />
+          <h3 className="text-lg uppercase text-center  font-bold mb-2">{card.title}</h3>
+          <p className="text-center font-semibold p-2 text-sm" dangerouslySetInnerHTML={{ __html: card.value }} />
         </motion.div>
       ))}
     </div>

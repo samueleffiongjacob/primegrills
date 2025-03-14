@@ -40,10 +40,12 @@ def login_user(request):
             return Response({"error": "Email not verified"}, status=400)
     except User.DoesNotExist:
         return Response({"error": "Invalid credentials"}, status=400)
-    user = User.objects.get(email=email , user_type='client')
+    #user = User.objects.get(email=email , user_type='client')
     
     
     user = authenticate(request, email=email, password=password)
+    if not user:
+        return Response({"error": "Incorrect password"}, status=400)  # Specific error for password
     print(user)
 
     if user:

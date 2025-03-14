@@ -22,8 +22,9 @@ import LoginModal from '../components/User/Login.js';
 // import SignUpModal from '../components/User/SignUp.js';
 import VerifyEmail from '../components/User/VerifyEmail.js';
 import {  ResetPasswordComponent } from '../components/User/Reset_Password.js';
-import ReservationForm from '../Pages/Reservations.js';
 import FAQPage from '../Pages/FAQPage.js';
+import ReservationPage from '../Pages/ReservationsPage.js';
+import PaymentPage from '../Pages/ReservePaymentPage.js';
 
 
 const Navigations = () => {
@@ -77,7 +78,8 @@ const Navigations = () => {
             <Route path='/checkout' element={< CheckoutPage />} />
             <Route path="/" element={<LandingPage />} /> 
             <Route path="/menu-category" element={<Menu />} />
-            <Route path="/reservation" element={<ReservationForm/>} />
+            <Route path="/reservation" element={<ReservationPage/>} />
+            <Route path="/reservation-pay" element={<PaymentPage />} />
             <Route path="/faqs" element={<FAQPage/>} />
             <Route path="/feedback" element={<FeedbackPage />} />
             <Route path="/verify-email/:uid/:token" element={<VerifyEmail />} />

@@ -1,25 +1,41 @@
-import React, { useState } from 'react';
 
-const FAQPage = () => {
-  const [activeCategory, setActiveCategory] = useState('general');
-  const [openItems, setOpenItems] = useState({});
+import { useState } from 'react';
 
-  const toggleItem = (id) => {
-    setOpenItems(prev => ({
+type Category = {
+  id: string;
+  name: string;
+};
+
+type FAQItem = {
+  id: string;
+  question: string;
+  answer: string;
+};
+
+type FAQs = {
+  [key: string]: FAQItem[];
+};
+
+const FAQPage: React.FC = () => {
+  const [activeCategory, setActiveCategory] = useState<string>('general');
+  const [openItems, setOpenItems] = useState<Record<string, boolean>>({});
+
+  const toggleItem = (id: string) => {
+    setOpenItems((prev) => ({
       ...prev,
-      [id]: !prev[id]
+      [id]: !prev[id],
     }));
   };
 
-  const categories = [
+  const categories: Category[] = [
     { id: 'general', name: 'General Information' },
     { id: 'reservations', name: 'Reservations' },
     { id: 'menu', name: 'Menu & Dietary Needs' },
     { id: 'delivery', name: 'Delivery & Pickup' },
-    { id: 'events', name: 'Events & Catering' }
+    { id: 'events', name: 'Events & Catering' },
   ];
 
-  const faqs = {
+  const faqs: FAQs = {
     general: [
       {
         id: 'hours',
@@ -138,18 +154,20 @@ const FAQPage = () => {
   };
 
   return (
-    <div className=" min-h-screen py-12">
+    <div className="min-h-screen py-12">
       <div className="container mx-auto px-4 max-w-4xl">
-        <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">Frequently Asked Questions</h1>
-        
+        <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">
+          Frequently Asked Questions
+        </h1>
+
         {/* Category Navigation */}
         <div className="flex flex-wrap justify-center gap-2 mb-10">
-          {categories.map(category => (
+          {categories.map((category) => (
             <button
               key={category.id}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                activeCategory === category.id 
-                  ? 'bg-[#EE7F61] text-white' 
+                activeCategory === category.id
+                  ? 'bg-[#EE7F61] text-white'
                   : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
               }`}
               onClick={() => setActiveCategory(category.id)}
@@ -158,29 +176,28 @@ const FAQPage = () => {
             </button>
           ))}
         </div>
-        
+
         {/* FAQ Items */}
         <div className="space-y-4">
-          {faqs[activeCategory].map(faq => (
-            <div 
-              key={faq.id}
-              className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100"
-            >
+          {faqs[activeCategory]?.map((faq) => (
+            <div key={faq.id} className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100">
               <button
                 className="flex justify-between items-center w-full p-4 text-left focus:outline-none focus:ring-2 focus:ring-[#EE7F61] focus:ring-opacity-50"
                 onClick={() => toggleItem(faq.id)}
               >
                 <span className="font-medium text-gray-800">{faq.question}</span>
-                <svg 
-                  className={`w-5 h-5 text-gray-500 transform transition-transform ${openItems[faq.id] ? 'rotate-180' : ''}`} 
-                  fill="none" 
-                  viewBox="0 0 24 24" 
+                <svg
+                  className={`w-5 h-5 text-gray-500 transform transition-transform ${
+                    openItems[faq.id] ? 'rotate-180' : ''
+                  }`}
+                  fill="none"
+                  viewBox="0 0 24 24"
                   stroke="currentColor"
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
-              
+
               {openItems[faq.id] && (
                 <div className="px-4 pb-4 text-gray-600 border-t border-gray-100 pt-2">
                   <p>{faq.answer}</p>
@@ -188,32 +205,6 @@ const FAQPage = () => {
               )}
             </div>
           ))}
-        </div>
-        
-        {/* Contact Call-to-Action */}
-        <div className="mt-12 bg-white p-6 rounded-lg shadow-sm border border-gray-100 text-center">
-          <h2 className="text-xl font-semibold mb-2 text-gray-800">Still have questions?</h2>
-          <p className="text-gray-600 mb-4">Our team is happy to help with any questions not covered above.</p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <a 
-              href="tel:+23451234567" 
-              className="inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 font-medium"
-            >
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-              </svg>
-              (234) 80897876
-            </a>
-            <a 
-              href="mailto:info@restaurant.com" 
-              className="inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 font-medium"
-            >
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
-              Email Us
-            </a>
-          </div>
         </div>
       </div>
     </div>
