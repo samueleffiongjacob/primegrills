@@ -17,7 +17,7 @@ import logo from "../../assets/images/primeLogo.png";
 
 // Mock user role 
 const userRole = "admin"; // Example roles: "admin", "accountant", "user"
-const allRoles = ["admin", "accountant", "waiter", "cleaner", "kitchen"];
+const allRoles = ["admin", "accountant", "waiter", "cleaner", "kitchen", 'manager'];
 
 
 interface SidebarLinkProps {
@@ -55,10 +55,10 @@ interface navItems {
 // Define navigation items
 const navItems = [
   { to: "/profile", icon: Users, label: "Profile", roles: [ "cleaner", "waiter", "kitchen"] },
-  { to: "/", icon: LayoutDashboard, label: "Dashboard", roles: ["admin", "accountant"] },
-  { to: "/category", icon: Users, label: "Category", roles: ["admin", "accountant"] },
+  { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard", roles: ["admin", "accountant", 'manager' ] },
+  { to: "/category", icon: Users, label: "Category", roles: ["admin", "accountant" ] },
   { to: "/menu", icon: Package, label: "Menu", roles: allRoles },
-  { to: "/user", icon: User, label: "User", roles: allRoles},
+  { to: "/staff", icon: User, label: "Staff", roles: allRoles},
   { to: "/orders", icon: ShoppingCart, label: "Order", roles: ["admin", "accountant", "kitchen"]},
   { to: "/message", icon: Mail, label: "Message", roles: allRoles },
   { to: "/pos", icon: ShoppingCart, label: "POS", roles: ["admin", "accountant"] },

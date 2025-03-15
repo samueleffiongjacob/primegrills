@@ -426,7 +426,7 @@ const Profile = () => {
     );
 
     return (
-    <div className="max-w-4xl mx-auto max-h-[90vh] overflow-y-auto scrollbar-hide p-6">
+    <div className="max-w-4xl mx-auto max-h-[86vh] overflow-y-auto scrollbar-hide p-6">
       <ToastContainer />
       <div className="flex flex-col items-center mb-8">
         <div className="relative w-32 h-32 rounded-full overflow-hidden shadow-lg">
