@@ -119,9 +119,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       if (response.ok) {
-        // Update token expiration time (13 minutes from now)
+        // Update token expiration time (15 minutes from now)
         console.log('token refreshed')
-        setTokenExpiration(new Date(new Date().getTime() + 13 * 60 * 1000));
+        setTokenExpiration(new Date(new Date().getTime() + 15 * 60 * 1000));
         return true;
       }
       console.log('token not refreshed')
