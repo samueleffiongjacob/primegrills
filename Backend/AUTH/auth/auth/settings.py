@@ -15,8 +15,9 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+BASE_URL = 'http://localhost:8000'
 
-MEDIA_URL = '/media/'
+MEDIA_URL = '/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
@@ -27,7 +28,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # SECRET_KEY = 'django-insecure-cyu5k$z&v937syhr&g@)qi(t!+^9n-ch4y32x7uq)5)q+byrcu'
 SECRET_KEY = os.environ.get("SECRET_KEY", 'django-insecure-cyu5k$z&v937syhr&g@)qi(t!+^9n-ch4y32x7uq)5)q+byrcu' )
 
-# SECURITY WARNING: don't run with debug turned on in production!
+# SECURITY WARNING: don't run with debug turned on in production! To use the commented one below
 DEBUG = True
 #DEBUG = bool(os.environ.get("DEBUG", default=0))
 
@@ -133,9 +134,9 @@ WSGI_APPLICATION = 'auth.wsgi.application'
 DATABASES = {
     'default': {
         "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.postgresql"),
-        "NAME": os.environ.get("SQL_DATABASE","primegrillsauth"), #"primegrillsauth_db",
-        "USER": os.environ.get("SQL_USER","prime_grills"), #"primegrills",
-        "PASSWORD": os.environ.get("SQL_PASSWORD","prime"), #"primegrills",
+        "NAME": os.environ.get("SQL_DATABASE","primegrillsauth_db"), #"primegrillsauth_db",
+        "USER": os.environ.get("SQL_USER","primegrills"), #"primegrills",
+        "PASSWORD": os.environ.get("SQL_PASSWORD","primegrills"), #"primegrills",
         "HOST": os.environ.get("SQL_HOST", "localhost"),
         "PORT": os.environ.get("SQL_PORT", "5432"),
     }

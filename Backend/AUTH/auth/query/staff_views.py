@@ -17,6 +17,7 @@ def staff_profile(request):
     Get the current staff's profile.
     """
     staff = request.user
+    print(staff)
     serializer = StaffUserSerializer(staff)
     return Response(serializer.data)
 
@@ -46,7 +47,7 @@ def get_staff_by_id(request, staff_id):
         return Response({"detail": "Staff not found"}, status=status.HTTP_404_NOT_FOUND)
     
 
-from signup.se import UserSerializer, StaffProfileSerializer
+from signup.se import StaffProfileSerializer, RegisterStaffSerializer
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
@@ -57,8 +58,12 @@ def update_staff_profile(request):
     user = request.user
     data = request.data
 
+    if 'username' in data:
+        if User.objects.filter(username=data["username"]).exists():
+            return Response({"error": "Username already exists"}, status=400)
+
     # Use UserSerializer to update user fields
-    user_serializer = UserSerializer(user, data=data, partial=True)
+    user_serializer = RegisterStaffSerializer(user, data=data, partial=True)
     if not user_serializer.is_valid():
         return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -93,29 +98,34 @@ def update_staff_password(request):
     """
     staff = request.user
     data = request.data
+    print(data)
+    # Check if required fields are provided
+    if 'currentPassword' not in data or 'newPassword' not in data:
+        return Response(
+            {"error": "Both current password and new password are required."},
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
-    # Validate and update password if provided
-    if 'current_password' in data and 'new_password' in data:
-        current_password = data['current_password']
-        new_password = data['new_password']
+    current_password = data['currentPassword']
+    new_password = data['newPassword']
 
-        # Check if the current password is correct
-        if not check_password(current_password, staff.password):
-            return Response(
-                {"error": "Current password is incorrect."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+    # Check if the current password is correct
+    if not check_password(current_password, staff.password):
+        return Response(
+            {"error": "Current password is incorrect."},
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
-        # Validate the new password
-        if len(new_password) < 6:
-            return Response(
-                {"error": "New password must be at least 8 characters long."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+    # Validate the new password
+    if len(new_password) < 6:  
+        return Response(
+            {"error": "New password must be at least 6 characters long."},
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
-        # Update the password
-        staff.set_password(new_password)
-        staff.save()   
+    # Update the password
+    staff.set_password(new_password)
+    staff.save()   
 
     return Response({"success": "Password changed successfully"}, status=status.HTTP_200_OK)
 

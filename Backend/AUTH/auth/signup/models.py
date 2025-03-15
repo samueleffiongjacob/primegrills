@@ -47,8 +47,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=100, blank=True, null=True)
     phone = models.CharField(max_length=15, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
-    profileImage = models.ImageField(upload_to='profile_images/', blank=True, null=True)
-    
+    profileImage = models.ImageField(upload_to='profile_images/', blank=True, null=True) 
     user_type = models.CharField(max_length=10, choices=USER_TYPES, default='client')
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
