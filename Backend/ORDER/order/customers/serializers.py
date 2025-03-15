@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Customer, FoodProduct, Order, OrderItem
+from .models import Customer, FoodProduct, CustomerOrder, CustomerOrderItem
 
 class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
@@ -23,14 +23,14 @@ class FoodProductSerializer(serializers.ModelSerializer):
         model = FoodProduct
         fields = '__all__'
 
-class OrderItemSerializer(serializers.ModelSerializer):
+class CustomerOrderItemSerializer(serializers.ModelSerializer):
     class Meta:
-        model = OrderItem
+        model = CustomerOrderItem
         fields = '__all__'
 
-class OrderSerializer(serializers.ModelSerializer):
-    items = OrderItemSerializer(many=True, read_only=True)
+class CustomerOrderSerializer(serializers.ModelSerializer):
+    items = CustomerOrderItemSerializer(many=True, read_only=True)
     
     class Meta:
-        model = Order
+        model = CustomerOrder
         fields = '__all__'

@@ -10,7 +10,7 @@ import {
   Calendar,
   Users,
   Settings,
-  FileBarChart,
+  // FileBarChart,//remove report from MANAGER SIDE BAR
   X,
   CircleUser
 } from "lucide-react";

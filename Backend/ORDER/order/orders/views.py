@@ -1,5 +1,5 @@
 import uuid
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -7,9 +7,10 @@ from django.utils import timezone
 from datetime import datetime
 from django.db import transaction
 
+from customers.models import FoodProduct
 from pos.models import Transaction as PosTransaction
 from .models import Orders
-from .serializers import OrdersSerializer
+from .serializers import OrdersSerializer, OrderItemsSerializer
 
 
 class OrdersViewSet(viewsets.ModelViewSet):
@@ -37,9 +38,11 @@ class OrdersViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'])
     @transaction.atomic
     def create_order(self, request):
-        order = self.get_object()
+        
         # Add order processing logic here
         user = self.request.user
+
+        
 
         orders = {
             'content_type': user.content_type,
@@ -51,7 +54,7 @@ class OrdersViewSet(viewsets.ModelViewSet):
             'total': request.data.get('total') or 0,
             }
         order = OrdersSerializer(data=orders)
-        
+
         if  not order.is_valid():
             return Response(order.errors, status=status.HTTP_400_BAD_REQUEST)
         
@@ -69,7 +72,7 @@ class OrdersViewSet(viewsets.ModelViewSet):
                 food_product = FoodProduct.objects.get(id=item_data['food_product'])
                 quantity = int(item_data['quantity'])
                 item_data['order'] = order.id
-                item = OrderItemSerializer(data=item_data)
+                item = OrderItemsSerializer(data=item_data)
                 if not item.is_valid():
                     order.delete()
                     return Response(item.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -84,27 +87,39 @@ class OrdersViewSet(viewsets.ModelViewSet):
 
         return Response({'status': 'order created'}, status=status.HTTP_201_CREATED)
     
-    @action(detail=True, methods=['get'])
-    def get_orders(self, request, pk=None):
-        order = self.get_object()
-        serializer = OrdersSerializer(order)
-        return Response(serializer.data)
+    # @action(detail=True, methods=['get'])
+    # def get_orders(self, request):
+    #     try:
+    #         order = Orders.objects.all()
+    #         serializer = OrdersSerializer(order)
+    #         return Response(serializer.data)
+        
+    #     except Exception as e:
+    #         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
     @action(detail=True, methods=['put'])
     def update_order(self, request, pk=None):
-        order = self.get_object()
-        serializer = OrdersSerializer(order, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            if pk is not None:
+                order = Orders.objects.filter(id=pk)
+            else:
+                return Response({'error': 'no ID'}, status=status.HTTP_400_BAD_REQUEST)
+            serializer = OrdersSerializer(order, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        except Exception as e:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     @action(detail=True, methods=['delete'])
     def delete_order(self, request, pk=None):
-        order = self.get_object()
-        order.delete()
-        return Response({'status': 'order deleted'}, status=status.HTTP_204_NO_CONTENT)
-    
+        if pk is not None:
+            order = get_object_or_404(Orders, pk=pk)
+            order.delete()
+            return Response({'status': 'order deleted'}, status=status.HTTP_204_NO_CONTENT)
+        
+        else:
+            return Response({'error': 'no ID'}, status=status.HTTP_400_BAD_REQUEST)
         
 
 # Create your views here.

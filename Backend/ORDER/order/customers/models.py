@@ -32,7 +32,7 @@ class FoodProduct(models.Model):
     def __str__(self):
         return self.name
 
-class Order(models.Model):
+class CustomerOrder(models.Model):
     STATUS_CHOICES = [
         ('PENDING', 'Pending'),
         ('PREPARING', 'Preparing'),
@@ -48,7 +48,7 @@ class Order(models.Model):
     ]
     
     order_id = models.CharField(max_length=20, unique=True)
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='order')
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='customer_order')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
     payment = models.CharField(max_length=20, choices=PAY_STATS, default='PENDING')
     special_instructions = models.TextField(blank=True)
@@ -62,8 +62,8 @@ class Order(models.Model):
     class Meta:
         ordering = ['created_at']
 
-class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
+class CustomerOrderItem(models.Model):
+    order = models.ForeignKey(CustomerOrder, on_delete=models.CASCADE, related_name='items')
     food_product = models.ForeignKey(FoodProduct, on_delete=models.SET_NULL, null=True)
     quantity = models.PositiveIntegerField()
     price_at_time = models.DecimalField(max_digits=10, decimal_places=2)

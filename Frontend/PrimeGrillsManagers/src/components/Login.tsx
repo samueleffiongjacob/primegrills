@@ -15,7 +15,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [unauthorizedModal, setUnauthorizedModal] = useState(false);
-  const { login, loading } = useAuth();
+  const { login, loading, user } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,7 +32,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
     try {
       await login(email, password);
-      toast.success('Login Success');
+      toast.success(`Welcome, ${user?.name}`);
       //onClose();
     } catch (error: any) {
       console.error("Login failed:", error);
@@ -51,7 +51,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
   return (
     <>
-      <ToastContainer />
+      
       <div className="fixed inset-0 bg-opacity-100 backdrop-blur-xs flex items-center justify-center z-50">
         <div className="bg-[#171943] rounded-2xl p-6 w-full max-w-lg relative">
           <button
