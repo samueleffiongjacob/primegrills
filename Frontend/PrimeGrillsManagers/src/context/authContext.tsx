@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [tokenExpiration, setTokenExpiration] = useState<Date | null>(null);
   const SIX_HOURS = 6 * 60 * 60 * 1000; // 6 hours for auto-logout
 
@@ -73,7 +73,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setIsAuthenticated(true);
         
         // Set admin status based on role
-        if (userData.staff_profile.role === "Manager") {
+        if (userData.staff_profile.role.toLowerCase() === "manager") {
           setIsAdmin(true);
         }
         
@@ -133,11 +133,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // Initialize auth state on mount
+/*   // Initialize auth state on mount
   useEffect(() => {
     fetchUserData();
   }, []);
-
+ */
   // Set up automatic token refreshing
   useEffect(() => {
     if (!isAuthenticated || !tokenExpiration) return;

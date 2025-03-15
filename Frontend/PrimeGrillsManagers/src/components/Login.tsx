@@ -24,10 +24,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
       toast.error("All fields are required");
       return;
     }
-    if (!/\S+@\S+\.\S+/.test(email)) {
-      toast.error("Invalid email format");
-      return;
-    }
+   
     if (password.length < 6) {
       toast.error("Password must be at least 6 characters");
       return;
@@ -36,7 +33,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     try {
       await login(email, password);
       toast.success('Login Success');
-      onClose();
+      //onClose();
     } catch (error: any) {
       console.error("Login failed:", error);
       
@@ -71,7 +68,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
               <div className="relative">
                 <MdEmail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 <input
-                  type="email"
+                  type="text"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Email or Username"

@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../../context/authContext";
 import logo from '../../assets/images/primeLogo.png';
 import { motion } from 'framer-motion';
-import { TrashIcon} from "lucide-react"; // Replace imported image with icon component
+import { TrashIcon, CheckCircle, XCircle } from "lucide-react"; // Only need CheckCircle now
 
 interface ClientProps {
   id: number;
@@ -12,6 +12,7 @@ interface ClientProps {
   image: string;
   address: string;
   phone: string;
+  is_active: boolean; // Tracking verification status
 }
 
 // Extracted to environment variable for easier configuration
@@ -185,7 +186,6 @@ const Clients = () => {
                   <thead>
                     <tr className="bg-[#EE7F61] text-white">
                       <th className="px-6 py-3 text-left tracking-wider">S/N</th>
-                      <th className="px-6 py-3 text-left tracking-wider">Client ID</th>
                       <th className="px-6 py-3 text-left tracking-wider">Name</th>
                       <th className="px-6 py-3 text-left tracking-wider">Email</th>
                       <th className="px-6 py-3 text-left tracking-wider">Username</th>
@@ -207,8 +207,27 @@ const Clients = () => {
                         className="hover:bg-gray-50"
                       >
                         <td className="px-6 py-4 whitespace-nowrap">{startIndex + index + 1}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">{client.id}</td>
-                        <td className="px-6 py-4 whitespace-nowrap font-medium">{client.name}</td>
+                        <td className="px-6 py-4 whitespace-nowrap font-medium">
+                          <div className="flex items-center">
+                            <span>{client.name}</span>
+                            {client.is_active ? (
+                               <div
+                                className="ml-1 h-5 w-5 flex items-center justify-center rounded-full bg-blue-500"
+                                title="Email Verified"
+                             >
+                               <CheckCircle className="h-4 w-4 text-white" />
+                             </div>
+                            ) : (
+                              <div
+                                className="ml-1 h-5 w-5 flex items-center justify-center rounded-full bg-gray-300"
+                                title="Email Unverified"
+                            >
+                              <XCircle className="h-4 w-4 text-white" />
+                            </div>
+                            ) 
+                          }
+                          </div>
+                        </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <a href={`mailto:${client.email}`} className="text-blue-600 hover:underline">
                             {client.email}
@@ -322,7 +341,7 @@ const Clients = () => {
                       </>
                     )}
                   </div>
-                  
+                
                   <button
                     onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                     disabled={currentPage === totalPages}

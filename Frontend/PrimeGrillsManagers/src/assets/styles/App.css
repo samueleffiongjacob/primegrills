@@ -23,3 +23,13 @@
     scrollbar-width: thin; /* Make the scrollbar thinner */
     scrollbar-color: #4b5563 #f4f4f5; /* Change the color of the scrollbar thumb and track */
 }
+
+/* to hide scrollbar */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }

@@ -6,8 +6,6 @@ import MenuDashboard from '../components/Menu/menu';
 // import Staff from "../components/Staff/staff";
 // import ProductDashboard from '../components/Menu/menu';
 import Category from '../components/category/category';
-import ReportIssue from '../components/Report/report';
-import ComplaintPolicy from '../components/Report/complaintPolicy';
 import Settings from '../components/Settings/settings';
 import { ProtectedRoute } from '../components/ProtectedRoute';
 import MessagesPage from '../pages/messages';
@@ -46,8 +44,6 @@ const Navigations = () => {
               <Route path="/staff" element={<Staff />} />
               <Route path="/clients" element={<Clients />} />
               <Route path="/category" element={<Category />} />
-              <Route path="/report" element={<ReportIssue />} />
-              <Route path="/complaintpolicy" element={<ComplaintPolicy />} />
               <Route path="/message" element={<MessagesPage />} />
               <Route path="/paypoints" element={<PayPoint />} />
               <Route path="/pos" element={<TransactionsTable />} />

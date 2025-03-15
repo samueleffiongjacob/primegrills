@@ -64,7 +64,6 @@ const navItems = [
   { to: "/pos", icon: ShoppingCart, label: "POS"},
   { to: "/paypoints", icon: Calendar, label: "PayPoints"},
   { to: "/settings", icon: Settings, label: "Settings" },
-  { to: "/report", icon: FileBarChart, label: "Report"},
 ];
 
 const Sidebar = () => {
