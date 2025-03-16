@@ -11,7 +11,7 @@ import 'swiper/css/pagination';
 import TestimonialCard from './TestimonialCard';
 import { testimonials } from './testimonialsDetails';
 import '../../assets/styles/index.css'
-import { slideVariants } from '../../utils/utils';
+import { slideVariants } from '../../utils/animate';
 
 const Testimonials = () => {
     const swiperRef = useRef<SwiperType | null>(null);

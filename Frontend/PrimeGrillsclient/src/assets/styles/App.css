@@ -10,3 +10,35 @@ body {
     90% { transform: translateX(0); }
     100% { transform: translateX(100%); }
 }
+
+/* to hide scrollbar */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+
+/* special dishes page item highlight styles */
+  .spotlight-effect {
+    position: relative;
+  }
+  .spotlight-effect::before {
+    content: '';
+    position: absolute;
+    inset: -20px;
+    background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(238, 127, 97, 0.3) 0%, rgba(238, 127, 97, 0) 50%);
+    border-radius: 16px;
+    z-index: -1;
+    pointer-events: none;
+  }
+  .float-effect {
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}

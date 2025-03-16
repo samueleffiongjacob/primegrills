@@ -12,7 +12,7 @@ import "swiper/css/pagination";
 // INTERNAL IMPORTS
 import MenuCard from "./MenuCard";
 import { MENU_CARD_ITEMS } from "./menuItemDetails";
-import { headerVariants, slideVariants } from "../../utils/utils";
+import { headerVariants, slideVariants } from "../../utils/animate";
 
 
 const Menu = () => {

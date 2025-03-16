@@ -173,7 +173,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  useEffect(() => {
+ /*  useEffect(() => {
     const initAuth = async () => {
       let retries = 3;
       while (retries > 0) {
@@ -194,7 +194,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
   
     initAuth();
-  }, []);
+  }, []); */
 
   useEffect(() => {
     if (!isAuthenticated) return;

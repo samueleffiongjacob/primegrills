@@ -145,8 +145,8 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 bg-opacity-100 bg-[#F4F1F1] flex items-center justify-center z-50">
-      <div className="bg-white rounded-2xl p-6 w-full max-w-md max-h-screen overflow-y-auto relative shadow-xl">
+    <div className="fixed inset-0 bg-opacity-100 bg-[#F4F1F1]  py-8 flex items-center justify-center z-50">
+      <div className="bg-white rounded-2xl my-5 p-6 w-full max-w-md max-h-screen overflow-y-auto scrollbar-hide relative shadow-xl">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 cursor-pointer text-gray-500 hover:text-[#EE7F61]"

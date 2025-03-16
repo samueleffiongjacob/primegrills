@@ -62,7 +62,7 @@ const CategorySection = () => {
   };
 
   return (
-    <div className="flex flex-col my-10 px-4 md:my-14 md:mb-20">
+    <div className="flex flex-col my-10 px-4 md:mt-14 md:mb-24">
       {/* Title and Navigation Buttons */}
       <div className="flex justify-between items-center mb-4 px-4">
         <h1 className="text-3xl font-bold">Menu</h1>

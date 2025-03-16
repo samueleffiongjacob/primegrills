@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import Button from "../Navbar/button.tsx";
 import hero from "../../assets/images/heroimage.png";
 import ItemCard from "../itemCard/itemCard.tsx";
-import { headerVariants, slideVariants } from "../../utils/utils.ts";
+import { headerVariants, slideVariants } from "../../utils/animate.ts";
 
 const Hero = () => {
   return (

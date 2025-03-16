@@ -12,6 +12,8 @@ import SignUpModal from "../User/SignUp";
 import ProfileSidePanel from "../User/ProfileSidePanel";
 import { SearchBar } from "./SearchBar";
 import { useAuth } from "../../context/AuthContext";
+import { groupByCategory } from "../../utils/groupMenuCategory";
+import { menuItems } from "../sample";
 
 // interface UserProfile {
 //   username: string;
@@ -52,33 +54,19 @@ const Navbar = () => {
   const [activeModal, setActiveModal] = useState<"login" | "signup" | null>(null);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Track user login state
   const location = useLocation(); // Get current URL
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated } = useAuth();
 
   const toggleProfile = () => {
     setIsProfileOpen(!isProfileOpen);
   };
 
-  const handleLogin = () => {
-    setIsLoggedIn(true); // Set user as logged in
-    setActiveModal(null); // Close the modal
-  };
-
-  const handleSignUp = () => {
-    setIsLoggedIn(true); // Set user as logged in
-    setActiveModal(null); // Close the modal
-  };
-
-  const handleLogout = () => {
-    setIsLoggedIn(false); // Set user as logged out
-    setIsProfileOpen(false); // Close the profile panel
-  };
 
   const handleLoginFromPanel = () => {
     setActiveModal("login"); // Open the login modal
     setIsProfileOpen(false); // Close the profile panel
   };
+  const groupedMenuItems = groupByCategory(menuItems)
 
   const navItems = [
     { title: "Home", path: "/" },
@@ -89,10 +77,10 @@ const Navbar = () => {
         { title: "All Menu", path: "/menu/all" },
         { title: "Special Dishes", path: "/menu/special" },
         { title: "Popular Dishes", path: "/menu/popular" },
-        { title: "Food", path: "/menu/food" },
-        { title: "Pastries", path: "/menu/pastries" },
-        { title: "Bars/Drinks", path: "/menu/drinks" },
-        { title: "Grills", path: "/menu/grills" },
+        ...Object.keys(groupedMenuItems).map((category) => ({
+          title: category,
+          path: `/menu/${category.toLowerCase().replace(/\s+/g, "-")}`,
+        })),
       ],
     },
     { title: "Services", path: "/services" },
@@ -126,7 +114,7 @@ const Navbar = () => {
                   onMouseEnter={() => setHoveredItem(item.title)}
                 >
                   <NavLink
-                    to={item.path || "/default-path"}
+                    to={item.path || '/menu-category'}
                     onClick={() => {
                       if (item.title.toLowerCase() === "offers") {
                         document
@@ -145,7 +133,8 @@ const Navbar = () => {
                   {/* Dropdown for Menu */}
                   {item.subItems && hoveredItem === item.title && (
                     <div
-                      className="absolute left-0 top-full mt-2 w-48 bg-white shadow-lg rounded-md opacity-100 visible transition-opacity duration-300"
+                      className="absolute left-0 top-full mt-2 w-48 bg-white shadow-lg rounded-md opacity-100 
+                      isible transition-opacity duration-300"
                       onMouseEnter={() => setHoveredItem(item.title)}
                       onMouseLeave={() => setHoveredItem(null)}
                     >
@@ -220,13 +209,13 @@ const Navbar = () => {
       <LoginModal
         isOpen={activeModal === "login"}
         onClose={() => setActiveModal(null)}
-        onLogin={handleLogin}
+        onLogin={() => setActiveModal(null)}
         onToggleSignUp={() => setActiveModal("signup")}
       />
       <SignUpModal
         isOpen={activeModal === "signup"}
         onClose={() => setActiveModal(null)}
-        onSignUp={handleSignUp}
+        onSignUp={() => setActiveModal(null)}
         onToggleLogin={() => setActiveModal("login")}
       />
     </header>

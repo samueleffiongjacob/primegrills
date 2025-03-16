@@ -14,10 +14,7 @@ import {
   X
 } from "lucide-react";
 import logo from "../../assets/images/primeLogo.png";
-
-// Mock user role 
-const userRole = "admin"; // Example roles: "admin", "accountant", "user"
-const allRoles = ["admin", "accountant", "waiter", "cleaner", "kitchen", 'manager'];
+import { useAuth } from "../../context/authContext";
 
 
 interface SidebarLinkProps {
@@ -30,6 +27,12 @@ interface SidebarLinkProps {
 const SidebarLink = ({ to, children, icon: Icon, collapsed }: SidebarLinkProps) => {
   const location = useLocation();
   const isActive = location.pathname === to;
+  const {user} = useAuth()
+  
+  // Mock user role 
+  const userRole = user.staff_profile.role; 
+  const allRoles = ["admin", "accountant", "waiter", "cleaner", "kitchen", 'manager'];
+
 
   return (
     <Link
@@ -52,7 +55,7 @@ interface navItems {
   
 }
 
-// Define navigation items
+// Define navigation items - sort what items each role sees
 const navItems = [
   { to: "/profile", icon: Users, label: "Profile", roles: [ "cleaner", "waiter", "kitchen"] },
   { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard", roles: ["admin", "accountant", 'manager' ] },
