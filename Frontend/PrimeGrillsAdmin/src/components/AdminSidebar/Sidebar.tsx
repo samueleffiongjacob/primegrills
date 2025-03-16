@@ -16,6 +16,7 @@ import {
 import logo from "../../assets/images/primeLogo.png";
 import { useAuth } from "../../context/authContext";
 
+const allRoles = ["admin", "accountant", "waiter", "cleaner", "kitchen", 'manager'];
 
 interface SidebarLinkProps {
   to: string;
@@ -28,11 +29,9 @@ const SidebarLink = ({ to, children, icon: Icon, collapsed }: SidebarLinkProps) 
   const location = useLocation();
   const isActive = location.pathname === to;
   const {user} = useAuth()
-  
-  // Mock user role 
-  const userRole = user.staff_profile.role; 
-  const allRoles = ["admin", "accountant", "waiter", "cleaner", "kitchen", 'manager'];
+  const userRole = user?.staff_profile.role as string;
 
+  
 
   return (
     <Link
