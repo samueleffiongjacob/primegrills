@@ -4,6 +4,7 @@ import { MdEmail } from 'react-icons/md';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAuth } from '../context/authContext';
+import GreetingModal from './GreetingModal';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -16,6 +17,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [unauthorizedModal, setUnauthorizedModal] = useState(false);
   const { login, loading, user } = useAuth();
+  const [showGreeting, setShowGreeting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,7 +34,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
     try {
       await login(email, password);
-      toast.success(`Welcome, ${user?.name}`);
+      toast.success(`Welcome, ${user?.name}`)
+      setShowGreeting(true);
       //onClose();
     } catch (error: any) {
       console.error("Login failed:", error);
@@ -51,7 +54,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
   return (
     <>
-      
+      <ToastContainer />
       <div className="fixed inset-0 bg-opacity-100 backdrop-blur-xs flex items-center justify-center z-50">
         <div className="bg-[#171943] rounded-2xl p-6 w-full max-w-lg relative">
           <button
@@ -71,7 +74,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                   type="text"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Email or Username"
+                  placeholder="Email"
                   className="w-full pl-12 text-white pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-400"
                 />
               </div>
@@ -132,6 +135,17 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
           </div>
         </div>
       )}
+      {showGreeting && (
+        <GreetingModal 
+          isOpen={showGreeting} 
+          onClose={() => {
+            setShowGreeting(false);
+            onClose(); // Close the login modal after greeting
+          }} 
+          userName={user?.name || "Manager"}
+        />
+      )}
+
     </>
   );
 };

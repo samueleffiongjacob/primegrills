@@ -9,7 +9,7 @@ interface ClientProps {
   name: string;
   email: string;
   username: string;
-  image: string;
+  profileImage: string;
   address: string;
   phone: string;
   is_active: boolean; // Tracking verification status
@@ -212,10 +212,10 @@ const Clients = () => {
                             <span>{client.name}</span>
                             {client.is_active ? (
                                <div
-                                className="ml-1 h-5 w-5 flex items-center justify-center rounded-full bg-blue-500"
+                                className="ml-1 h-5 w-5 flex items-center justify-center rounded-full bg-blue-600"
                                 title="Email Verified"
                              >
-                               <CheckCircle className="h-4 w-4 text-white" />
+                               <CheckCircle className="h-4 w-4 font-bold text-white" />
                              </div>
                             ) : (
                               <div
@@ -236,7 +236,7 @@ const Clients = () => {
                         <td className="px-6 py-4 whitespace-nowrap">{client.username}</td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <img 
-                            src={client.image} 
+                            src={client.profileImage} 
                             alt={`${client.name}'s avatar`} 
                             className="h-10 w-10 rounded-full object-cover"
                             onError={(e) => {
