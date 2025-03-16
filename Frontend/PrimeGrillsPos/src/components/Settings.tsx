@@ -83,7 +83,7 @@ const Settings: React.FC = () => {
       if (response.ok) {
         const data = await response.json();
         setFormData(prev => ({ ...prev, profileImage: data.imageUrl }));
-        //setUser({ ...user, profileImage: data.imageUrl });
+        if (user) setUser({ ...user, profileImage: data.imageUrl });
         toast.success('Profile image updated successfully');
       } else {
         const errorData = await response.json();
@@ -151,6 +151,7 @@ const Settings: React.FC = () => {
         const data = await response.json();
         console.log(data)
         setUser({ ...user, ...data });
+        //setUser(data)
         showToast.success('Profile updated successfully');
       } else {
         const errorData = await response.json();
