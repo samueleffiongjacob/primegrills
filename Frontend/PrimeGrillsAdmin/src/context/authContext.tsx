@@ -133,10 +133,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   // Initialize auth state on mount
-  useEffect(() => {
+ /*  useEffect(() => {
     fetchUserData();
   }, []);
-
+ */
   // Set up automatic token refreshing
   useEffect(() => {
     if (!isAuthenticated || !tokenExpiration) return;
