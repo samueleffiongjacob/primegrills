@@ -212,14 +212,14 @@ const Clients = () => {
                             <span>{client.name}</span>
                             {client.is_active ? (
                                <div
-                                className="ml-1 h-5 w-5 flex items-center justify-center rounded-full bg-blue-600"
+                                className="ml-1 h-5 w-5 flex items-center justify-center rounded-full bg-green-600"
                                 title="Email Verified"
                              >
                                <CheckCircle className="h-4 w-4 font-bold text-white" />
                              </div>
                             ) : (
                               <div
-                                className="ml-1 h-5 w-5 flex items-center justify-center rounded-full bg-gray-300"
+                                className="ml-1 h-5 w-5 flex items-center justify-center rounded-full bg-red-600"
                                 title="Email Unverified"
                             >
                               <XCircle className="h-4 w-4 text-white" />
