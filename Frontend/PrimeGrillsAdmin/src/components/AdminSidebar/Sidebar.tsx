@@ -70,7 +70,7 @@ const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const {user} = useAuth()
-  const userRole = user?.staff_profile.role as string;
+  const userRole = user?.staff_profile.role.toLowerCase() as string;
   
   // Track window width for responsive behavior
   useEffect(() => {
