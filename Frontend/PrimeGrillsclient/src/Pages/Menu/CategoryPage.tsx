@@ -185,7 +185,7 @@ const CategoryPage: React.FC = () => {
                 animate={isAnimated ? { fontSize: ["16px", "18px", "16px"] } : {}}
                 transition={{ duration: 0.5, repeat: isAnimated ? 2 : 0 }}
               >
-                ₦{item.price}
+                ₦{item.price.toLocaleString()}
               </motion.p>
             </motion.div>
           );

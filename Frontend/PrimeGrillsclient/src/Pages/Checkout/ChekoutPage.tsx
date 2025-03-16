@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCart } from "../../context/CartContext";
 import { useNavigate } from 'react-router-dom';
 import CardPaymentForm from '../../components/CardPayment';
 import BankTransferPayment from '../../components/BankTransfer';
 import ConfirmationModal from '../../components/ConfirmationModal';
 import ThankYouPage from '../../components/ThankYouPage';
+import { useAuth } from '../../context/AuthContext';
 
 interface DeliveryAddress {
   street: string;
@@ -16,6 +17,7 @@ interface DeliveryAddress {
 const CheckoutPage: React.FC = () => {
   const { cartItems, clearCart } = useCart();
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const { user } = useAuth()
   const navigate = useNavigate();
 
   const [deliveryMethod, setDeliveryMethod] = useState<'pickup' | 'delivery'>('pickup');
@@ -23,13 +25,9 @@ const CheckoutPage: React.FC = () => {
   const [discountCode, setDiscountCode] = useState('');
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [showThankYou, setShowThankYou] = useState(false);
+  const [hasAddress, setHasAddress] = useState(false);
 
-  const [savedAddress, setSavedAddress] = useState<DeliveryAddress>({
-    street: '123 Sample Street',
-    city: 'Lagos',
-    state: 'Lagos State',
-    phoneNumber: '08012345678'
-  });
+  const [savedAddress, setSavedAddress] = useState<DeliveryAddress | null>(null);
 
   const [newAddress, setNewAddress] = useState<DeliveryAddress>({
     street: '',
@@ -37,6 +35,18 @@ const CheckoutPage: React.FC = () => {
     state: '',
     phoneNumber: ''
   });
+
+  // Effect to check if user has a saved address
+  useEffect(() => {
+    // Here you would typically check if the user has a saved address in your database
+    // For now, we'll use our state to determine this
+    setHasAddress(!!savedAddress && savedAddress.street !== '');
+    
+    // If the user selects delivery but has no address, show the address form
+    if (deliveryMethod === 'delivery' && !hasAddress) {
+      setShowAddressForm(true);
+    }
+  }, [deliveryMethod, savedAddress, hasAddress]);
 
   const totalAmount = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   const deliveryFee = deliveryMethod === 'delivery' ? 1000 : 0;
@@ -60,12 +70,22 @@ const CheckoutPage: React.FC = () => {
   const handleSaveNewAddress = () => {
     setSavedAddress(newAddress);
     setShowAddressForm(false);
+    setHasAddress(true);
     setNewAddress({
       street: '',
       city: '',
       state: '',
       phoneNumber: ''
     });
+  };
+
+  const handleDeliveryMethodChange = (method: 'pickup' | 'delivery') => {
+    setDeliveryMethod(method);
+    
+    // If switching to delivery and no address exists, show the address form
+    if (method === 'delivery' && !hasAddress) {
+      setShowAddressForm(true);
+    }
   };
 
   const handlePayment = () => {
@@ -89,15 +109,15 @@ const CheckoutPage: React.FC = () => {
     navigate('/'); // Or wherever your home page is
   };
 
-    // Check if we should show the thank you page
-    if (showThankYou) {
-      return (
-        <ThankYouPage
-          customerName={orderDetails?.customerName || 'Dear Customer'}
-          onGoHome={handleReturnHome}
-        />
-      );
-    }
+  // Check if we should show the thank you page
+  if (showThankYou) {
+    return (
+      <ThankYouPage
+        customerName={user?.name || 'Dear Customer'}
+        onGoHome={handleReturnHome}
+      />
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-6 md:p-10 bg-white shadow-md rounded-lg">
@@ -133,39 +153,53 @@ const CheckoutPage: React.FC = () => {
         <div className="flex gap-4">
           <button 
             className={`px-4 py-2 rounded-md ${deliveryMethod === 'pickup' ? 'focus:ring-0 bg-[#EE7F61] text-white' : 'bg-gray-200'}`} 
-            onClick={() => setDeliveryMethod('pickup')}
+            onClick={() => handleDeliveryMethodChange('pickup')}
           >
             Pickup
           </button>
           <button 
             className={`px-4 py-2 rounded-md ${deliveryMethod === 'delivery' ? 'bg-[#EE7F61] text-white' : 'bg-gray-200'}`} 
-            onClick={() => setDeliveryMethod('delivery')}
+            onClick={() => handleDeliveryMethodChange('delivery')}
           >
             Delivery
           </button>
         </div>
       </div>
 
-      {/* Delivery Address Section */}
+      {/* Delivery Address Section - with No Address Prompt */}
       {deliveryMethod === 'delivery' && (
         <div className="mb-6">
           <div className="flex justify-between items-center mb-3">
             <h2 className="text-lg font-semibold">Delivery Address</h2>
-            <button 
-              onClick={() => setShowAddressForm(!showAddressForm)}
-              className="text-[#EE7F61] text-sm hover:underline"
-            >
-              {showAddressForm ? 'Cancel' : 'Change Address'}
-            </button>
+            {hasAddress && (
+              <button 
+                onClick={() => setShowAddressForm(!showAddressForm)}
+                className="text-[#EE7F61] text-sm hover:underline"
+              >
+                {showAddressForm ? 'Cancel' : 'Change Address'}
+              </button>
+            )}
           </div>
 
-          {!showAddressForm ? (
-            <div className="p-4 border rounded-md bg-gray-50">
-              <p className="font-medium">{savedAddress.street}</p>
-              <p>{savedAddress.city}, {savedAddress.state}</p>
-              <p className="text-gray-600">Phone: {savedAddress.phoneNumber}</p>
+          {!hasAddress && !showAddressForm && (
+            <div className="p-4 border rounded-md bg-yellow-50 border-yellow-200">
+              <p className="text-amber-700 mb-2">Please add a delivery address to continue.</p>
+              <button
+                onClick={() => setShowAddressForm(true)}
+                className="bg-[#EE7F61] text-white px-4 py-2 rounded-md text-sm font-medium hover:opacity-90"
+              >
+                Add Address
+              </button>
             </div>
-          ) : (
+          )}
+
+          {hasAddress && !showAddressForm ? (
+            <div className="p-4 border rounded-md bg-gray-50">
+              <p className="font-medium">{savedAddress?.street}</p>
+              <p>{savedAddress?.city}, {savedAddress?.state}</p>
+              <p className="text-gray-600">Phone: {savedAddress?.phoneNumber}</p>
+            </div>
+          ) : showAddressForm && (
             <div className="space-y-4 p-4 border rounded-md">
               <div>
                 <label className="block text-sm mb-1">Street Address</label>
@@ -175,6 +209,7 @@ const CheckoutPage: React.FC = () => {
                   value={newAddress.street}
                   onChange={handleAddressChange}
                   className="w-full p-2 border rounded-md"
+                  required
                 />
               </div>
               <div>
@@ -185,6 +220,7 @@ const CheckoutPage: React.FC = () => {
                   value={newAddress.city}
                   onChange={handleAddressChange}
                   className="w-full p-2 border rounded-md"
+                  required
                 />
               </div>
               <div>
@@ -195,6 +231,7 @@ const CheckoutPage: React.FC = () => {
                   value={newAddress.state}
                   onChange={handleAddressChange}
                   className="w-full p-2 border rounded-md"
+                  required
                 />
               </div>
               <div>
@@ -205,13 +242,15 @@ const CheckoutPage: React.FC = () => {
                   value={newAddress.phoneNumber}
                   onChange={handleAddressChange}
                   className="w-full p-2 border rounded-md"
+                  required
                 />
               </div>
               <button
                 onClick={handleSaveNewAddress}
                 className="w-full bg-[#EE7F61] text-white py-2 rounded-md font-semibold hover:opacity-90"
+                disabled={!newAddress.street || !newAddress.city || !newAddress.state || !newAddress.phoneNumber}
               >
-                Save New Address
+                Save Address
               </button>
             </div>
           )}
@@ -264,14 +303,17 @@ const CheckoutPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Confirm Order Button */}
-      {/* <button 
-        onClick={handlePayment} 
-        className="w-full bg-[#EE7F61] text-white py-3 rounded-md font-semibold hover:opacity-90"
-      >
-        Confirm Order
-      </button> */}
-      {paymentMethod === 'card' ? <CardPaymentForm onPaymentSuccess={() => setShowConfirmation(true)} /> : <BankTransferPayment onPaymentSuccess={() => setShowConfirmation(true)} />}
+      {/* Disable payment options if delivery is selected but no address */}
+      {deliveryMethod === 'delivery' && !hasAddress ? (
+        <div className="p-4 bg-gray-100 rounded-md text-center text-gray-600">
+          Please add a delivery address before proceeding to payment
+        </div>
+      ) : (
+        paymentMethod === 'card' ? 
+        <CardPaymentForm onPaymentSuccess={() => setShowConfirmation(true)} /> : 
+        <BankTransferPayment onPaymentSuccess={() => setShowConfirmation(true)} />
+      )}
+      
       <ConfirmationModal isOpen={showConfirmation} orderDetails={orderDetails} onClose={handleCloseConfirmation} />
     </div>
   );

@@ -22,6 +22,7 @@ import PaymentPage from '../Pages/ReservePaymentPage.js';
 import CategoryPage from '../Pages/Menu/CategoryPage.js';
 import SpecialDishesPage from '../Pages/Menu/SpecialDishesPage.js';
 import PopularMealsPage from '../Pages/Menu/PopularlMealsPage.js';
+import ScrollToTop from '../components/ScrollToTop.js';
 
 
 const Navigations = () => {
@@ -58,6 +59,9 @@ const Navigations = () => {
 
         {/* Navbar links*/}
         <Navbar />
+
+        {/* Important! - automatic scroll to top when navigating to a page */}
+        <ScrollToTop /> 
 
         {/* pages */}
         <Routes>

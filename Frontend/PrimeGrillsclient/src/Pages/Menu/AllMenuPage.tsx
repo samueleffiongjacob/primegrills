@@ -85,7 +85,7 @@ const AllMenuPage: React.FC = () => {
           >
             <img src={item.image} alt={item.name} className="w-20 md:w-32 h-20 object-cover rounded-full" />
             <p className="text-black font-semibold mt-2">{item.name}</p>
-            <p className="text-orange-600 text-lg font-bold">₦{item.price}</p>
+            <p className="text-orange-600 text-lg font-bold">₦{item.price.toLocaleString()}</p>
           </motion.div>
         ))}
       </div>
