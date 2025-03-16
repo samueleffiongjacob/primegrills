@@ -63,7 +63,7 @@ def update_staff_profile(request):
             return Response({"error": "Username already exists"}, status=400)
 
     # Use UserSerializer to update user fields
-    user_serializer = RegisterStaffSerializer(user, data=data, partial=True)
+    user_serializer = StaffUserSerializer(user, data=data, partial=True)
     if not user_serializer.is_valid():
         return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

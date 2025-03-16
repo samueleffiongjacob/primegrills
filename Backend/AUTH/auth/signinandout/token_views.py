@@ -23,7 +23,7 @@ def token_refresh(request):
             httponly=True, 
             samesite="Lax", 
             secure=True,
-            max_age=15 * 60  # 15 minutes
+            max_age=6 * 60 *60  # 6 hours
         )
         
         # Optionally, if you have ROTATE_REFRESH_TOKENS set to True, set the new refresh token
