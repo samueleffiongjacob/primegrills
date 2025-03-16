@@ -28,10 +28,7 @@ interface SidebarLinkProps {
 const SidebarLink = ({ to, children, icon: Icon, collapsed }: SidebarLinkProps) => {
   const location = useLocation();
   const isActive = location.pathname === to;
-  const {user} = useAuth()
-  const userRole = user?.staff_profile.role as string;
-
-  
+ 
 
   return (
     <Link
@@ -72,6 +69,8 @@ const navItems = [
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const {user} = useAuth()
+  const userRole = user?.staff_profile.role as string;
   
   // Track window width for responsive behavior
   useEffect(() => {
