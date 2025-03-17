@@ -70,24 +70,25 @@ const Hero = () => {
                 viewport={{ once: true, margin: "-50px" }}
                 variants={slideVariants}
             >
-                <div className="relative h-[400px] w-[300px]">
+                <div className="relative h-[400px] w-[400px]">
                     {/* Red Circle */}          
-                    <span className="bg-[#EE7F61] absolute inset-0 m-auto top-24  rounded-full h-[300px] w-[300px] z-[-1]"></span>
+                    <span className="bg-[#EE7F61] absolute inset-0 m-auto top-35  rounded-full h-[340px] w-[340px] z-[-1]"></span>
                     {/* Hero Image */}
                     <img src={hero} alt="heroimg"
-                        className="object-cover absolute top-0 left-0 w-[300px] h-[400px] rounded-full overflow-hidden"
+                        className="object-cover absolute inset-0 m-auto w-[350px] h-[350px]"
+                      
                     />
                 </div>
 
                 {/* Hot Spicy Meal Label */}
-                <div className=" hidden md:block absolute md:left-[-120px] px-2  py-2  transform -translate-y-1/2 bg-white md:px-8 md:py-4
+                <div className=" hidden md:block absolute md:left-[-100px] px-2  py-2  transform -translate-y-1/2 bg-white md:px-8 md:py-4
                     rounded-lg shadow-[#EE7F61] shadow-2xl left-[-70px] top-30">
                     <h2 className="text-[#EE7F61] font-semibold">Hot Spicy Meal ?</h2>
                     <div className='bg-white absolute right-0 shadow-xl h-5 md:h-7 w-3 rounded-bl-3xl rounded-xl'/>
                 </div>
 
                 {/* Item Card */}
-                <div className="absolute bottom-[-40px] lg:right-2">
+                <div className="absolute bottom-[-60px] lg:right-15">
                     <ItemCard />
                 </div>
             </motion.div>      

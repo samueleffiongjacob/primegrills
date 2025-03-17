@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 // INTERNAL IMPORTS
 import Button from "../Navbar/button";
-import hero from "../../assets/images/heroimage.png";
+import hero from "../../assets/images/heroimage.jpg";
 import ItemCard from "../itemCard/itemCard.tsx";
 import { headerVariants, slideVariants } from '../../utils/utils.ts';
 
@@ -73,7 +73,7 @@ const Hero =() => {
                         <img
                         src={hero}
                         alt="heroimg"
-                        className="object-cover absolute top-0 left-0 w-[300px] h-[400px] rounded-full overflow-hidden"
+                        className="object-cover absolute top-0 left-0 w-[400px] h-[400px] rounded-full overflow-hidden"
                         />
                     </div>
 

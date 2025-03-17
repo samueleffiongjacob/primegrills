@@ -1,6 +1,6 @@
 // INTERNAL IMPORTS
-import menuimg1 from "../../assets/images/menuimg1.png";
-import menuimg2 from "../../assets/images/menuimg2.png";
+import menuimg1 from "../../assets/images/desert.png";
+import menuimg2 from "../../assets/images/drinks.png";
 import menuimg3 from "../../assets/images/menuimg3.png";
 import heroimg1 from "../../assets/images/heroimg1.png";
 
