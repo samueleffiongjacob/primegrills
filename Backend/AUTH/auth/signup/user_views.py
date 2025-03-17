@@ -62,6 +62,7 @@ def send_verification_email(user):
     """Send verification email to user."""
     # Generate token and encoded user ID
     token = default_token_generator.make_token(user)
+    print('token', token)
     print('user.pk', user.pk)
     uid = urlsafe_base64_encode(force_bytes(user.pk))
     print('uid ', uid)
@@ -69,7 +70,7 @@ def send_verification_email(user):
     # Build the verification URL
     print(settings.FRONTEND_URL)
     verification_url = f"{settings.FRONTEND_URL}/verify-email/{uid}/{token}/"
-    
+    print(verification_url)
     # Create email content
     subject = "Verify Your Email Address"
     html_message = render_to_string('email_verification.html', {

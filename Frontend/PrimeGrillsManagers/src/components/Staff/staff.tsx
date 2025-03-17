@@ -6,6 +6,10 @@ import StaffForm, { StaffFormData } from "./StaffForm";
 import pencil from '../../assets/images/pencil.png';
 import trash from '../../assets/images/trash.png';
 import { getCookie } from "../../utils/cookie";
+import LoginHistoryModal from "../LoginHistory";
+import { showToast } from '../../utils/toast';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // Improved typing for backend data
 interface StaffProfile {
@@ -24,6 +28,7 @@ interface StaffUser {
   username: string;
   password: string;
   profileImage?: string;
+  last_login?: string;
   phone: string;
   address: string;
   staff_profile: StaffProfile;
@@ -34,18 +39,19 @@ const StaffService = {
   baseUrl: import.meta.env.VITE_BACKEND_URL || "http://localhost:8000",
   
   async getAll(): Promise<StaffUser[]> {
-    const response = await fetch(`${this.baseUrl}/api/staffs/all/`);
-    if (!response.ok) throw new Error("Failed to fetch staff");
+    const response = await fetch(`${this.baseUrl}/api/staffs/all/`, {
+      method: 'GET',
+      credentials: "include",
+    });
+    if (!response.ok) showToast.error("Failed to fetch staff");
     return response.json();
   },
   
   async create(data: StaffFormData): Promise<StaffUser> {
-    const csrfToken = getCookie("csrftoken");
     const response = await fetch(`${this.baseUrl}/register_staff/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        "X-CSRFToken": csrfToken || "",
       },
       credentials: "include",
       body: JSON.stringify(data)
@@ -53,19 +59,18 @@ const StaffService = {
     
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.error || "Failed to create staff");
+      toast.error(errorData.error || "Failed to create staff")
     }
     
     return response.json();
   },
   
   async update(data: StaffFormData, id: number): Promise<StaffUser> {
-    const csrfToken = getCookie("csrftoken");
+    console.log(JSON.stringify(data))
     const response = await fetch(`${this.baseUrl}/api/manager/staffs/update/${id}/`, {
-      method: 'POST',
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        "X-CSRFToken": csrfToken || "",
       },
       credentials: "include",
       body: JSON.stringify(data)
@@ -73,7 +78,7 @@ const StaffService = {
     
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.error || "Failed to update staff");
+      toast.error(errorData.error || "Failed to update staff")
     }
     
     return response.json();
@@ -92,13 +97,14 @@ const StaffService = {
     
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
+      toast.error(errorData.error || "Failed to delete staff")
       throw new Error(errorData.error || "Failed to delete staff");
     }
   }
 };
 
 // Component configurations
-const ITEMS_PER_PAGE_OPTIONS = [10, 25, 50, 100];
+const ITEMS_PER_PAGE_OPTIONS = [5, 10, 25, 50, 100];
 
 const Staff = () => {
   const { user: currentUser, isAdmin, isAuthenticated } = useAuth();
@@ -111,7 +117,10 @@ const Staff = () => {
   const [formMode, setFormMode] = useState<'add' | 'edit'>('add');
   const [selectedUser, setSelectedUser] = useState<StaffFormData | undefined>(undefined);
   const [actionLoading, setActionLoading] = useState(false);
-
+  // Filter users based on search term
+  const [statusFilter, setStatusFilter] = useState("");
+  const [shiftFilter, setShiftFilter] = useState("");
+  
   // Memoized fetch function
   const fetchUsers = useCallback(async () => {
     if (!isAuthenticated) return;
@@ -179,15 +188,18 @@ const Staff = () => {
         if (selectedUser && selectedUser.id) {
           await StaffService.update(formData, selectedUser.id);
         } else {
+          toast.error("No user selected for editing")
           throw new Error("No user selected for editing");
         }
       }
       await fetchUsers();
       setFormOpen(false);
     } catch (error) {
+      toast.error(`Error ${formMode === 'add' ? 'adding' : 'updating'} user:`)
       console.error(`Error ${formMode === 'add' ? 'adding' : 'updating'} user:`, error);
       throw error;
     } finally {
+      setTimeout(() => toast.dismiss(), 5000)
       setActionLoading(false);
     }
   };
@@ -198,6 +210,7 @@ const Staff = () => {
       await StaffService.delete(id);
       await fetchUsers();
     } catch (error) {
+      toast.error('Error deleting user:')
       console.error('Error deleting user:', error);
       throw error;
     } finally {
@@ -205,11 +218,16 @@ const Staff = () => {
     }
   };
 
-  // Filter users based on search term
+
+  
+  // Filter users based on search term, status, and shift
   const filteredUsers = users.filter(user => 
     (user.name?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
     (user.staff_profile?.role?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
     (user.email?.toLowerCase() || '').includes(searchTerm.toLowerCase())
+  ).filter(user => 
+    (statusFilter ? user.staff_profile.status === statusFilter : true) &&
+    (shiftFilter ? user.staff_profile.shift === shiftFilter : true)
   );
 
   // Permission checks
@@ -218,6 +236,7 @@ const Staff = () => {
 
   return (
     <div className="flex max-h-[85vh] bg-gray-100 flex-col">
+      <ToastContainer />
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="py-5 bg-white border-b flex items-center justify-between px-6">
           <h1 className="text-xl font-semibold">Staff Management</h1>
@@ -265,7 +284,33 @@ const Staff = () => {
               )}
               
               <div className="mb-6 flex flex-wrap gap-4 items-center">
+                 {/* Status Filter */}
+                <select 
+                  className="border border-gray-300 rounded-lg p-2"
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                >
+                  <option value="">All Status</option>
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
+                </select>
+                
+                {/* Shift Filter */}
+                <select 
+                  className="border border-gray-300 rounded-lg p-2"
+                  value={shiftFilter}
+                  onChange={(e) => setShiftFilter(e.target.value)}
+                >
+                  <option value="">All Shifts</option>
+                  <option value="Morning">Morning</option>
+                  <option value="Evening">Evening</option>
+                  <option value="Night">Night</option>
+                </select>
                 <div className="flex items-center gap-4 ml-auto">  
+                  {/* Pagination info */}
+                  <div className="py-3 px-4 border-t justify-self-start border-gray-200 text-sm text-gray-500">
+                    Showing {Math.min(filteredUsers.length, itemsPerPage)} of {filteredUsers.length} staff members
+                  </div>
                   <div>
                     <label htmlFor="itemsPerPage" className="mr-2 text-sm text-gray-600">Show:</label>
                     <select 
@@ -317,7 +362,7 @@ const Staff = () => {
                     <table className="table-auto w-full border-collapse">
                       <thead>
                         <tr className="bg-[#EE7F61] text-white">
-                          <th className="py-3 px-4 text-left">ID</th>
+                          <th className="py-3 px-4 text-left">S/N</th> 
                           <th className="py-3 px-4 text-left">Staff Name</th>
                           <th className="py-3 px-4 text-left">Email</th>
                           <th className="py-3 px-4 text-left">Role</th>
@@ -325,74 +370,77 @@ const Staff = () => {
                           <th className="py-3 px-4 text-left">Image</th>
                           <th className="py-3 px-4 text-left">Shift</th>
                           <th className="py-3 px-4 text-left">Hours</th>
+                          <th className="py-3 px-4 text-left">Login Activity</th>
                           {canManageUsers && <th className="py-3 px-4 text-center">Actions</th>}
                         </tr>
                       </thead>
                       <tbody>
-                        <AnimatePresence>
-                          {filteredUsers.slice(0, itemsPerPage).map((user, index) => (
-                            <motion.tr 
-                              key={user.id} 
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: 1 }}
-                              exit={{ opacity: 0 }}
-                              transition={{ duration: 0.2, delay: index * 0.03 }}
-                              className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}
-                            >
-                              <td className="py-3 px-4 text-gray-600">#{user.id}</td>
-                              <td className="py-3 px-4 font-medium">{user.name}</td>
-                              <td className="py-3 px-4 text-gray-700">{user.email}</td>
-                              <td className="py-3 px-4">{user.staff_profile.role}</td>
-                              <td className="py-3 px-4">
-                                <span className={`px-2 py-1 rounded-full text-xs ${
-                                  user.staff_profile.status === 'Active' 
-                                    ? 'bg-green-100 text-green-800' 
-                                    : 'bg-red-100 text-red-800'
-                                }`}>
-                                  {user.staff_profile.status}
-                                </span>
+                      <AnimatePresence>
+                        {filteredUsers.slice(0, itemsPerPage).map((user, index) => (
+                          <motion.tr 
+                            key={user.id} 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.2, delay: index * 0.03 }}
+                            className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}
+                          >
+                            <td className="py-3 px-4 text-gray-600">{index + 1}</td> {/* Updated to show S/N */}
+                            <td className="py-3 px-4 font-medium">{user.name}</td>
+                            <td className="py-3 px-4 text-gray-700">{user.email}</td>
+                            <td className="py-3 px-4">{user.staff_profile.role}</td>
+                            <td className="py-3 px-4">
+                              <span className={`px-2 py-1 rounded-full text-xs ${
+                                user.staff_profile.status === 'Active' 
+                                  ? 'bg-green-100 text-green-800' 
+                                  : 'bg-red-100 text-red-800'
+                              }`}>
+                                {user.staff_profile.status}
+                              </span>
+                            </td>
+                            <td className="py-3 px-4">
+                              <img 
+                                src={user.profileImage || logo} 
+                                alt={`${user.name} profile`} 
+                                className="w-10 h-10 rounded-full object-cover border" 
+                              />
+                            </td>
+                            <td className="py-3 px-4">{user.staff_profile.shift}</td>
+                            <td className="py-3 px-4 text-gray-600">{user.staff_profile.shiftHours}</td>
+                            <td className="py-3 px-4 text-gray-600">
+                              <div className="flex items-center">
+                                <LoginHistoryModal userId={user.id} trigger="click"/>
+                              </div>
+                            </td>
+                            {canManageUsers && (
+                              <td className="py-3 px-4 text-center">
+                                <button
+                                  onClick={() => handleEditUser(user)}
+                                  className="p-2 hover:text-[#bf360c] hover:bg-orange-50 rounded mr-1"
+                                  aria-label={`Edit ${user.name}`}
+                                  title="Edit staff member"
+                                >
+                                  <img src={pencil} alt="Edit" className="h-5 w-5"/>
+                                </button>
+                                <button 
+                                  className="p-2 hover:text-red-600 hover:bg-red-50 rounded"
+                                  onClick={() => handleDeleteUser(user.id)}
+                                  aria-label={`Delete ${user.name}`}
+                                  title="Delete staff member"
+                                >
+                                  <img src={trash} alt="Delete" className="h-5 w-5"/>
+                                </button>
                               </td>
-                              <td className="py-3 px-4">
-                                <img 
-                                  src={user.profileImage || logo} 
-                                  alt={`${user.name} profile`} 
-                                  className="w-10 h-10 rounded-full object-cover border" 
-                                />
-                              </td>
-                              <td className="py-3 px-4">{user.staff_profile.shift}</td>
-                              <td className="py-3 px-4 text-gray-600">{user.staff_profile.shiftHours}</td>
-                              {canManageUsers && (
-                                <td className="py-3 px-4 text-center">
-                                  <button
-                                    onClick={() => handleEditUser(user)}
-                                    className="p-2 hover:text-[#bf360c] hover:bg-orange-50 rounded mr-1"
-                                    aria-label={`Edit ${user.name}`}
-                                    title="Edit staff member"
-                                  >
-                                    <img src={pencil} alt="Edit" className="h-5 w-5"/>
-                                  </button>
-                                  <button 
-                                    className="p-2 hover:text-red-600 hover:bg-red-50 rounded"
-                                    onClick={() => handleDeleteUser(user.id)}
-                                    aria-label={`Delete ${user.name}`}
-                                    title="Delete staff member"
-                                  >
-                                    <img src={trash} alt="Delete" className="h-5 w-5"/>
-                                  </button>
-                                </td>
-                              )}
-                            </motion.tr>
-                          ))}
-                        </AnimatePresence>
-                      </tbody>
+                            )}
+                          </motion.tr>
+                        ))}
+                      </AnimatePresence>
+                    </tbody>
                     </table>
                   </div>
                 )}
                 
-                {/* Pagination info */}
-                <div className="py-3 px-4 border-t border-gray-200 text-sm text-gray-500">
-                  Showing {Math.min(filteredUsers.length, itemsPerPage)} of {filteredUsers.length} staff members
-                </div>
+                
               </div>
             </>
           )}

@@ -56,7 +56,7 @@ pip freeze > requirements.txt # only whenu are done for the days developmet soth
 pip install -r requirements.txt # git pull before running to have access to all dependency
 python manage.py makemigrations
 python manage.py migrate
-python manage.py createsuperuser
+python manage.py create_manager
 python manage.py runserver 8000
 deactivate  # Exit the virtual environment
 
@@ -77,6 +77,7 @@ pip freeze > requirements.txt # only whenu are done for the days developmet soth
 pip install -r requirements.txt # git pull before running to have access to all dependency
 python manage.py makemigrations
 python manage.py migrate
+python manage.py create_manager
 python manage.py runserver 8002
 deactivate
 
@@ -89,4 +90,8 @@ cd Backend/EVENTS/event_service
 python manage.py makemigrations
 python manage.py migrate
 python manage.py consume_auth_events
+docker-compose up -d rabbitmq
 deactivate
+// manager@primegrills.com
+prime1
+jacobs@yahoo.com

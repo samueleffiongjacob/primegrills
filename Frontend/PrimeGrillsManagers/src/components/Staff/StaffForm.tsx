@@ -13,14 +13,14 @@ interface StaffFormProps {
 export interface StaffFormData {
   id?: number;
   name: string;
-  email: string;
-  username: string;
-  password: string;
+  email?: string;
+  username?: string;
+  password?: string;
   phone: string;
   address: string;
   staff_profile: {
     role: string;
-    status: string;
+    status?: string;
     shift: string;
     shiftHours: string;
     gender: string;
@@ -36,7 +36,7 @@ const FORM_CONFIG = {
     { value: 'Evening', hours: '4 PM - 12 AM' },
     { value: 'Night', hours: '12 AM - 8 AM' }
   ],
-  roles: ['Waiter', 'Chef', 'Manager', 'Admin'],
+  roles: ['Waiter', 'Chef', 'Manager', 'Admin', 'Pos', 'kitchen'],
   genders: ['Male', 'Female', 'Other'],
   statuses: ['Active', 'Inactive'] as const
 };
@@ -65,11 +65,12 @@ const StaffForm: React.FC<StaffFormProps> = ({
       age: '',
     },
   };
-  
+
   const [formData, setFormData] = useState<StaffFormData>(initialFormState);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
   // Reset form when initialData changes
   useEffect(() => {
@@ -80,6 +81,7 @@ const StaffForm: React.FC<StaffFormProps> = ({
     }
     setErrors({});
     setSubmitError(null);
+    setFormSubmitted(false);
   }, [initialData, isOpen]);
 
   // Auto-update shiftHours when shift changes
@@ -98,26 +100,28 @@ const StaffForm: React.FC<StaffFormProps> = ({
 
   const validateField = (name: string, value: string): string => {
     if (!value.trim()) return `${name.charAt(0).toUpperCase() + name.slice(1)} is required`;
-    
-    if (name === 'email' && !/^\S+@\S+\.\S+$/.test(value)) {
-      return 'Please enter a valid email address';
-    }
-    
-    if (name === 'phone' && !/^[+\d\s()-]{7,15}$/.test(value)) {
-      return 'Please enter a valid phone number';
-    }
-    
-    if (name === 'age') {
-      const age = parseInt(value);
-      if (isNaN(age) || age < 18 || age > 80) {
-        return 'Age must be between 18 and 80';
+
+    if (name === 'phone') {
+      // More comprehensive phone validation
+      // Allows international format with + and country code
+      // Also allows common formats like (123) 456-7890, 123-456-7890, etc.
+      if (!/^(\+\d{1,3})?[-.\s]?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$/.test(value)) {
+        return 'Please enter a valid phone number';
       }
     }
-    
-    if (name === 'password' && mode === 'add' && value.length < 6) {
-      return 'Password must be at least 6 characters';
+
+    if (name === 'age') {
+      const age = parseInt(value);
+      if (isNaN(age)) return 'Age must be a number';
+      if (age < 18 || age > 80) return 'Age must be between 18 and 80';
     }
-    
+
+    if (name === 'email' && value.trim() !== '') {
+      // Only validate email if provided
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(value)) return 'Please enter a valid email address';
+    }
+
     return '';
   };
 
@@ -135,83 +139,97 @@ const StaffForm: React.FC<StaffFormProps> = ({
         },
       }));
     } else {
-      // Handle top-level fields
       setFormData(prev => ({
         ...prev,
         [name]: value,
       }));
     }
-  };
-  
-  // Validate on blur
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-  
-    // Validate the field
-    const errorMessage = validateField(name.includes('.') ? name.split('.')[1] : name, value);
-  
-    // Update errors
-    setErrors(prev => ({
-      ...prev,
-      [name]: errorMessage,
-    }));
+
+    // Only show errors after form has been submitted once
+    if (formSubmitted) {
+      // Validate and update the specific field error
+      const fieldName = name.includes('.') ? name.split('.')[1] : name;
+      const errorMessage = validateField(fieldName, value);
+      
+      setErrors(prev => ({
+        ...prev,
+        [name]: errorMessage,
+      }));
+    }
   };
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
-    
+
     // Validate top-level fields
-    ['name', 'email', 'username', 'phone', 'address'].forEach(field => {
+    ['name', 'phone', 'address'].forEach(field => {
       const error = validateField(field, formData[field as keyof typeof formData] as string);
       if (error) newErrors[field] = error;
     });
-    
-    // Validate password for new staff
+
+    // Validate email, username, password only in add mode
     if (mode === 'add') {
-      const error = validateField('password', formData.password);
-      if (error) newErrors['password'] = error;
+      ['email', 'username', 'password'].forEach(field => {
+        const value = formData[field as keyof typeof formData] as string;
+        if (field === 'email' && value) {
+          const error = validateField(field, value);
+          if (error) newErrors[field] = error;
+        }
+        if (['username', 'password'].includes(field)) {
+          const error = validateField(field, value);
+          if (error) newErrors[field] = error;
+        }
+      });
     }
-    
+
     // Validate staff_profile fields
     ['role', 'gender', 'age'].forEach(field => {
       const error = validateField(field, formData.staff_profile[field as keyof typeof formData.staff_profile] as string);
       if (error) newErrors[`staff_profile.${field}`] = error;
     });
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+    setFormSubmitted(true);
+
     if (!validateForm()) {
       setSubmitError('Please fix the errors in the form');
       return;
     }
-    
+
     setLoading(true);
     setSubmitError(null);
-  
+
     try {
       // Structure the data to match the backend's expectations
       const structuredData = {
         ...formData,
         is_staff: true, // Ensure this is set for staff users
       };
-  
+
+      // Remove username, password, and email in edit mode
+      if (mode === 'edit') {
+        delete structuredData.username;
+        delete structuredData.password;
+        delete structuredData.email;
+      }
+
       await onSubmit(structuredData);
       onClose();
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setLoading(false);
-    }
+    };
   };
 
   const handleDelete = async () => {
     if (!formData.id) return;
-    
+
     if (window.confirm('Are you sure you want to delete this staff member?')) {
       setLoading(true);
       try {
@@ -246,21 +264,20 @@ const StaffForm: React.FC<StaffFormProps> = ({
     const value = name.startsWith('staff_profile.') 
       ? formData.staff_profile[name.split('.')[1] as keyof typeof formData.staff_profile]
       : formData[name as keyof typeof formData];
-    
+
     const error = errors[fieldName];
-    
+
     return (
       <div className="space-y-1">
         <label className="block text-sm font-medium text-gray-700">
           {label} {required && <span className="text-red-500">*</span>}
         </label>
-        
+
         {type === 'select' ? (
           <select
             name={fieldName}
             value={value as string}
             onChange={handleChange}
-            onBlur={handleBlur}
             className={`w-full p-2 border rounded ${error ? 'border-red-500' : 'border-gray-300'} focus:ring-[#EE7F61] focus:border-[#EE7F61]`}
             required={required}
           >
@@ -275,12 +292,11 @@ const StaffForm: React.FC<StaffFormProps> = ({
             name={fieldName}
             value={value as string}
             onChange={handleChange}
-            onBlur={handleBlur}
             className={`w-full p-2 border rounded ${error ? 'border-red-500' : 'border-gray-300'} focus:ring-[#EE7F61] focus:border-[#EE7F61]`}
             required={required}
           />
         )}
-        
+
         {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
       </div>
     );
@@ -304,24 +320,19 @@ const StaffForm: React.FC<StaffFormProps> = ({
             ✕
           </button>
         </div>
-        
+
         {submitError && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4">
             {submitError}
           </div>
         )}
-        
+
         <form onSubmit={handleSubmit} noValidate>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField label="Name" name="name" />
-            <FormField label="Email" name="email" type="email" />
-            <FormField label="Username" name="username" />
-            <FormField 
-              label="Password" 
-              name="password" 
-              type="password" 
-              required={mode === 'add'}
-            />
+            {mode === 'add' && <FormField label="Email" name="email" type="email" />}
+            {mode === 'add' && <FormField label="Username" name="username" />}
+            {mode === 'add' && <FormField label="Password" name="password" type="password" />}
             <FormField label="Gender" name="staff_profile.gender" type="select" options={FORM_CONFIG.genders} />
             <FormField label="Role" name="staff_profile.role" type="select" options={FORM_CONFIG.roles} />
             <FormField label="Phone" name="phone" type="tel" />
@@ -333,24 +344,19 @@ const StaffForm: React.FC<StaffFormProps> = ({
               type="select" 
               options={FORM_CONFIG.shifts.map(s => s.value)} 
             />
-            
             <div className="space-y-1">
-              <label className="block text-sm font-medium text-gray-700">Status</label>
-              <select
-                name="staff_profile.status"
-                value={formData.staff_profile.status}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className="w-full p-2 border rounded border-gray-300 focus:ring-[#EE7F61] focus:border-[#EE7F61]"
-                required
-              >
-                {FORM_CONFIG.statuses.map(status => (
-                  <option key={status} value={status}>{status}</option>
-                ))}
-              </select>
+              <label className="block text-sm font-medium text-gray-700">Shift Hours</label>
+              <input
+                type="text"
+                name="staff_profile.shiftHours"
+                value={formData.staff_profile.shiftHours}
+                readOnly
+                className="w-full p-2 border rounded border-gray-300 bg-gray-100"
+              />
             </div>
+         
           </div>
-          
+
           <div className="mt-6 flex justify-between">
             {mode === 'edit' && onDelete && (
               <button
@@ -362,7 +368,7 @@ const StaffForm: React.FC<StaffFormProps> = ({
                 {loading ? 'Processing...' : 'Delete'}
               </button>
             )}
-            
+
             <div className="flex gap-2 ml-auto">
               <button
                 type="button"
@@ -372,7 +378,7 @@ const StaffForm: React.FC<StaffFormProps> = ({
               >
                 Cancel
               </button>
-              
+
               <button
                 type="submit"
                 className="bg-[#EE7F61] text-white py-2 px-4 rounded hover:bg-[#e06a4c] focus:outline-none focus:ring-2 focus:ring-[#EE7F61]"

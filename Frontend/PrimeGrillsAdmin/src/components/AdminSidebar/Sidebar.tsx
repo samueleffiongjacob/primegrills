@@ -14,11 +14,9 @@ import {
   X
 } from "lucide-react";
 import logo from "../../assets/images/primeLogo.png";
+import { useAuth } from "../../context/authContext";
 
-// Mock user role 
-const userRole = "admin"; // Example roles: "admin", "accountant", "user"
-const allRoles = ["admin", "accountant", "waiter", "cleaner", "kitchen"];
-
+const allRoles = ["admin", "accountant", "waiter", "cleaner", "kitchen", 'manager'];
 
 interface SidebarLinkProps {
   to: string;
@@ -30,6 +28,7 @@ interface SidebarLinkProps {
 const SidebarLink = ({ to, children, icon: Icon, collapsed }: SidebarLinkProps) => {
   const location = useLocation();
   const isActive = location.pathname === to;
+ 
 
   return (
     <Link
@@ -52,24 +51,26 @@ interface navItems {
   
 }
 
-// Define navigation items
+// Define navigation items - sort what items each role sees
 const navItems = [
   { to: "/profile", icon: Users, label: "Profile", roles: [ "cleaner", "waiter", "kitchen"] },
-  { to: "/", icon: LayoutDashboard, label: "Dashboard", roles: ["admin", "accountant"] },
-  { to: "/category", icon: Users, label: "Category", roles: ["admin", "accountant"] },
+  { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard", roles: ["admin", "accountant", 'manager' ] },
+  { to: "/category", icon: Users, label: "Category", roles:  allRoles },
   { to: "/menu", icon: Package, label: "Menu", roles: allRoles },
-  { to: "/user", icon: User, label: "User", roles: allRoles},
-  { to: "/orders", icon: ShoppingCart, label: "Order", roles: ["admin", "accountant", "kitchen"]},
+  { to: "/staff", icon: User, label: "Staff", roles: allRoles},
+  { to: "/orders", icon: ShoppingCart, label: "Order", roles: ["admin", "accountant", "manager"]},
   { to: "/message", icon: Mail, label: "Message", roles: allRoles },
-  { to: "/pos", icon: ShoppingCart, label: "POS", roles: ["admin", "accountant"] },
-  { to: "/paypoints", icon: Calendar, label: "PayPoints", roles: ["admin", "accountant"] },
-  { to: "/settings", icon: Settings, label: "Settings", roles: ["admin"] },
+  { to: "/pos", icon: ShoppingCart, label: "POS", roles: ["admin", "accountant","manager"] },
+  { to: "/paypoints", icon: Calendar, label: "PayPoints", roles: ["admin", "accountant", "manager"] },
+  { to: "/settings", icon: Settings, label: "Settings", roles: allRoles },
   { to: "/report", icon: FileBarChart, label: "Report", roles: allRoles},
 ];
 
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const {user} = useAuth()
+  const userRole = user?.staff_profile.role.toLowerCase() as string;
   
   // Track window width for responsive behavior
   useEffect(() => {

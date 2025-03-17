@@ -1,9 +1,9 @@
 
 
 import React, { useState } from "react";
-import { User, Bell, Clock, Heart, CreditCard, MapPin, LogOut, X, LogIn, MailQuestion } from "lucide-react";
+import { User, Bell, Clock, Heart,  MapPin, LogOut, X, LogIn, MailQuestion } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 interface ProfileSidePanelProps {
   isOpen: boolean;
@@ -18,7 +18,6 @@ const ProfileSidePanel: React.FC<ProfileSidePanelProps> = ({
 }) => {
   const { user, isAuthenticated, logout, fetchUserProfile } = useAuth();
   const [isUploading, setIsUploading] = useState(false);
-  const navigate = useNavigate();
 
   const menuItems = [
     { icon: Bell, label: "Notifications", badge: 3, path: "/notifications" },
@@ -34,6 +33,7 @@ const ProfileSidePanel: React.FC<ProfileSidePanelProps> = ({
     email: "",
     phone: "",
     memberSince: "",
+    address: "",
     profileImage: null,
   };
 
@@ -132,8 +132,8 @@ const ProfileSidePanel: React.FC<ProfileSidePanelProps> = ({
         {isAuthenticated && (
           <div className="space-y-2">
             {menuItems.map((item, index) => (
+              <Link to={item.path || ''}>
               <button key={index} className="w-full flex text-left p-3 hover:bg-gray-100 rounded-lg"
-              onClick={navigate(item.path)}
               >
                 <item.icon className="w-5 h-5 mt-1 text-gray-500 mr-3" />
                 <span className="flex-grow text-gray-700">{item.label}</span>
@@ -143,6 +143,7 @@ const ProfileSidePanel: React.FC<ProfileSidePanelProps> = ({
                   </span>
                 )}
               </button>
+              </Link> 
             ))}
           </div>
         )}

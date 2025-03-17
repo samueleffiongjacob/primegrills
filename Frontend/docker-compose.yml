@@ -11,7 +11,7 @@ services:
     ports:
       - "5173:5173"
     volumes:
-      - ./PrimeGrillsClient:/app
+      - ./PrimeGrillsclient:/app
       - /app/node_modules
     environment:
       - NODE_ENV=development
@@ -65,7 +65,7 @@ services:
     ports:
       - "5176:5176"
     volumes:
-      - ./PrimeGrillsManager:/app
+      - ./PrimeGrillsManagers:/app
       - /app/node_modules
     environment:
       - NODE_ENV=development

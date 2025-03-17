@@ -11,6 +11,8 @@ const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
+  console.log('user', user?.staff_profile.status)
+
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
@@ -30,7 +32,7 @@ const Header = () => {
   };
 
   // Get the user role to display
-  const userRole = user?.role || "";
+  const userRole = user?.staff_profile.role || "";
   const displayRole = userRole.charAt(0).toUpperCase() + userRole.slice(1);
 
   // Get the user's profile image URL or use the default fallback image
@@ -53,7 +55,7 @@ const Header = () => {
           <div className="flex items-center gap-2">
             <div className="text-right text-sm">
               <div className="flex items-center gap-2">
-                <p className="font-medium">{user?.name || "Rudu"}</p>
+                <p className="font-medium">{user?.username || "User"}</p>
                 <span className="px-2 py-0.5 bg-blue-900 rounded-full text-xs">
                   {displayRole}
                 </span>
@@ -78,7 +80,7 @@ const Header = () => {
                       .split(" ")
                       .map((part) => part[0])
                       .join("")
-                  : "AD"}
+                  : "PM"}
               </AvatarFallback>
             </Avatar>
             <ChevronDown className="text-white" />
@@ -100,7 +102,7 @@ const Header = () => {
                       Logout
                     </li>
                     <li className="px-4 py-2 bg-green-100 text-green-800">
-                      Status: {user?.status}
+                      Status: {user?.staff_profile.status}
                     </li>
                   </>
                 ) : (

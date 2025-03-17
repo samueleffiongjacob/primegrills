@@ -72,9 +72,9 @@ const AllMenuPage: React.FC = () => {
   return (
     <div className="min-h-screen p-6 lg:px-12">
       <PromotionSection />
-      <h1 className="text-3xl font-bold text-black md:ml-8 my-6 mx-5">All Menu</h1>
+      <h1 className="text-3xl font-bold text-black my-6">All Menu</h1>
       
-      <div className="md:px-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-8">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-8">
         {menuItems.map((item, index) => (
           <motion.div 
             key={index} 
@@ -85,7 +85,7 @@ const AllMenuPage: React.FC = () => {
           >
             <img src={item.image} alt={item.name} className="w-20 md:w-32 h-20 object-cover rounded-full" />
             <p className="text-black font-semibold mt-2">{item.name}</p>
-            <p className="text-orange-600 text-lg font-bold">₦{item.price}</p>
+            <p className="text-orange-600 text-lg font-bold">₦{item.price.toLocaleString()}</p>
           </motion.div>
         ))}
       </div>

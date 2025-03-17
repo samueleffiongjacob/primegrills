@@ -1,14 +1,205 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  backend:
-    extends:
-      file: ./Backend/docker-compose.yml
-      service: Backend
-
-  frontend:
-    extends:
-      file: ./Frontend/docker-compose.yml
-      service: Frontend
+  # ========================= BACKEND SERVICES =========================
+  auth_service:
+    build: ./Backend/AUTH
+    container_name: authservice
+    networks:
+      - primegrills_network
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./Backend/AUTH/auth:/AUTH/auth
+    env_file:
+      - ./Backend/AUTH/.env
+    environment:
+      SQL_HOST: primegrillsdb
+      SQL_PORT: 5432
+      SQL_USER: primegrills
+      SQL_PASSWORD: primegrills
+      SQL_DATABASE: primegrillsauth_db
     depends_on:
-      - Backend
+      primegrillsdb:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    restart: always
+
+  product_service:
+    build: ./Backend/PRODUCT
+    container_name: productservice
+    networks:
+      - primegrills_network
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./Backend/PRODUCT/product:/PRODUCT/product
+    env_file:
+      - ./Backend/PRODUCT/.env
+    depends_on:
+      primegrillsdb:
+        condition: service_healthy
+    restart: always
+
+  # order_service:
+  #   build: ./Backend/ORDER
+  #   container_name: order_service
+  #   ports:
+  #     - "8002:8000"
+  #   volumes:
+  #     - ./backend/ORDER/order:/ORDER/order
+  #   env_file:
+  #     - ./backend/ORDER/.env
+  #   depends_on:
+  #     primegrillsdb:
+  #       condition: service_healthy
+  #   restart: on-failure
+
+  # event_service:
+  #   build: ./backend/EVENTS
+  #   container_name: eventservice
+  #   networks:
+  #     - primegrills_network
+  #   ports:
+  #     - "8003:8000"
+  #   volumes:
+  #     - ./backend/EVENTS/event_service:/EVENTS/event_service
+  #   env_file:
+  #     - ./backend/EVENTS/.env
+  #   depends_on:
+  #     primegrillsdb:
+  #       condition: service_healthy
+  #     rabbitmq:
+  #       condition: service_healthy
+  #   restart: always
+
+  primegrillsdb:
+    image: postgres:17
+    container_name: primegrillsdb
+    networks:
+     - primegrills_network
+    restart: always
+    environment:
+      POSTGRES_USER: primegrills
+      POSTGRES_PASSWORD: primegrills
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./Backend/DATABASE/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U primegrills"]
+      interval: 5s
+      retries: 10
+      start_period: 30s
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    networks:
+      - primegrills_network
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=primegrills
+      - RABBITMQ_DEFAULT_PASS=primegrills
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+
+  # ========================= FRONTEND SERVICES =========================
+  primegrillsclient:
+    build: 
+     context: ./Frontend/PrimeGrillsclient
+     dockerfile: Dockerfile
+    container_name: primegrillsclient
+    depends_on:
+      - auth_service
+    networks:
+      - primegrills_network
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./Frontend/PrimeGrillsClient:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - VITE_PORT=5173
+    command: ["npm", "run", "dev", "--", "--host"]
+    restart: unless-stopped
+
+  primegrillspos:
+    build:
+      context: ./Frontend/PrimeGrillsPos
+      dockerfile: Dockerfile
+    container_name: primegrillspos
+    depends_on:
+      - auth_service
+    networks:
+      - primegrills_network
+    ports:
+      - "5174:5174"
+    volumes:
+      - ./Frontend/PrimeGrillsPos:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - VITE_PORT=5174
+    command: ["npm", "run", "dev", "--", "--host"]
+    restart: unless-stopped
+
+
+  primegrillsadmin:
+    build: 
+      context: ./Frontend/PrimeGrillsAdmin   # PrimeGrillsAdmin
+      dockerfile: Dockerfile
+    container_name: primegrillsadmin
+    depends_on:
+      - auth_service
+    networks:
+      - primegrills_network
+    ports:
+      - "5175:5175"
+    volumes:
+      - ./Frontend/PrimeGrillsAdmin:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - VITE_PORT=5175
+    command: ["npm", "run", "dev", "--", "--host"]
+    restart: unless-stopped
+
+  primegrillsmanager:
+    build: 
+     context: ./Frontend/PrimeGrillsManagers
+     dockerfile: Dockerfile
+    container_name: primegrillsmanager
+    depends_on:
+      - auth_service
+    networks:
+      - primegrills_network
+    ports:
+      - "5176:5176"
+    volumes:
+      - ./Frontend/PrimeGrillsManagers:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - VITE_PORT=5176
+    command: ["npm", "run", "dev", "--", "--host"]
+    restart: unless-stopped
+
+networks:
+  primegrills_network:
+    driver: bridge
+
+volumes:
+  pgdata:
+  rabbitmq_data:

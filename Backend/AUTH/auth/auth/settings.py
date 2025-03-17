@@ -15,6 +15,11 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+BASE_URL = 'http://localhost:8000'
+
+MEDIA_URL = '/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -23,9 +28,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECRET_KEY = 'django-insecure-cyu5k$z&v937syhr&g@)qi(t!+^9n-ch4y32x7uq)5)q+byrcu'
 SECRET_KEY = os.environ.get("SECRET_KEY", 'django-insecure-cyu5k$z&v937syhr&g@)qi(t!+^9n-ch4y32x7uq)5)q+byrcu' )
 
-# SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
-DEBUG = bool(os.environ.get("DEBUG", default=0))
+# SECURITY WARNING: don't run with debug turned on in production! To use the commented one below
+DEBUG = True
+#DEBUG = bool(os.environ.get("DEBUG", default=0))
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost 127.0.0.1 [::1]").split(" ")
 
@@ -72,10 +77,12 @@ MIDDLEWARE = [
 
     'allauth.account.middleware.AccountMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'signinandout.middleware.token_auto_refresh.JWTRefreshMiddleware'
 ]
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
+    'http://localhost:5174',
     'http://localhost:5175',
     'http://localhost:5176',
     'https://primegrills.com' # url when deployed for production
@@ -127,9 +134,9 @@ WSGI_APPLICATION = 'auth.wsgi.application'
 DATABASES = {
     'default': {
         "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.postgresql"),
-        "NAME": os.environ.get("SQL_DATABASE", "primegrillsauth_db"),
-        "USER": os.environ.get("SQL_USER", "primegrills"),
-        "PASSWORD": os.environ.get("SQL_PASSWORD", "primegrills"),
+        "NAME": os.environ.get("SQL_DATABASE","primegrillsauth_db"), #"primegrillsauth_db",primegrillsauth
+        "USER": os.environ.get("SQL_USER","primegrills"), #"primegrills", prime_grills
+        "PASSWORD": os.environ.get("SQL_PASSWORD","primegrills"), #"primegrills", prime
         "HOST": os.environ.get("SQL_HOST", "localhost"),
         "PORT": os.environ.get("SQL_PORT", "5432"),
     }
@@ -183,19 +190,21 @@ AUTH_USER_MODEL = "signup.User" # relationship in singup
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'signinandout.middleware.cookie_auth.CookieJWTAuthentication'
+        'signinandout.middleware.cookie_auth.CookieJWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ),
 }
 
 FRONTEND_URL = 'http://localhost:5173'
 # Email Configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'sandbox.smtp.mailtrap.io'  # Change to the correct SMTP server
+EMAIL_HOST = 'live.smtp.mailtrap.io'  # Change to the correct SMTP server
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = '1059f82e29a0f2'  # Change to correct email
-EMAIL_HOST_PASSWORD = '27c5161ccbbbf0'  # Change to correct email password or app password
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  #'Prime Grills <no-reply@primegrills.com>'
+EMAIL_HOST_USER = 'smtp@mailtrap.io'  # Change to correct email
+EMAIL_HOST_PASSWORD = 'e4b751d9f0c3495f4396913a5e813054'  # Change to correct email password or app password
+DEFAULT_FROM_EMAIL = 'Prime Grills <no-reply@effiongsamuel.tech>'#EMAIL_HOST_USER  #'Prime Grills <no-reply@primegrills.com>'
+EMAIL_USE_SSL=False
 
 
 # JWT settings

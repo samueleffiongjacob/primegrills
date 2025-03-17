@@ -1,12 +1,12 @@
 from django.shortcuts import render
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.utils import timezone
-from datetime import datetime
+from datetime import datetime, timedelta
 import uuid
-from .models import PaymentMethod, Transaction, DailyReport
-from .serializers import PaymentMethodSerializer, TransactionSerializer, DailyReportSerializer
+from .models import PaymentMethod, Transaction, DailyReport, PosTemporarySelection
+from .serializers import PaymentMethodSerializer, TransactionSerializer, DailyReportSerializer, PosTemporarySelectionSerializer
 
 class PaymentMethodViewSet(viewsets.ModelViewSet):
     queryset = PaymentMethod.objects.all()
@@ -57,4 +57,25 @@ class DailyReportViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(report)
         return Response(serializer.data)
 
-class 
+class PosTemporarySelectionViewSet(viewsets.ModelViewSet):
+    queryset = PosTemporarySelection.objects.all()
+    serializer_class = PosTemporarySelectionSerializer
+
+    def perform_create(self, serializer):
+        # Set expiration time to 30 minutes from now
+        expires_at = timezone.now() + timedelta(minutes=30)
+        serializer.save(expires_at=expires_at)
+
+    @action(detail=False, methods=['get'])
+    def active_session(self, request):
+        session_id = request.query_params.get('session_id')
+        if not session_id:
+            return Response({'error': 'Session ID required'}, 
+                          status=status.HTTP_400_BAD_REQUEST)
+        
+        selections = self.queryset.filter(
+            session_id=session_id,
+            expires_at__gt=timezone.now()
+        )
+        serializer = self.get_serializer(selections, many=True)
+        return Response(serializer.data)

@@ -21,7 +21,7 @@ function App() {
           <Router>
             <Routes>
               {/* Public Routes */}
-              <Route path="/login" element={<LoginModal isOpen={true} onClose={() => {}} onLogin={() => {}} />} />
+              <Route path="/login" element={<LoginModal isOpen={true} onClose={() => {}} />} />
               
               {/* Protected Routes - All under same protection */}
               <Route path="/" element={<ProtectedRoute><Mainframe /></ProtectedRoute>}>

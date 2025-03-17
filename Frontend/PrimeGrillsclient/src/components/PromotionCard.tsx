@@ -1,5 +1,5 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useEffect } from "react";
+import { motion, useAnimationControls} from "framer-motion";
 
 interface PromotionProps {
   promotionItems: {
@@ -11,6 +11,7 @@ interface PromotionProps {
 }
 
 const PromotionCard: React.FC<PromotionProps> = ({ promotionItems }) => {
+  const badgeControls = useAnimationControls();
   // Animation variants for text elements
   const textVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -34,8 +35,20 @@ const PromotionCard: React.FC<PromotionProps> = ({ promotionItems }) => {
     }
   };
 
+  useEffect(() => {
+
+    // Badge animation
+    badgeControls.start({
+      scale: [1, 1.15, 1],
+      rotate: [0, -5, 5, 0],
+      transition: { duration: 2, repeat: Infinity, repeatType: "reverse" }
+    });
+
+  }, [ badgeControls]);
+
+
   return (
-    <div className="flex justify-center items-center mb-10 px-6">
+    <div className="flex justify-center items-center mb-10">
       
       <div className="w-full">
         {promotionItems.map((promo, index) => (
@@ -47,6 +60,14 @@ const PromotionCard: React.FC<PromotionProps> = ({ promotionItems }) => {
               overflow: "visible"
             }}
           >
+             {/* Hot Deal Badge */}
+             <motion.div 
+              className="absolute -top-3 -left-3  bg-orange-100 text-orange-500 px-4 py-1 rounded-full text-sm font-bold shadow-lg z-30"
+              animate={badgeControls}
+            >
+              HOT DEAL
+            </motion.div>
+
             {/* Animated Text Content */}
             <motion.div 
               className="text-white max-w-md z-10"

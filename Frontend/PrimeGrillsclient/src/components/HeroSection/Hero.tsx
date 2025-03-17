@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import Button from "../Navbar/button";
 import hero from "../../assets/images/heroimage.jpg";
 import ItemCard from "../itemCard/itemCard.tsx";
-import { headerVariants, slideVariants } from '../../utils/utils.ts';
+import { headerVariants, slideVariants } from '../../utils/animate.ts';
 
 const Hero =() => {
     const navigate = useNavigate();

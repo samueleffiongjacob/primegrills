@@ -9,17 +9,17 @@ export const signUpUser = async ({
   fullName,
   email,
   phoneNumber,
-  address,
+  //address,
   password,
 }: {
   username: string;
   fullName: string;
   email: string;
   phoneNumber: string;
-  address: string;
+  //address: string;
   password: string;
 }): Promise<AuthResponse> => {
-  const timeout = 8000; // Timeout in 8 seconds)
+  const timeout = 180000; // Timeout in 8 seconds)
 
   const fetchWithTimeout = async (resource: string, options: RequestInit, timeout: number): Promise<Response> => {
     const controller = new AbortController();
@@ -44,7 +44,7 @@ export const signUpUser = async ({
         name: fullName,
         email: email,
         phone: phoneNumber,
-        address: address,
+       // address: address,
         password: password,
       }),
     }, timeout);

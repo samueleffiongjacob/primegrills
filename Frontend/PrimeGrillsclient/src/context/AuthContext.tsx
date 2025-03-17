@@ -35,10 +35,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = async (email: string, password: string): Promise<string | boolean> => {
     try {
-      await fetch(`${import.meta.env.VITE_BACKEND_URL}/csrf/`, {
-        method: "GET",
-        credentials: "include",
-      });
 
       const csrfToken = getCookie("csrftoken");
 
@@ -177,7 +173,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  useEffect(() => {
+ /*  useEffect(() => {
     const initAuth = async () => {
       let retries = 3;
       while (retries > 0) {
@@ -198,7 +194,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
   
     initAuth();
-  }, []);
+  }, []); */
 
   useEffect(() => {
     if (!isAuthenticated) return;

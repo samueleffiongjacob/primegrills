@@ -1,3 +1,4 @@
+import uuid
 from django.shortcuts import render
 from rest_framework import viewsets, permissions, filters, status
 from rest_framework.decorators import action
@@ -5,8 +6,8 @@ from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Sum
 from django.db import transaction
-from .models import Customer, FoodProduct, Order, OrderItem
-from .serializers import CustomerSerializer, FoodProductSerializer, OrderSerializer, OrderItemSerializer
+from .models import Customer, FoodProduct, CustomerOrder, CustomerOrderItem
+from .serializers import CustomerSerializer, FoodProductSerializer, CustomerOrderSerializer, CustomerOrderItemSerializer
 
 class CustomerViewSet(viewsets.ModelViewSet):
     queryset = Customer.objects.all()
@@ -47,8 +48,8 @@ class FoodProductViewSet(viewsets.ModelViewSet):
     filterset_fields = ['is_available']
 
 class OrderViewSet(viewsets.ModelViewSet):
-    queryset = Order.objects.all()
-    serializer_class = OrderSerializer
+    queryset = CustomerOrder.objects.all()
+    serializer_class = CustomerOrderSerializer
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     filterset_fields = ['status', 'customer']
 
@@ -64,7 +65,7 @@ class OrderViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def my_orders(self, request):
-        orders = Order.objects.filter(customer=request.user)
+        orders = CustomerOrder.objects.filter(customer=request.user)
         page = self.paginate_queryset(orders)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
@@ -76,15 +77,17 @@ class OrderViewSet(viewsets.ModelViewSet):
     @transaction.atomic
     def create_with_items(self, request):
         # Get or create customer
-        customer_data = request.data.get('customer')
-        if not customer_data or 'email' not in customer_data:
-            return Response({'error': 'Customer email is required'}, 
-                          status=status.HTTP_400_BAD_REQUEST)
+        # customer_data = request.data.get('customer')
+        # if not customer_data or 'email' not in customer_data:
+        #     return Response({'error': 'Customer email is required'}, 
+        #                   status=status.HTTP_400_BAD_REQUEST)
 
-        customer, _ = Customer.objects.get_or_create(
-            email=customer_data['email'],
-            defaults=customer_data
-        )
+        # customer, _ = Customer.objects.get_or_create(
+        #     email=customer_data['email'],
+        #     defaults=customer_data
+        # )
+
+        customer = request.user
 
         # Create order
         order_data = {
@@ -95,7 +98,7 @@ class OrderViewSet(viewsets.ModelViewSet):
             'total_amount': 0  # Will be calculated from items
         }
         
-        order_serializer = OrderSerializer(data=order_data)
+        order_serializer = CustomerOrderSerializer(data=order_data)
         if not order_serializer.is_valid():
             return Response(order_serializer.errors, 
                           status=status.HTTP_400_BAD_REQUEST)
@@ -125,7 +128,7 @@ class OrderViewSet(viewsets.ModelViewSet):
                     'subtotal': product.price * quantity
                 })
                 
-                item_serializer = OrderItemSerializer(data=item_data)
+                item_serializer = CustomerOrderItemSerializer(data=item_data)
                 if item_serializer.is_valid():
                     order_items.append(item_serializer.save())
                     total_amount += item_data['subtotal']
@@ -140,14 +143,14 @@ class OrderViewSet(viewsets.ModelViewSet):
 
         # Update order total
         order.total_amount = total_amount
-        order.save()
+        self.perform_create(order)
 
         return Response({
-            'order': OrderSerializer(order).data,
-            'items': OrderItemSerializer(order_items, many=True).data
+            'order': CustomerOrderSerializer(order).data,
+            'items': CustomerOrderItemSerializer(order_items, many=True).data
         }, status=status.HTTP_201_CREATED)
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['put'])
     def update_payment_status(self, request, pk=None):
         order = self.get_object()
         payment_status = request.data.get('payment')
@@ -160,24 +163,30 @@ class OrderViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def pending_orders(self, request):
-        orders = Order.objects.filter(status='PENDING')
+        orders = CustomerOrder.objects.filter(status='PENDING')
         serializer = self.get_serializer(orders, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'])
     def unpaid_orders(self, request):
-        orders = Order.objects.filter(payment='PENDING')
+        orders = CustomerOrder.objects.filter(payment='PENDING')
         serializer = self.get_serializer(orders, many=True)
         return Response(serializer.data)
     
     @action(detail=False, methods=['get'])
     def all_orders(self, request):
-        orders = Order.objects.all()
+        orders = CustomerOrder.objects.all()
         serializer = self.get_serializer(orders, many=True)
         return Response(serializer.data)
+    
+    def perform_create(self, serializer):
+        order_id = f"ORD-{uuid.uuid4().hex[:8].upper()}"
+        serializer.save(
+            order_id=order_id
+        )
 
 class OrderItemViewSet(viewsets.ModelViewSet):
-    queryset = OrderItem.objects.all()
-    serializer_class = OrderItemSerializer
+    queryset = CustomerOrderItem.objects.all()
+    serializer_class = CustomerOrderItemSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['order', 'food_product']

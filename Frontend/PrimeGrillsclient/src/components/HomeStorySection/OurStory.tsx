@@ -3,13 +3,13 @@ import { motion } from 'framer-motion';
 // INTERNAL IMPORTS
 import Button from "../Navbar/button";
 import Card from "./Card";
-import { headerVariants } from "../../utils/utils";
+import { headerVariants } from "../../utils/animate";
 import { Link } from 'react-router-dom';
 
 const Story =() => {
     return (
         <div>
-            <div id="services" className=" p-2 justify-self-center container  grid grid-cols-1 md:grid-cols-2 lg:px-32 px-12 gap-8 ">
+            <div id="services" className=" p-2 justify-self-center  grid grid-cols-1 md:grid-cols-2 lg:px-32 px-12 gap-8 ">
 
                 {/* Left column */}
                 <motion.div className="text-center md:text-left flex flex-col p-2 mr-5"

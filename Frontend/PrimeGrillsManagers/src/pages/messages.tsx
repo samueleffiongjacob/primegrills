@@ -37,7 +37,7 @@ const staffMessages = [
   },
 ];
 
-const staffRoles = ["Kitchen", "Accountant", "Manager", "Waiter", "Cleaner"];
+const staffRoles = ["Kitchen", "Accountant", "Manager", "Waiter", "Cleaner", "Pos"];
 
 const MessagesPage = () => {
   // const [openMessage, setOpenMessage] = useState(null);

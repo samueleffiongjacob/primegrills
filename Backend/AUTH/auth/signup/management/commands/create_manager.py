@@ -18,6 +18,7 @@ class Command(BaseCommand):
 
         if created:
             # Create the user
+            user.name = "Primegrills Manager"
             user.username = "manager"
             user.set_password(password)
             user.is_staff = True
@@ -31,6 +32,7 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS(f"Successfully created manager user: {email}"))
         else:
             # Update the user
+            user.name = "Primegrills Manager"
             user.username = "manager"
             user.set_password(password)
             user.is_staff = True

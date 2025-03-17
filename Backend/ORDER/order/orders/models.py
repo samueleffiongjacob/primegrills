@@ -1,24 +1,32 @@
 from django.db import models
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
+from customers.models import Customer, FoodProduct
+from pos.models import PosStaff
 
-# Create your models here.
 class Orders(models.Model):
-    order_id = models.AutoField(primary_key=True)
-    order_date = models.DateField()
-    order_time = models.TimeField()
-    order_status = models.CharField(max_length=50)
-    order_total = models.DecimalField(max_digits=10, decimal_places=2)
-    order_payment = models.CharField(max_length=50)
-    order_customer = models.CharField(max_length=50)
-    order_items = models.CharField(max_length=50)
-    order_address = models.CharField(max_length=50)
-    order_phone = models.CharField(max_length=50)
-    order_email = models.CharField(max_length=50)
-    order_note = models.CharField(max_length=50)
-    order_payment_status = models.CharField(max_length=50)
-    order_payment_reference = models.CharField(max_length=50)
-    order_payment_processed_by = models.CharField(max_length=50)
-    order_created_at = models.DateTimeField(auto_now_add=True)
-    order_updated_at = models.DateTimeField(auto_now=True)
+    PAY_STATS = [
+        ('PENDING', 'pending'),
+        ('complete', 'complete'),
+        ('cancelled', 'cancelled'),
+    ]
+
+    id = models.AutoField(primary_key=True)
+    content_type = models.ForeignKey(
+        ContentType,
+        on_delete=models.CASCADE,
+        limit_choices_to={'model__in': ('customer', 'posstaff')}
+    )
+    object_id = models.PositiveIntegerField()
+    user = GenericForeignKey('content_type', 'object_id')
+    order_id = models.CharField(max_length=20, unique=True)
+    date = models.DateField()
+    time = models.TimeField()
+    status = models.CharField(max_length=50, choices=PAY_STATS, default="PENDING")
+    total = models.DecimalField(max_digits=10, decimal_places=2)
+    reason = models.CharField(max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'orders'
@@ -28,3 +36,11 @@ class Orders(models.Model):
 
     def __str__(self):
         return self.order_id
+    
+class OrderItems(models.Model):
+    order = models.ForeignKey(Orders, on_delete=models.CASCADE, related_name='items')
+    food_product = models.ForeignKey(FoodProduct, on_delete=models.SET_NULL, null=True)
+    name = models.CharField(max_length=255)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.PositiveIntegerField(default=1)
+    image = models.URLField(blank=True, null=True)

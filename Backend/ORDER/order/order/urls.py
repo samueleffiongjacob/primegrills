@@ -17,12 +17,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.documentation import include_docs_urls
+import customers
+import pos
+import orders
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('customers.urls')),
-    path('api/pos/', include('pos.urls')),
-    path('api-auth/', include('rest_framework.urls')),
-    path('api/orders/', include('orders.urls')),
+    path('cutomers/', include(('customers.urls', 'customers'), namespace='customers')),
+    path('pos/', include(('pos.urls', 'pos') , namespace='pos')),
+    # path('api-auth/', include('rest_framework.urls')),  # Uncomment this line
+    path('orders/', include(('orders.urls', 'orders') , namespace='orders')),
     path('docs/', include_docs_urls(title='Food Order API')),
 ]

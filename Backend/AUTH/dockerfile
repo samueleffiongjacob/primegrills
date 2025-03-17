@@ -2,33 +2,34 @@
 
 FROM python
 
-WORKDIR /AUTH/auth
+WORKDIR /AUTH
 
 # Environment variables to optimize Python behavior
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # install system dependencies
-RUN apt-get update && apt-get install -y netcat-openbsd
+RUN apt-get update && apt-get install -y netcat-openbsd postgresql-client
+# RUN apt-get update && apt-get install -y netcat-openbsd postgresql-client # && rm -rf /var/lib/apt/lists/*
+
 # RUN apt-get update && apt-get install -y netcat-traditional # legacy compatibility
 
 # upgrade pip
-RUN pip install --upgrade pip
+RUN pip install --upgrade pip setuptools
 
 # dependencies file 
-COPY requirements.txt /AUTH/auth/
+COPY requirements.txt /AUTH/
 
 # Install dependencies
 #RUN pip install --no-cache-dir -r /AUTH/auth/requirements.txt # for production
-RUN pip install -r /AUTH/auth/requirements.txt
-
-# Copy project files
-COPY . /AUTH/auth/
+RUN pip install -r /AUTH/requirements.txt
 
 # # copy entrypoint.sh
-# COPY  migrate.sh /AUTH/auth/migrate.sh
-# RUN sed -i 's/\r$//' /AUTH/auth/migrate.sh && chmod +x /AUTH/auth/migrate.sh
+COPY  entrypoint.sh /AUTH/entrypoint.sh
+RUN chmod +x /AUTH/entrypoint.sh
 
+# Copy project files
+COPY . /AUTH/
 
 # Expose the default development port
 EXPOSE 8000
@@ -37,11 +38,12 @@ EXPOSE 8000
 # CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 
 # run entrypoint.sh
-# ENTRYPOINT ["/AUTH/auth/migrate.sh"]
+ENTRYPOINT ["/AUTH/entrypoint.sh"]
 
 # Use an environment variable to switch between development and production
-ARG MODE=production
-ENV MODE=${MODE}
+# ARG MODE=production
+# ARG MODE=development
+# ENV MODE=${MODE}
 
 # for production
-CMD ["sh", "-c", "python manage.py makemigrations && python manage.py migrate && if [ \"$MODE\" = 'development' ]; then python manage.py runserver 0.0.0.0:8000; else gunicorn --bind 0.0.0.0:8000 authservice.wsgi:application; fi"]
+# CMD ["sh", "-c", "python manage.py makemigrations && python manage.py migrate && if [ \"$MODE\" = 'development' ]; then python manage.py runserver 0.0.0.0:8000; else gunicorn --bind 0.0.0.0:8000 authservice.wsgi:application; fi"]

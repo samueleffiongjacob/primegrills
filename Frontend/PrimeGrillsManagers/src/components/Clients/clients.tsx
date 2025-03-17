@@ -2,17 +2,17 @@ import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../../context/authContext";
 import logo from '../../assets/images/primeLogo.png';
 import { motion } from 'framer-motion';
-import { TrashIcon, SearchIcon } from "lucide-react"; // Replace imported image with icon component
-import { getCookie } from "../../utils/cookie";
+import { TrashIcon, CheckCircle, XCircle } from "lucide-react"; // Only need CheckCircle now
 
 interface ClientProps {
   id: number;
   name: string;
   email: string;
   username: string;
-  image: string;
+  profileImage: string;
   address: string;
   phone: string;
+  is_active: boolean; // Tracking verification status
 }
 
 // Extracted to environment variable for easier configuration
@@ -40,11 +40,9 @@ const Clients = () => {
     setError(null);
     
     try {
-      const csrfToken = getCookie("csrftoken");
       const response = await fetch(`${API_BASE_URL}/api/users/all/`, {
         headers: {
           'Content-Type': 'application/json',
-          "X-CSRFToken": csrfToken || "",
         },
         credentials: "include",
       });
@@ -59,30 +57,6 @@ const Clients = () => {
     } catch (error) {
       console.error("Error fetching clients:", error);
       setError("Failed to load clients. Please try again later.");
-      
-      // Only use mock data in development
-      if (process.env.NODE_ENV === 'development') {
-        setClients([
-          { 
-            id: 1, 
-            name: "Joshua George", 
-            email: "rufus.kenny09@gmail.com", 
-            username: "joshg", 
-            image: logo, 
-            address: "123 Main St",
-            phone: "555-1234"
-          },
-          { 
-            id: 2, 
-            name: "Suleinman Adamu", 
-            email: "grilled@example.com", 
-            username: "sadamu",
-            image: logo,
-            address: "456 Oak Ave",
-            phone: "555-5678"
-          }
-        ]);
-      }
     } finally {
       setLoading(false);
     }
@@ -97,11 +71,9 @@ const Clients = () => {
     setError(null);
     
     try {
-      const response = await fetch(`${API_BASE_URL}/api/delete/user/${id}/`, {
+      const response = await fetch(`${API_BASE_URL}/api/user/delete/${id}/`, {
         method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        }
+        credentials: "include",
       });
       
       if (!response.ok) {
@@ -194,10 +166,11 @@ const Clients = () => {
               </div>
               <input
                 type="search"
-                placeholder="Search Staff..."
+                placeholder="Search Clients ..."
                 className="w-64 p-2 pl-3 border rounded-lg border-[#EE7F61]"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                
               />
             </div>
           </div>
@@ -213,7 +186,6 @@ const Clients = () => {
                   <thead>
                     <tr className="bg-[#EE7F61] text-white">
                       <th className="px-6 py-3 text-left tracking-wider">S/N</th>
-                      <th className="px-6 py-3 text-left tracking-wider">Client ID</th>
                       <th className="px-6 py-3 text-left tracking-wider">Name</th>
                       <th className="px-6 py-3 text-left tracking-wider">Email</th>
                       <th className="px-6 py-3 text-left tracking-wider">Username</th>
@@ -235,8 +207,27 @@ const Clients = () => {
                         className="hover:bg-gray-50"
                       >
                         <td className="px-6 py-4 whitespace-nowrap">{startIndex + index + 1}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">{client.id}</td>
-                        <td className="px-6 py-4 whitespace-nowrap font-medium">{client.name}</td>
+                        <td className="px-6 py-4 whitespace-nowrap font-medium">
+                          <div className="flex items-center">
+                            <span>{client.name}</span>
+                            {client.is_active ? (
+                               <div
+                                className="ml-1 h-5 w-5 flex items-center justify-center rounded-full bg-green-600"
+                                title="Email Verified"
+                             >
+                               <CheckCircle className="h-4 w-4 font-bold text-white" />
+                             </div>
+                            ) : (
+                              <div
+                                className="ml-1 h-5 w-5 flex items-center justify-center rounded-full bg-red-600"
+                                title="Email Unverified"
+                            >
+                              <XCircle className="h-4 w-4 text-white" />
+                            </div>
+                            ) 
+                          }
+                          </div>
+                        </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <a href={`mailto:${client.email}`} className="text-blue-600 hover:underline">
                             {client.email}
@@ -245,7 +236,7 @@ const Clients = () => {
                         <td className="px-6 py-4 whitespace-nowrap">{client.username}</td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <img 
-                            src={client.image} 
+                            src={client.profileImage} 
                             alt={`${client.name}'s avatar`} 
                             className="h-10 w-10 rounded-full object-cover"
                             onError={(e) => {
@@ -350,7 +341,7 @@ const Clients = () => {
                       </>
                     )}
                   </div>
-                  
+                
                   <button
                     onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                     disabled={currentPage === totalPages}

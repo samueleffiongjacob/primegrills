@@ -21,6 +21,7 @@ class Customer(models.Model):
 
 class FoodProduct(models.Model):
     name = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='food_images/', blank=True, null=True)
     description = models.TextField()
     category = models.CharField(max_length=50)
     price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -46,7 +47,8 @@ class Order(models.Model):
         ('FAILED', 'cancelled'),
     ]
     
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='orders')
+    order_id = models.CharField(max_length=20, unique=True)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='order')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
     payment = models.CharField(max_length=20, choices=PAY_STATS, default='PENDING')
     special_instructions = models.TextField(blank=True)
@@ -75,3 +77,17 @@ class OrderItem(models.Model):
         return f"{self.quantity}x {self.food_product.name}"
 
 
+class CartItem(models.Model):
+    """Cart model for customers."""
+    user = models.ForeignKey(Customer, related_name="cart_items", on_delete=models.CASCADE)
+    product_id = models.IntegerField()
+    name = models.CharField(max_length=255)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.PositiveIntegerField(default=1)
+    image = models.URLField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.name} (x{self.quantity})"
+        
+    class Meta:
+        db_table = "cart_items"

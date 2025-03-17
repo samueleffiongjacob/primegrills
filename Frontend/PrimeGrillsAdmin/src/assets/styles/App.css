@@ -1,0 +1,35 @@
+
+/* For WebKit browsers like Chrome, Safari, and Edge */
+::-webkit-scrollbar {
+    width: 8px; /* Change the width of the scrollbar */
+    height: 8px; /* Change the height of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+    background-color: #f4f4f5; /* Change the color of the scrollbar track */
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #4b5563; /* Change the color of the scrollbar thumb */
+    border-radius: 4px; /* Add rounded corners to the scrollbar thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #374151; /* Change the color of the scrollbar thumb on hover */
+}
+
+/* For Firefox */
+* {
+    scrollbar-width: thin; /* Make the scrollbar thinner */
+    scrollbar-color: #4b5563 #f4f4f5; /* Change the color of the scrollbar thumb and track */
+}
+
+/* to hide scrollbar */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }

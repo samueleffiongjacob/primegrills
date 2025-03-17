@@ -1,5 +1,6 @@
 import React, { JSX, useState } from "react";
 import { useAuth } from "../context/authContext";
+import { ToastContainer } from 'react-toastify';
 import LoginModal from "./Login";
 // import { Navigate } from "react-router-dom";
 
@@ -12,7 +13,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { isAuthenticated, user: currentUser } = useAuth();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
-  if (!isAuthenticated && currentUser?.status !== "Active") {
+  if (!isAuthenticated && currentUser?.staff_profile.status !== "Active") {
     return (
       <div className="flex flex-col items-center mt-[25vh] justify-center h-full">
         <div className="bg-white p-8 rounded-lg shadow text-center">
@@ -28,6 +29,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
             to access this page.
           </p>
         </div>
+        <ToastContainer />
         <LoginModal
           isOpen={isLoginModalOpen}
           onClose={() => setIsLoginModalOpen(false)}

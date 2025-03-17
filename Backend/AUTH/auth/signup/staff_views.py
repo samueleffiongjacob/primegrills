@@ -10,7 +10,13 @@ User = get_user_model()
 @api_view(["POST"])
 def register_staff(request):
     """Registers a staff user (requires admin permissions)."""
-
+    
+    # First check if user is authenticated
+    if not request.user.is_authenticated:
+        return Response({"error": "Authentication required"}, status=401)
+    # Check if user has admin permissions
+    if not request.user.user_type != 'staff' and request.user.staff_profile.role != 'Manager':
+        return Response({"error": "You don't have permission to register staff members"}, status=403)
     
     data = request.data
     print(data)
@@ -23,7 +29,8 @@ def register_staff(request):
         return Response({"error": "Username already exists"}, status=400)
     print('here')
     # Use StaffUserSerializer for staff registration
-    serializer = StaffUserSerializer(data=request.data)
+    serializer = StaffUserSerializer.create(data=request.data)
+    print(serializer)
     
     if serializer.is_valid():
         try:
@@ -55,5 +62,29 @@ def register_staff(request):
 
 
 
+from rest_framework import generics, status
+from rest_framework.response import Response
+from rest_framework.permissions import IsAdminUser
 
-   
+from .se import RegisterStaffSerializer
+
+class RegisterStaffView(generics.CreateAPIView):
+    """API endpoint to register a new staff user."""
+    queryset = User.objects.all()
+    serializer_class = RegisterStaffSerializer
+    permission_classes = [IsAdminUser]  # Only admin users can create staff accounts
+
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        if User.objects.filter(email=data["email"]).exists():
+            return Response({"error": "Email already exists"}, status=400)
+    
+        if User.objects.filter(username=data["username"]).exists():
+            return Response({"error": "Username already exists"}, status=400)
+    
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response({"message": "Staff registered successfully", "user_id": user.id}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+  

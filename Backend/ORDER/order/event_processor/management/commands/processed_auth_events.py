@@ -7,7 +7,8 @@ from django.utils.timezone import now
 from django.core.management.base import BaseCommand
 from event_processor.models import AuthEvent
 from event_processor.services.event_processor import process_event
-from customers.serializers import CustomerSerializer  # Import the serializer
+from customers.serializers import CustomerSerializer, FoodProductSerializer # Import the serializer
+from pos.serializers import PosStaffSerializer
 
 # Ensure Django settings are loaded
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'event_service.settings')
@@ -27,19 +28,25 @@ def callback(ch, method, properties, body):
         logger.info(f"Stored auth event: {event_type}")
 
         # Extract user data from the event
-        user_data = event_user_data.get("user", {})
-        if user_data:
+        
+        if event_type == "auth_event":
             # Use the serializer to validate and save the customer data
-            serializer = CustomerSerializer(data=user_data, context={"event_type": event_type})
+            if event_user_data.get("role") == "posstaff":
+                serializer = PosStaffSerializer(data=event_user_data, context={"event_type": event_type})
+            elif event_user_data.get("role") == "customer":
+                serializer = CustomerSerializer(data=event_user_data, context={"event_type": event_type})
+
+
+            
             if serializer.is_valid():
                 serializer.save()
-                logger.info(f"Processed customer: {user_data.get('email')}")
+                logger.info(f"Processed customer: {event_user_data.get('email')}")
             else:
                 logger.error(f"Invalid customer data: {serializer.errors}")
                 raise ValueError(f"Invalid customer data: {serializer.errors}")
 
         # Forward relevant data to Query Service
-        process_event(event_type, event_user_data)
+        # process_event(event_type, event_user_data)
 
         # Acknowledge message
         ch.basic_ack(delivery_tag=method.delivery_tag)

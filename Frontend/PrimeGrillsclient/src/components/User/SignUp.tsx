@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { FcGoogle } from 'react-icons/fc';
-import { FaFacebook, FaApple, FaUser, FaUserCircle, FaEnvelope, FaPhone, FaMapMarkerAlt, FaCheckCircle } from 'react-icons/fa';
+import { 
+  FaFacebook, 
+  FaApple, FaUser, 
+  FaUserCircle, FaEnvelope, FaPhone, 
+  FaMapMarkerAlt, FaCheckCircle ,FaEye, 
+  FaEyeSlash
+} from 'react-icons/fa';
 
 // INTERNAL IMPORTS
 import { signUpUser } from '../../api/auth';
@@ -15,18 +21,19 @@ interface SignUpModalProps {
 const SignUpModal: React.FC<SignUpModalProps> = ({
   isOpen,
   onClose,
-  onSignUp,
+  // onSignUp,
   onToggleLogin,
 }) => {
   const [username, setUsername] = useState('');
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [address, setAddress] = useState('');
+ // const [address, setAddress] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [signupSuccess, setSignupSuccess] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   // Error State
   const [errors, setErrors] = useState<{
@@ -34,7 +41,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
     fullName?: string;
     email?: string;
     phoneNumber?: string;
-    address?: string;
+   // address?: string;
     password?: string;
     confirmPassword?: string;
   }>({});
@@ -45,7 +52,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
       fullName?: string;
       email?: string;
       phoneNumber?: string;
-      address?: string;
+     // address?: string;
       password?: string;
       confirmPassword?: string;
     } = {};
@@ -54,8 +61,8 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
     if (!fullName) newErrors.fullName = "Full name is required";
     if (!email) newErrors.email = "Email is required";
     else if (!/\S+@\S+\.\S+/.test(email)) newErrors.email = "Invalid email format";
-    if (!phoneNumber) newErrors.phoneNumber = "Phone number is required";
-    if (!address) newErrors.address = "Address is required";
+    if ( phoneNumber.length !== 11 ) newErrors.phoneNumber = "Phone number is required";
+   // if (!address) newErrors.address = "Address is required";
     if (!password) newErrors.password = "Password is required";
     else if (password.length < 6) newErrors.password = "Password must be at least 6 characters";
     if (!confirmPassword) newErrors.confirmPassword = "Confirm password is required";
@@ -76,7 +83,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
       fullName,
       email,
       phoneNumber,
-      address,
+      //address,
       password,
     });
     
@@ -123,7 +130,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
               </button>
             </div>
           </div>
-          <button
+          {/* <button
             onClick={() => {
               onClose();
               setSignupSuccess(false);
@@ -131,15 +138,15 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
             className="w-full py-3 bg-[#EE7F61] text-white rounded-xl hover:bg-orange-500 transition-colors"
           >
             Continue
-          </button>
+          </button> */}
         </div>
       </div>
     );
   }
 
   return (
-    <div className="fixed inset-0 bg-opacity-100 bg-[#F4F1F1] flex items-center justify-center z-50">
-      <div className="bg-white rounded-2xl p-6 w-full max-w-md max-h-screen overflow-y-auto relative shadow-xl">
+    <div className="fixed inset-0 bg-opacity-100 bg-[#F4F1F1]  py-8 flex items-center justify-center z-50">
+      <div className="bg-white rounded-2xl my-5 p-6 w-full max-w-md max-h-screen overflow-y-auto scrollbar-hide relative shadow-xl">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 cursor-pointer text-gray-500 hover:text-[#EE7F61]"
@@ -212,7 +219,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
             </div>
 
             {/* Address */}
-            <div className="relative">
+            {/* <div className="relative">
               <FaMapMarkerAlt className="absolute left-3 top-2.5 text-gray-400" />
               <input
                 type="text"
@@ -224,10 +231,33 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
                 } focus:outline-none focus:ring-2 focus:ring-orange-400`}
               />
               {errors.address && <p className="text-red-500 text-sm">{errors.address}</p>}
-            </div>
+            </div> */}
 
             {/* Password */}
             <div className="relative">
+              <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">🔒</span>
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+                className={`w-full pl-10 pr-4 py-1.5 rounded-xl border ${
+                  errors.password ? 'border-red-500' : 'border-gray-200'
+                } focus:outline-none focus:ring-2 focus:ring-orange-400`}
+                disabled={isLoading}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400"
+                disabled={isLoading}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+              {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
+            </div>
+
+            {/* <div className="relative">
               <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">🔒</span>
               <input
                 type="password"
@@ -239,10 +269,32 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
                 } focus:outline-none focus:ring-2 focus:ring-orange-400`}
               />
               {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
-            </div>
+            </div> */}
 
             {/* Confirm Password */}
             <div className="relative">
+              <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">🔒</span>
+              <input
+                type={showPassword ? "text" : "password"}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Password"
+                className={`w-full pl-10 pr-4 py-1.5 rounded-xl border ${
+                  errors.confirmPassword ? 'border-red-500' : 'border-gray-200'
+                } focus:outline-none focus:ring-2 focus:ring-orange-400`}
+                disabled={isLoading}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400"
+                disabled={isLoading}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+              {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.password}</p>}
+            </div>
+            {/* <div className="relative">
               <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">🔒</span>
               <input
                 type="password"
@@ -254,7 +306,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
                 } focus:outline-none focus:ring-2 focus:ring-orange-400`}
               />
               {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword}</p>}
-            </div>
+            </div> */}
 
             <button
               type="submit"
@@ -277,6 +329,9 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
             </button>
             <button className="p-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition">
               <FaApple className="w-6 h-6" />
+            </button>
+            <button className="p-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft" width="24px" />
             </button>
           </div>
 

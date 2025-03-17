@@ -3,7 +3,8 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { MdEmail } from 'react-icons/md';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useAuth } from '../context/authContext'; // Import useAuth
+import { useAuth } from '../context/authContext';
+import GreetingModal from './GreetingModal';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -14,7 +15,9 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const { login, loading } = useAuth(); // Use the login function from AuthContext
+  const [unauthorizedModal, setUnauthorizedModal] = useState(false);
+  const { login, loading, user } = useAuth();
+  const [showGreeting, setShowGreeting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,18 +26,27 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
       toast.error("All fields are required");
       return;
     }
+   
     if (password.length < 6) {
       toast.error("Password must be at least 6 characters");
       return;
     }
 
     try {
-      await login(email, password); // Call the login function from AuthContext
-      toast.success('Login Success');
-      onClose(); // Close the modal on successful login
-    } catch (error) {
+      await login(email, password);
+      toast.success(`Welcome, ${user?.name}`)
+      setShowGreeting(true);
+      //onClose();
+    } catch (error: any) {
       console.error("Login failed:", error);
-      toast.error("Login failed. Please try again.");
+      
+      if (error.message === "Invalid email") {
+        setUnauthorizedModal(true);
+      } else if (error.message === "Incorrect password") {
+        toast.error("Incorrect password");
+      } else {
+        toast.error("Login failed. Please try again.");
+      }
     }
   };
 
@@ -42,10 +54,9 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
   return (
     <>
-      <ToastContainer /> {/* Add ToastContainer to display toasts */}
+      <ToastContainer />
       <div className="fixed inset-0 bg-opacity-100 backdrop-blur-xs flex items-center justify-center z-50">
         <div className="bg-[#171943] rounded-2xl p-6 w-full max-w-lg relative">
-          {/* Close button */}
           <button
             onClick={onClose}
             className="absolute top-4 right-4 cursor-pointer text-gray-100 hover:text-[#EE7F61]"
@@ -53,24 +64,21 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
             ✕
           </button>
 
-          {/* Login Form */}
           <div className="space-y-6">
             <h1 className="text-2xl text-[#EE7F61] font-semibold text-center">Log In</h1>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Email or Username Input */}
               <div className="relative">
                 <MdEmail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 <input
-                  type="email"
+                  type="text"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Email or Username"
+                  placeholder="Email"
                   className="w-full pl-12 text-white pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-400"
                 />
               </div>
 
-              {/* Password Input */}
               <div className="relative">
                 <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">🔒</span>
                 <input
@@ -89,10 +97,9 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                 </button>
               </div>
 
-              {/* Log In Button */}
               <button
                 type="submit"
-                disabled={loading} // Disable button while loading
+                disabled={loading}
                 className="w-full py-3 bg-[#EE7F61] text-white rounded-xl hover:bg-orange-500 transition-colors disabled:opacity-50"
               >
                 {loading ? 'Logging in...' : 'Log In'}
@@ -101,6 +108,44 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
           </div>
         </div>
       </div>
+
+      {unauthorizedModal && (
+        <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-8 w-full max-w-xl text-center shadow-2xl transform transition-all">
+            <div className="mx-auto w-20 h-20 flex items-center justify-center bg-red-100 rounded-full mb-6">
+              <span className="text-red-500 text-6xl font-bold">×</span>
+            </div>
+            
+            <h2 className="text-2xl text-red-600 font-bold mb-4">Access Denied</h2>
+            
+            <p className="text-gray-700 text-lg mb-3">
+              Sorry, but this email does not belong to a manager at PRIME GRILLS.
+            </p>
+            
+            <p className="text-gray-600 mb-8">
+              Please visit the consultant's office for further assistance with manager details and instructions.
+            </p>
+            
+            <button
+              onClick={() => setUnauthorizedModal(false)}
+              className="w-full max-w-xs py-3 bg-[#EE7F61] text-white text-lg font-medium rounded-xl hover:bg-orange-500 transition-colors duration-300 shadow-md"
+            >
+              Understood
+            </button>
+          </div>
+        </div>
+      )}
+      {showGreeting && (
+        <GreetingModal 
+          isOpen={showGreeting} 
+          onClose={() => {
+            setShowGreeting(false);
+            onClose(); // Close the login modal after greeting
+          }} 
+          userName={user?.name || "Manager"}
+        />
+      )}
+
     </>
   );
 };

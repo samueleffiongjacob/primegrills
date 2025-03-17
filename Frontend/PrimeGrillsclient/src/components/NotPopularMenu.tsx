@@ -50,7 +50,7 @@ const NotPopularMenu: React.FC<NotPopularProps> = ({ id, img, title, price }) =>
 
       {/* Title & Price */}
       <h3 className="font-bold text-center text-gray-800 text-lg mb-1">{title}</h3>
-      <p className="text-center text-orange-500 font-semibold text-md">₦{price}</p>
+      <p className="text-center text-orange-500 font-semibold text-md">₦{price.toLocaleString()}</p>
 
       {/* Quantity Controls */}
       <div className="flex items-center justify-between bg-gray-100 rounded-lg p-2 mt-3">

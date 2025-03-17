@@ -1,14 +1,19 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from .models import CartItem, ClientProfile, StaffProfile
+import base64
+from django.conf import settings
 
 User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
     """Base serializer for all users"""
+
+    profileImage = serializers.SerializerMethodField()
+
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'password', 'phone', 'address', 'name', 'profileImage', 'user_type')
+        fields = ('id', 'username', 'email', 'password', 'phone', 'address', 'name', 'is_active', 'last_login', 'profileImage', 'user_type')
         extra_kwargs = {
             'password': {'write_only': True},
             'user_type': {'read_only': True}  # Prevent changing user type via API
@@ -17,9 +22,14 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # Default to client user type when creating via this serializer
         validated_data['user_type'] = 'client'
+
         user = User.objects.create_user(**validated_data)
         return user
 
+    def get_profileImage(self, obj):
+        if obj.profileImage:
+            return f"{settings.BASE_URL}{obj.profileImage.url}"
+        return None
 
 class ClientProfileSerializer(serializers.ModelSerializer):
     """Serializer for client profile data"""
@@ -38,6 +48,9 @@ class ClientUserSerializer(UserSerializer):
     def create(self, validated_data):
         validated_data['user_type'] = 'client'
         validated_data['is_active'] = False  # Require verification
+        image_base64 = validated_data.pop('profileImage', None)
+        if image_base64:
+            validated_data['profileImage'] = base64.b64decode(image_base64)
         user = User.objects.create_user(**validated_data)
         return user
 
@@ -71,23 +84,26 @@ class StaffUserSerializer(UserSerializer):
         StaffProfile.objects.create(user=user, **staff_profile_data)
         
         return user
-        
-        return user
     
     def update(self, instance, validated_data):
         # Handle nested staff profile data if provided
         if 'staff_profile' in validated_data:
             staff_profile_data = validated_data.pop('staff_profile')
             
-            # Update or create the staff profile
+            # Get or create the staff profile
             staff_profile, created = StaffProfile.objects.get_or_create(user=instance)
+            
+            # Update profile fields
             for attr, value in staff_profile_data.items():
                 setattr(staff_profile, attr, value)
             staff_profile.save()
         
         # Update user fields
-        return super().update(instance, validated_data)
-
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        
+        instance.save()
+        return instance
 
 class CartItemSerializer(serializers.ModelSerializer):
     """Serializer for user's cart items"""
@@ -99,4 +115,7 @@ class CartItemSerializer(serializers.ModelSerializer):
         # The view should set the user from request.user
         user = self.context.get('request').user
         validated_data['user'] = user
+        image_base64 = validated_data.pop('image', None)
+        if image_base64:
+            validated_data['image'] = base64.b64decode(image_base64)
         return super().create(validated_data)
