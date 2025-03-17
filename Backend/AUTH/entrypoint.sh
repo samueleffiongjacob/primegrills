@@ -19,5 +19,5 @@ echo "✅ Starting server..."
 if [ "$MODE" = "development" ]; then
     exec python manage.py runserver 0.0.0.0:8000
 else
-    exec gunicorn --bind 0.0.0.0:8000 authservice.wsgi:application
+    exec gunicorn --bind 0.0.0.0:8000 auth.wsgi:application
 fi
