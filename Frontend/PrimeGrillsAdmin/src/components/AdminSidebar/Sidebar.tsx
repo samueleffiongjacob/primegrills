@@ -55,14 +55,14 @@ interface navItems {
 const navItems = [
   { to: "/profile", icon: Users, label: "Profile", roles: [ "cleaner", "waiter", "kitchen"] },
   { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard", roles: ["admin", "accountant", 'manager' ] },
-  { to: "/category", icon: Users, label: "Category", roles: ["admin", "accountant" ] },
+  { to: "/category", icon: Users, label: "Category", roles:  allRoles },
   { to: "/menu", icon: Package, label: "Menu", roles: allRoles },
   { to: "/staff", icon: User, label: "Staff", roles: allRoles},
-  { to: "/orders", icon: ShoppingCart, label: "Order", roles: ["admin", "accountant", "kitchen"]},
+  { to: "/orders", icon: ShoppingCart, label: "Order", roles: ["admin", "accountant", "manager"]},
   { to: "/message", icon: Mail, label: "Message", roles: allRoles },
-  { to: "/pos", icon: ShoppingCart, label: "POS", roles: ["admin", "accountant"] },
-  { to: "/paypoints", icon: Calendar, label: "PayPoints", roles: ["admin", "accountant"] },
-  { to: "/settings", icon: Settings, label: "Settings", roles: ["admin"] },
+  { to: "/pos", icon: ShoppingCart, label: "POS", roles: ["admin", "accountant","manager"] },
+  { to: "/paypoints", icon: Calendar, label: "PayPoints", roles: ["admin", "accountant", "manager"] },
+  { to: "/settings", icon: Settings, label: "Settings", roles: allRoles },
   { to: "/report", icon: FileBarChart, label: "Report", roles: allRoles},
 ];
 
