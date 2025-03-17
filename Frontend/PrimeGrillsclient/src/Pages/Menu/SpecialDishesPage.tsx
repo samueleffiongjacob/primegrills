@@ -135,7 +135,7 @@ const SpecialDishesPage: React.FC = () => {
  
       <PromotionSection />
       <motion.h1 
-        className="text-3xl font-bold text-black md:ml-8 my-6 mx-5"
+        className="text-3xl font-bold text-black my-6"
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5 }}

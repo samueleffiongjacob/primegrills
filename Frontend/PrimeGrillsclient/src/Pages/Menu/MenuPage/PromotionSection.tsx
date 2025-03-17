@@ -12,8 +12,8 @@ const promotions = [
 
 const PromotionSection = () => {
   return(
-    <div className="mt-20">
-       < h1 className="text-3xl text-black ml-8 font-bold my-6">Promotion</h1>
+    <div className="lg:mt-10">
+       < h1 className="text-3xl text-black font-bold my-6">Promotion</h1>
         <PromotionCard promotionItems={promotions} />;
     </div>
     

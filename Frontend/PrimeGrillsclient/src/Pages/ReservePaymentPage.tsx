@@ -13,7 +13,7 @@ const PaymentPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-4">
+    <div className="min-h-screen flex items-center justify-center p-4">
       <div className="bg-white shadow-lg rounded-xl max-w-md w-full overflow-hidden">
         {/* Header section */}
         <div className="bg-gradient-to-r from-amber-500 to-[#EE7F61] p-5 text-white">
