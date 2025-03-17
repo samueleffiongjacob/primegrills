@@ -14,6 +14,8 @@ services:
     depends_on:
       primegrillsdb:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     #environment:
       #- DJANGO_SETTINGS_MODULE=your_project.settings.production
     restart: always
@@ -126,6 +128,9 @@ services:
   #    # - account_service
   #     - event_service
   #     - rabbitmq
+
+
+ 
 
 networks:
   primegrills_network:
