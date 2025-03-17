@@ -134,9 +134,9 @@ WSGI_APPLICATION = 'auth.wsgi.application'
 DATABASES = {
     'default': {
         "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.postgresql"),
-        "NAME": os.environ.get("SQL_DATABASE","primegrillsauth"), #"primegrillsauth_db",
-        "USER": os.environ.get("SQL_USER","prime_grills"), #"primegrills",
-        "PASSWORD": os.environ.get("SQL_PASSWORD","prime"), #"primegrills",
+        "NAME": os.environ.get("SQL_DATABASE","primegrillsauth_db"), #"primegrillsauth_db",primegrillsauth
+        "USER": os.environ.get("SQL_USER","primegrills"), #"primegrills", prime_grills
+        "PASSWORD": os.environ.get("SQL_PASSWORD","primegrills"), #"primegrills", prime
         "HOST": os.environ.get("SQL_HOST", "localhost"),
         "PORT": os.environ.get("SQL_PORT", "5432"),
     }
