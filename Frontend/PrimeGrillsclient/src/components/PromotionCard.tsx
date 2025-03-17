@@ -48,7 +48,7 @@ const PromotionCard: React.FC<PromotionProps> = ({ promotionItems }) => {
 
 
   return (
-    <div className="flex justify-center items-center mb-10 px-6">
+    <div className="flex justify-center items-center mb-10">
       
       <div className="w-full">
         {promotionItems.map((promo, index) => (

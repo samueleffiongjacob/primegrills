@@ -62,9 +62,9 @@ const CategorySection = () => {
   };
 
   return (
-    <div className="flex flex-col my-10 px-4 md:mt-14 md:mb-24">
+    <div className="flex flex-col my-10 md:mt-14 md:mb-24">
       {/* Title and Navigation Buttons */}
-      <div className="flex justify-between items-center mb-4 px-4">
+      <div className="flex justify-between items-center mb-4">
         <h1 className="text-3xl font-bold">Menu</h1>
         <div className="flex gap-2">
           <button
@@ -94,7 +94,7 @@ const CategorySection = () => {
 
       {/* Swiper Slider */}
       <motion.div
-        className="w-full px-4"
+        className="w-full"
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
