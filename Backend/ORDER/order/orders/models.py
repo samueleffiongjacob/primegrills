@@ -11,15 +11,21 @@ class Orders(models.Model):
         ('cancelled', 'cancelled'),
     ]
 
+    ORDER_TYPE = [
+        'Dine In',
+        'Take Away'
+    ]
+
     id = models.AutoField(primary_key=True)
     content_type = models.ForeignKey(
         ContentType,
         on_delete=models.CASCADE,
         limit_choices_to={'model__in': ('customer', 'posstaff')}
     )
-    object_id = models.PositiveIntegerField()
-    user = GenericForeignKey('content_type', 'object_id')
+    user_id = models.PositiveIntegerField()
+    user = GenericForeignKey('content_type', 'user_id')
     order_id = models.CharField(max_length=20, unique=True)
+    order_type = models. CharField(max_length=20, choices=ORDER_TYPE, default='Take Away')
     date = models.DateField()
     time = models.TimeField()
     status = models.CharField(max_length=50, choices=PAY_STATS, default="PENDING")
@@ -39,7 +45,7 @@ class Orders(models.Model):
     
 class OrderItems(models.Model):
     order = models.ForeignKey(Orders, on_delete=models.CASCADE, related_name='items')
-    food_product = models.ForeignKey(FoodProduct, on_delete=models.SET_NULL, null=True)
+    food_product = models.ForeignKey(FoodProduct, on_delete=models.SET_NULL, null=True, related_name='food_product')
     name = models.CharField(max_length=255)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.PositiveIntegerField(default=1)
