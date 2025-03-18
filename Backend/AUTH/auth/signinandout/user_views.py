@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate
+from backend.backends import EmailBackend
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -11,6 +11,8 @@ from rest_framework_simplejwt.exceptions import TokenError
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
+
+authenticate = EmailBackend().authenticate
 
 @api_view(["GET"])
 def get_csrf(request):
@@ -43,7 +45,7 @@ def login_user(request):
     #user = User.objects.get(email=email , user_type='client')
     
     
-    user = authenticate(request, email=email, password=password)
+    user = authenticate(request, username=email, password=password)
     if not user:
         return Response({"error": "Incorrect password"}, status=400)  # Specific error for password
     print(user)

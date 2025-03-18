@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate
+from backend.backends import EmailBackend
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -19,6 +19,7 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 from query.permissions import IsStaffUser, IsManager
 User = get_user_model()
+authenticate = EmailBackend().authenticate
 
 class UserLoginHistoryView(generics.ListAPIView):
     serializer_class = LoginHistorySerializer
@@ -55,7 +56,7 @@ def login_staff(request):
         return Response({"error": "Invalid email"}, status=400)  # Specific error for email
 
     # Check if the password is correct
-    user = authenticate(request, email=email, password=password)
+    user = authenticate(request, username=email, password=password)
     if not user:
         return Response({"error": "Incorrect password"}, status=400)  # Specific error for password
     
@@ -127,7 +128,7 @@ def login_pos(request):
         return Response({"error": "Invalid email"}, status=400)  # Specific error for email
 
     # Check if the password is correct
-    user = authenticate(request, email=email, password=password)
+    user = authenticate(request, username=email, password=password)
     if not user:
         return Response({"error": "Incorrect password"}, status=400)  # Specific error for password
     
@@ -241,7 +242,7 @@ def login_manager(request):
         return Response({"error": "Invalid email"}, status=400)
 
     # Check if the password is correct
-    user = authenticate(request, email=email, password=password)
+    user = authenticate(request, username=email, password=password)
     if not user:
         return Response({"error": "Incorrect password"}, status=400)  # Specific error for password
     
