@@ -16,13 +16,9 @@ Including another URLconf
 """
 from django.http import HttpResponse # comment letter
 from django.contrib import admin
+from django.conf import settings
 from django.urls import path, include
-from signup.user_views import register_user_with_verification,  verify_email, resend_verification_email
-from signup.staff_views import register_staff , RegisterStaffView
-from signinandout.user_views import login_user, logout_user, get_csrf
-from signinandout.staff_views import login_staff, login_pos,  login_manager, logout_staff, UserLoginHistoryView
-from signinandout.token_views import token_refresh
-
+from django.conf.urls.static import static
 
 # Add a simple home page view
 def home_view(request):
@@ -50,3 +46,6 @@ urlpatterns = [
     # User and Staff queries
     path('api/', include('query.urls')),
 ]
+# for profile images in development
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

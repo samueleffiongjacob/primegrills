@@ -29,6 +29,3 @@ urlpatterns = [
     path('manager/staffs/update/<int:user_id>/', staff_views.manager_update_staff, name='manager-update-staff'),
     path('staffs/delete/<int:staff_id>/', staff_views.delete_staff, name='delete-staff'),
 ]
-# for profile image
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

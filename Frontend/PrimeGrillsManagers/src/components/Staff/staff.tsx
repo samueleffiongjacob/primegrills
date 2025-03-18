@@ -7,6 +7,9 @@ import pencil from '../../assets/images/pencil.png';
 import trash from '../../assets/images/trash.png';
 import { getCookie } from "../../utils/cookie";
 import LoginHistoryModal from "../LoginHistory";
+import { showToast } from '../../utils/toast';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // Improved typing for backend data
 interface StaffProfile {
@@ -40,7 +43,7 @@ const StaffService = {
       method: 'GET',
       credentials: "include",
     });
-    if (!response.ok) throw new Error("Failed to fetch staff");
+    if (!response.ok) showToast.error("Failed to fetch staff");
     return response.json();
   },
   
@@ -56,7 +59,7 @@ const StaffService = {
     
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.error || "Failed to create staff");
+      toast.error(errorData.error || "Failed to create staff")
     }
     
     return response.json();
@@ -75,7 +78,7 @@ const StaffService = {
     
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.error || "Failed to update staff");
+      toast.error(errorData.error || "Failed to update staff")
     }
     
     return response.json();
@@ -94,6 +97,7 @@ const StaffService = {
     
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
+      toast.error(errorData.error || "Failed to delete staff")
       throw new Error(errorData.error || "Failed to delete staff");
     }
   }
@@ -184,15 +188,18 @@ const Staff = () => {
         if (selectedUser && selectedUser.id) {
           await StaffService.update(formData, selectedUser.id);
         } else {
+          toast.error("No user selected for editing")
           throw new Error("No user selected for editing");
         }
       }
       await fetchUsers();
       setFormOpen(false);
     } catch (error) {
+      toast.error(`Error ${formMode === 'add' ? 'adding' : 'updating'} user:`)
       console.error(`Error ${formMode === 'add' ? 'adding' : 'updating'} user:`, error);
       throw error;
     } finally {
+      setTimeout(() => toast.dismiss(), 5000)
       setActionLoading(false);
     }
   };
@@ -203,6 +210,7 @@ const Staff = () => {
       await StaffService.delete(id);
       await fetchUsers();
     } catch (error) {
+      toast.error('Error deleting user:')
       console.error('Error deleting user:', error);
       throw error;
     } finally {
@@ -228,6 +236,7 @@ const Staff = () => {
 
   return (
     <div className="flex max-h-[85vh] bg-gray-100 flex-col">
+      <ToastContainer />
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="py-5 bg-white border-b flex items-center justify-between px-6">
           <h1 className="text-xl font-semibold">Staff Management</h1>
@@ -353,7 +362,7 @@ const Staff = () => {
                     <table className="table-auto w-full border-collapse">
                       <thead>
                         <tr className="bg-[#EE7F61] text-white">
-                          <th className="py-3 px-4 text-left">ID</th>
+                          <th className="py-3 px-4 text-left">S/N</th> 
                           <th className="py-3 px-4 text-left">Staff Name</th>
                           <th className="py-3 px-4 text-left">Email</th>
                           <th className="py-3 px-4 text-left">Role</th>
@@ -366,67 +375,67 @@ const Staff = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        <AnimatePresence>
-                          {filteredUsers.slice(0, itemsPerPage).map((user, index) => (
-                            <motion.tr 
-                              key={user.id} 
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: 1 }}
-                              exit={{ opacity: 0 }}
-                              transition={{ duration: 0.2, delay: index * 0.03 }}
-                              className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}
-                            >
-                              <td className="py-3 px-4 text-gray-600">#{user.id}</td>
-                              <td className="py-3 px-4 font-medium">{user.name}</td>
-                              <td className="py-3 px-4 text-gray-700">{user.email}</td>
-                              <td className="py-3 px-4">{user.staff_profile.role}</td>
-                              <td className="py-3 px-4">
-                                <span className={`px-2 py-1 rounded-full text-xs ${
-                                  user.staff_profile.status === 'Active' 
-                                    ? 'bg-green-100 text-green-800' 
-                                    : 'bg-red-100 text-red-800'
-                                }`}>
-                                  {user.staff_profile.status}
-                                </span>
+                      <AnimatePresence>
+                        {filteredUsers.slice(0, itemsPerPage).map((user, index) => (
+                          <motion.tr 
+                            key={user.id} 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.2, delay: index * 0.03 }}
+                            className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}
+                          >
+                            <td className="py-3 px-4 text-gray-600">{index + 1}</td> {/* Updated to show S/N */}
+                            <td className="py-3 px-4 font-medium">{user.name}</td>
+                            <td className="py-3 px-4 text-gray-700">{user.email}</td>
+                            <td className="py-3 px-4">{user.staff_profile.role}</td>
+                            <td className="py-3 px-4">
+                              <span className={`px-2 py-1 rounded-full text-xs ${
+                                user.staff_profile.status === 'Active' 
+                                  ? 'bg-green-100 text-green-800' 
+                                  : 'bg-red-100 text-red-800'
+                              }`}>
+                                {user.staff_profile.status}
+                              </span>
+                            </td>
+                            <td className="py-3 px-4">
+                              <img 
+                                src={user.profileImage || logo} 
+                                alt={`${user.name} profile`} 
+                                className="w-10 h-10 rounded-full object-cover border" 
+                              />
+                            </td>
+                            <td className="py-3 px-4">{user.staff_profile.shift}</td>
+                            <td className="py-3 px-4 text-gray-600">{user.staff_profile.shiftHours}</td>
+                            <td className="py-3 px-4 text-gray-600">
+                              <div className="flex items-center">
+                                <LoginHistoryModal userId={user.id} trigger="click"/>
+                              </div>
+                            </td>
+                            {canManageUsers && (
+                              <td className="py-3 px-4 text-center">
+                                <button
+                                  onClick={() => handleEditUser(user)}
+                                  className="p-2 hover:text-[#bf360c] hover:bg-orange-50 rounded mr-1"
+                                  aria-label={`Edit ${user.name}`}
+                                  title="Edit staff member"
+                                >
+                                  <img src={pencil} alt="Edit" className="h-5 w-5"/>
+                                </button>
+                                <button 
+                                  className="p-2 hover:text-red-600 hover:bg-red-50 rounded"
+                                  onClick={() => handleDeleteUser(user.id)}
+                                  aria-label={`Delete ${user.name}`}
+                                  title="Delete staff member"
+                                >
+                                  <img src={trash} alt="Delete" className="h-5 w-5"/>
+                                </button>
                               </td>
-                              <td className="py-3 px-4">
-                                <img 
-                                  src={user.profileImage || logo} 
-                                  alt={`${user.name} profile`} 
-                                  className="w-10 h-10 rounded-full object-cover border" 
-                                />
-                              </td>
-                              <td className="py-3 px-4">{user.staff_profile.shift}</td>
-                              <td className="py-3 px-4 text-gray-600">{user.staff_profile.shiftHours}</td>
-                              <td className="py-3 px-4 text-gray-600">
-                                <div className="flex items-center">
-                                  <LoginHistoryModal userId={user.id} trigger="click"/>
-                                </div>
-                              </td>
-                              {canManageUsers && (
-                                <td className="py-3 px-4 text-center">
-                                  <button
-                                    onClick={() => handleEditUser(user)}
-                                    className="p-2 hover:text-[#bf360c] hover:bg-orange-50 rounded mr-1"
-                                    aria-label={`Edit ${user.name}`}
-                                    title="Edit staff member"
-                                  >
-                                    <img src={pencil} alt="Edit" className="h-5 w-5"/>
-                                  </button>
-                                  <button 
-                                    className="p-2 hover:text-red-600 hover:bg-red-50 rounded"
-                                    onClick={() => handleDeleteUser(user.id)}
-                                    aria-label={`Delete ${user.name}`}
-                                    title="Delete staff member"
-                                  >
-                                    <img src={trash} alt="Delete" className="h-5 w-5"/>
-                                  </button>
-                                </td>
-                              )}
-                            </motion.tr>
-                          ))}
-                        </AnimatePresence>
-                      </tbody>
+                            )}
+                          </motion.tr>
+                        ))}
+                      </AnimatePresence>
+                    </tbody>
                     </table>
                   </div>
                 )}

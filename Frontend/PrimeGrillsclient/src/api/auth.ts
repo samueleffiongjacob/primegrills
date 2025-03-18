@@ -9,14 +9,14 @@ export const signUpUser = async ({
   fullName,
   email,
   phoneNumber,
-  address,
+  //address,
   password,
 }: {
   username: string;
   fullName: string;
   email: string;
   phoneNumber: string;
-  address: string;
+  //address: string;
   password: string;
 }): Promise<AuthResponse> => {
   const timeout = 180000; // Timeout in 8 seconds)
@@ -44,7 +44,7 @@ export const signUpUser = async ({
         name: fullName,
         email: email,
         phone: phoneNumber,
-        address: address,
+       // address: address,
         password: password,
       }),
     }, timeout);

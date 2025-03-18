@@ -51,7 +51,7 @@ const Navigations: FC = () => {
                 <Route 
                   path="/dashboard" 
                   element={
-                    <ProtectedRoute roles={["admin", "accountant"]}>
+                    <ProtectedRoute roles={["admin", "accountant", 'manager']}>
                       <Dashboard />
                     </ProtectedRoute>
                   } 
@@ -60,14 +60,14 @@ const Navigations: FC = () => {
                 <Route 
                   path="/menu" 
                   element={
-                    <ProtectedRoute roles={["admin", "accountant", "waiter", "kitchen", "cleaner"]}>
+                    <ProtectedRoute roles={allRoles}>
                       <MenuDashboard />
                     </ProtectedRoute>
                   } 
                 />
                 
                 <Route 
-                  path="/user" 
+                  path="/staff" 
                   element={
                     <ProtectedRoute roles={allRoles} >
                       <User />
@@ -78,7 +78,7 @@ const Navigations: FC = () => {
                 <Route 
                   path="/category" 
                   element={
-                    <ProtectedRoute roles={["admin", "accountant"]}>
+                    <ProtectedRoute roles={allRoles}>
                       <Category />
                     </ProtectedRoute>
                   } 
@@ -114,7 +114,7 @@ const Navigations: FC = () => {
                 <Route 
                   path="/paypoints" 
                   element={
-                    <ProtectedRoute roles={["admin", "accountant"]}>
+                    <ProtectedRoute roles={["admin", "accountant", 'manager']}>
                       <PayPoint />
                     </ProtectedRoute>
                   } 
@@ -123,7 +123,7 @@ const Navigations: FC = () => {
                 <Route 
                   path="/pos" 
                   element={
-                    <ProtectedRoute roles={["admin", "accountant"] }>
+                    <ProtectedRoute roles={["admin", "accountant", 'manager'] }>
                       <TransactionsTable />
                     </ProtectedRoute>
                   } 
@@ -132,7 +132,7 @@ const Navigations: FC = () => {
                 <Route 
                   path="/settings" 
                   element={
-                    <ProtectedRoute roles={["admin"]}>
+                    <ProtectedRoute roles={allRoles}>
                       <Settings />
                     </ProtectedRoute>
                   } 
@@ -141,7 +141,7 @@ const Navigations: FC = () => {
                 <Route 
                   path="/orders" 
                   element={
-                    <ProtectedRoute roles={["admin", "accountant", "kitchen"]}>
+                    <ProtectedRoute roles={["admin", "accountant", "kitchen", 'manager']}>
                       <OrdersDashboard />
                     </ProtectedRoute>
                   } 

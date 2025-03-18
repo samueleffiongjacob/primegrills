@@ -26,8 +26,12 @@ const VerifyEmail = () => {
         if (response.ok) {
           setStatus("success");
           setShowToast(true); // Show toast notification
-          setShowLoginModal(true); // Open login modal on success
-          
+
+          // Delay the login modal for 3 seconds
+          setTimeout(() => {
+            setShowLoginModal(true); // Open login modal after delay
+          }, 3000);
+
           // Auto-hide toast after 5 seconds
           setTimeout(() => {
             setShowToast(false);
@@ -56,7 +60,7 @@ const VerifyEmail = () => {
       {/* Toast Notification */}
       {showToast && (
         <div 
-          className="fixed top-4 right-0 bg-green-500 text-white px-6 py-3 rounded-l-md shadow-md flex items-center z-50 animate-slide-in-out"
+          className="fixed top-4 right-0 bg-blue-800 text-white font-bold px-6 py-3 rounded-l-md shadow-md flex items-center z-50 animate-slide-in-out"
           style={{
             animation: 'slideInOut 5s forwards',
           }}
@@ -64,7 +68,7 @@ const VerifyEmail = () => {
           <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
           </svg>
-          <span>Email verified successfully! You can now log in.</span>
+          <span >Email verified successfully! You can now log in.</span>
         </div>
       )}
 
@@ -78,6 +82,13 @@ const VerifyEmail = () => {
         </div>
       )}
 
+        {status === "success" && (
+        <div className="p-6 bg-white shadow-md rounded-lg">
+          {status === "success" && <p className="text-green-700">Email verified!</p>}
+
+        </div>
+      )}
+
       {/* Login Modal */}
       <LoginModal 
         isOpen={showLoginModal} 
@@ -88,16 +99,6 @@ const VerifyEmail = () => {
         }}
         onToggleSignUp={() => setShowLoginModal(false)}
       />
-
-      {/* Add global CSS for the slide-in and slide-out animation */}
-      {/* <style jsx global>{`
-        @keyframes slideInOut {
-          0% { transform: translateX(100%); }
-          10% { transform: translateX(0); }
-          90% { transform: translateX(0); }
-          100% { transform: translateX(100%); }
-        }
-      `}</style> */}
     </div>
   );
 };

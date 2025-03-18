@@ -7,7 +7,7 @@ interface ThankYouPageProps {
 
 const ThankYouPage: React.FC<ThankYouPageProps> = ({ customerName = 'valued customer', onGoHome }) => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-amber-50 to-orange-50 p-6">
+    <div className="flex flex-col items-center justify-center min-h-screen p-6">
       <div className="max-w-md text-center bg-white p-8 rounded-lg shadow-lg">
         <div className="mb-6">
           {/* <img 
@@ -30,7 +30,7 @@ const ThankYouPage: React.FC<ThankYouPageProps> = ({ customerName = 'valued cust
         
         <button 
           onClick={onGoHome}
-          className="flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-700 text-white font-semibold py-3 px-6 rounded-full w-full transition duration-300 ease-in-out"
+          className="flex items-center justify-center gap-2 hover:bg-[#EE7F61] bg-amber-700 text-white font-semibold py-3 px-6 rounded-full w-full transition duration-300 ease-in-out"
         >
           <Home size={18} />
           Return to Home

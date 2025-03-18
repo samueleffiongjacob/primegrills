@@ -11,7 +11,7 @@ import 'swiper/css/pagination';
 // INTERNAL IMPORTS
 import Product from "./product";
 import { MENU_ITEMS } from './productDetails';
-import { headerVariants, slideVariants } from '../../utils/utils';
+import { headerVariants, slideVariants } from '../../utils/animate';
 import MealDetailsModal from '../MealDetailsModal';
 
 const ProductMenu: React.FC = () => {

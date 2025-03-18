@@ -218,7 +218,7 @@ const Staff = () => {
                     <table className="table-auto w-full border-collapse">
                       <thead>
                         <tr className="bg-[#EE7F61] text-white">
-                          <th className="py-3 px-4 text-left">ID</th>
+                          <th className="py-3 px-4 text-left">S/N</th> 
                           <th className="py-3 px-4 text-left">Staff Name</th>
                           <th className="py-3 px-4 text-left">Email</th>
                           <th className="py-3 px-4 text-left">Role</th>
@@ -239,7 +239,7 @@ const Staff = () => {
                               transition={{ duration: 0.2, delay: index * 0.03 }}
                               className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}
                             >
-                              <td className="py-3 px-4 text-gray-600">#{user.id}</td>
+                              <td className="py-3 px-4 text-gray-600">{index + 1}</td>
                               <td className="py-3 px-4 font-medium">{user.name}</td>
                               <td className="py-3 px-4 text-gray-700">{user.email}</td>
                               <td className="py-3 px-4">{user.staff_profile.role}</td>

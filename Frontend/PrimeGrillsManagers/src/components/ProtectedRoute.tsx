@@ -1,5 +1,6 @@
 import React, { JSX, useState } from "react";
 import { useAuth } from "../context/authContext";
+import { ToastContainer } from 'react-toastify';
 import LoginModal from "./Login";
 // import { Navigate } from "react-router-dom";
 
@@ -28,6 +29,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
             to access this page.
           </p>
         </div>
+        <ToastContainer />
         <LoginModal
           isOpen={isLoginModalOpen}
           onClose={() => setIsLoginModalOpen(false)}

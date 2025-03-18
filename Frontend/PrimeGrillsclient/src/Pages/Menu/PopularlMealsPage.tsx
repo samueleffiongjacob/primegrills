@@ -73,9 +73,9 @@ const PopularMealsPage: React.FC = () => {
   return (
     <div className="min-h-screen p-6  lg:px-12">
       <PromotionSection />
-      <h1 className="text-3xl font-bold text-black md:ml-8 my-6 mx-5">Popular Dishes</h1>
+      <h1 className="text-3xl font-bold text-black my-6">Popular Dishes</h1>
       
-      <div className="md:px-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-8">
+      <div className=" grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-8">
         {menuItems.map((item, index) => (
           <motion.div 
             key={index} 

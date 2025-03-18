@@ -77,6 +77,10 @@ def login_staff(request):
     refresh = RefreshToken.for_user(user)
     access_token = str(refresh.access_token)
 
+    # Set token expiration times
+    access_token_expiry = timezone.now() + timedelta(hours=6)  # Access token expires in 6 hours
+    refresh_token_expiry = timezone.now() + timedelta(hours=6)  # Refresh token expires in 6 hours
+
     # Update last_login using Django's signal handler
     update_last_login(None, user)
     
@@ -100,7 +104,7 @@ def login_staff(request):
     })
 
     # Set HTTP-only cookies
-    response.set_cookie("access_token", access_token, httponly=True, samesite="Lax", secure=True, max_age=60 * 60 * 60)
+    response.set_cookie("access_token", access_token, httponly=True, samesite="Lax", secure=True, max_age=6 * 60 * 60 )
     response.set_cookie("refresh_token", str(refresh), httponly=True, samesite="Lax", secure=True, max_age=6 * 60 * 60)
     response.set_cookie("csrftoken", get_token(request), samesite="Lax", secure=True)
 
@@ -146,7 +150,11 @@ def login_pos(request):
     # Generate JWT tokens
     refresh = RefreshToken.for_user(user)
     access_token = str(refresh.access_token)
-
+    
+    # Set token expiration times
+    access_token_expiry = timezone.now() + timedelta(hours=6)  # Access token expires in 6 hours
+    refresh_token_expiry = timezone.now() + timedelta(hours=6)  # Refresh token expires in 6 hours
+ 
     # Update last_login using Django's signal handler
     update_last_login(None, user)
 
@@ -169,8 +177,8 @@ def login_pos(request):
         }
     })
 
-    # Set HTTP-only cookies
-    response.set_cookie("access_token", access_token, httponly=True, samesite="Lax", secure=True, max_age=60 * 60 * 60)
+    # Set HTTP-only cookies with 6-hour expiration
+    response.set_cookie("access_token", access_token, httponly=True, samesite="Lax", secure=True, max_age=6 * 60 * 60)
     response.set_cookie("refresh_token", str(refresh), httponly=True, samesite="Lax", secure=True, max_age=6 * 60 * 60)
     response.set_cookie("csrftoken", get_token(request), samesite="Lax", secure=True)
 
@@ -252,6 +260,11 @@ def login_manager(request):
     refresh = RefreshToken.for_user(user)
     access_token = str(refresh.access_token)
 
+    # Set token expiration times
+    access_token_expiry = timezone.now() + timedelta(hours=6)  # Access token expires in 6 hours
+    refresh_token_expiry = timezone.now() + timedelta(hours=6)  # Refresh token expires in 6 hours
+
+
     LoginHistory.objects.create(
         user=user,
         action='login'
@@ -272,8 +285,8 @@ def login_manager(request):
         }
     })
 
-    # Set HTTP-only cookies
-    response.set_cookie("access_token", access_token, httponly=True, samesite="Lax", secure=True, max_age=15 * 60)
+    # Set HTTP-only cookies with 6-hour expiration
+    response.set_cookie("access_token", access_token, httponly=True, samesite="Lax", secure=True, max_age=6 * 60 * 60)
     response.set_cookie("refresh_token", str(refresh), httponly=True, samesite="Lax", secure=True, max_age=6 * 60 * 60)
     response.set_cookie("csrftoken", get_token(request), samesite="Lax", secure=True)
 

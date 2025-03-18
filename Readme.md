@@ -17,4 +17,5 @@ $ cd Frontend || cd Backend
 
 # start container at root
 $ docker-compose up -d
+$ docker-compose up -d --build   # buid new container
 ```

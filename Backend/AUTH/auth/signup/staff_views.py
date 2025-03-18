@@ -75,6 +75,13 @@ class RegisterStaffView(generics.CreateAPIView):
     permission_classes = [IsAdminUser]  # Only admin users can create staff accounts
 
     def create(self, request, *args, **kwargs):
+        data = request.data
+        if User.objects.filter(email=data["email"]).exists():
+            return Response({"error": "Email already exists"}, status=400)
+    
+        if User.objects.filter(username=data["username"]).exists():
+            return Response({"error": "Username already exists"}, status=400)
+    
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()

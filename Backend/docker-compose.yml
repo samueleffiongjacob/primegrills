@@ -11,8 +11,16 @@ services:
       - ./AUTH/auth:/AUTH/auth
     env_file:
       - ./AUTH/.env
+    environment:
+      SQL_HOST: primegrillsdb
+      SQL_PORT: 5432
+      SQL_USER: primegrills
+      SQL_PASSWORD: primegrills
+      SQL_DATABASE: primegrillsauth_db
     depends_on:
       primegrillsdb:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
     #environment:
       #- DJANGO_SETTINGS_MODULE=your_project.settings.production
@@ -75,6 +83,8 @@ services:
   primegrillsdb:
     image: postgres:17
     container_name: primegrillsdb
+    networks:
+     - primegrills_network
     restart: always
     environment:
       POSTGRES_USER: primegrills
@@ -90,6 +100,7 @@ services:
       interval: 5s
       retries: 5
       start_period: 10s
+    
   
   rabbitmq:
     image: rabbitmq:3-management
@@ -126,6 +137,9 @@ services:
   #    # - account_service
   #     - event_service
   #     - rabbitmq
+
+
+ 
 
 networks:
   primegrills_network:

@@ -32,7 +32,7 @@ class FoodProduct(models.Model):
     def __str__(self):
         return self.name
 
-class CustomerOrder(models.Model):
+class Order(models.Model):
     STATUS_CHOICES = [
         ('PENDING', 'Pending'),
         ('PREPARING', 'Preparing'),
@@ -48,7 +48,7 @@ class CustomerOrder(models.Model):
     ]
     
     order_id = models.CharField(max_length=20, unique=True)
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='customer_order')
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='order')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
     payment = models.CharField(max_length=20, choices=PAY_STATS, default='PENDING')
     special_instructions = models.TextField(blank=True)
@@ -62,8 +62,8 @@ class CustomerOrder(models.Model):
     class Meta:
         ordering = ['created_at']
 
-class CustomerOrderItem(models.Model):
-    order = models.ForeignKey(CustomerOrder, on_delete=models.CASCADE, related_name='items')
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
     food_product = models.ForeignKey(FoodProduct, on_delete=models.SET_NULL, null=True)
     quantity = models.PositiveIntegerField()
     price_at_time = models.DecimalField(max_digits=10, decimal_places=2)
@@ -77,3 +77,17 @@ class CustomerOrderItem(models.Model):
         return f"{self.quantity}x {self.food_product.name}"
 
 
+class CartItem(models.Model):
+    """Cart model for customers."""
+    user = models.ForeignKey(Customer, related_name="cart_items", on_delete=models.CASCADE)
+    product_id = models.IntegerField()
+    name = models.CharField(max_length=255)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.PositiveIntegerField(default=1)
+    image = models.URLField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.name} (x{self.quantity})"
+        
+    class Meta:
+        db_table = "cart_items"

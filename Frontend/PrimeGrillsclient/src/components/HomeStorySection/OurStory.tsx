@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 // INTERNAL IMPORTS
 import Button from "../Navbar/button";
 import Card from "./Card";
-import { headerVariants } from "../../utils/utils";
+import { headerVariants } from "../../utils/animate";
 import { Link } from 'react-router-dom';
 
 const Story =() => {

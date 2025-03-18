@@ -98,13 +98,14 @@ def upload_profile_image(request):
         return Response({"error": "File size exceeds 5MB"}, status=status.HTTP_400_BAD_REQUEST)
 
     # Save the file to the storage
-    file_path = default_storage.save(f"profile_images/{user.id}_{profile_image.name}", profile_image)
+    file_path = default_storage.save(f"media/profile_images/{user.id}_{profile_image.name}", profile_image)
 
-    # Construct the full URL for the uploaded image
-    image_url = f"{settings.MEDIA_URL}{file_path}"
+    # Construct the full URL for the uploaded image to be returned in response 
+    image_url = request.build_absolute_uri(settings.MEDIA_URL + file_path)
 
-    # Update the user's profileImage field with the URL
-    user.profileImage = image_url
+    image_path = settings.MEDIA_URL + file_path
+    # Update the user's profileImage field with the path
+    user.profileImage = image_path
     user.save()
 
     # Return the image URL in the response

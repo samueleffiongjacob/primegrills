@@ -50,3 +50,4 @@ class IsStaffUser(BasePermission):
               f"has_profile={has_profile}, has_role={has_role}")
               
         return is_authenticated and is_staff and has_role
+

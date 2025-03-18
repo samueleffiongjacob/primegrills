@@ -2,6 +2,8 @@ import React, { useState, useCallback, useMemo } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { FaHome, FaUser, FaBarcode, FaUtensils, FaTimes, FaAngleRight } from "react-icons/fa";
 import ProfileSidePanel from "./User/ProfileSidePanel";
+import { groupByCategory } from "../utils/groupMenuCategory";
+import { menuItems } from "./sample";
 
 interface SubLink {
   path: string;
@@ -13,14 +15,6 @@ interface BottomNavItem {
   label: string;
   icon: React.ReactNode;
   sublinks?: SubLink[];
-}
-
-interface ProfileData {
-  username: string;
-  name: string;
-  email: string;
-  phone: string;
-  memberSince: string;
 }
 
 // interface ProfileSidePanelProps {
@@ -36,9 +30,9 @@ const BottomNavigation: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
 
+  const groupedMenuItems = groupByCategory(menuItems); 
   const bottomNav: BottomNavItem[] = useMemo(() => [
     { 
       path: "/", 
@@ -52,12 +46,12 @@ const BottomNavigation: React.FC = () => {
       sublinks: [
         { path: "/menu-category", label: "Menu" },
         { path: "/menu/all", label: "All Meals" },
-        { path: "/menu/drinks", label: "Drinks" },
-        { path: "/menu/food", label: "Food" },
         { path: "/menu/special", label: "Specials" },
-        { path: "/menu/grills", label: "Grills" },
         { path: "/menu/popular", label: "Popular" },
-        { path: "/menu/pastries", label: "Pastries" },
+        ...Object.keys(groupedMenuItems).map((category) => ({
+          label: category,
+          path: `/menu/${category.toLowerCase().replace(/\s+/g, "-")}`,
+        })),
       ]
     },
     { 
@@ -84,23 +78,10 @@ const BottomNavigation: React.FC = () => {
     }
   }, [activeSubmenu, navigate]);
 
-  const handleLogout = useCallback(() => {
-    setIsLoggedIn(false);
-    setIsSidePanelOpen(false);
-  }, []);
 
   const handleLogin = useCallback(() => {
-    setIsLoggedIn(true);
     setIsSidePanelOpen(false);
   }, []);
-
-  const profileData: ProfileData = useMemo(() => ({
-    username: isLoggedIn ? "john_doe" : "",
-    name: isLoggedIn ? "John Doe" : "",
-    email: isLoggedIn ? "john.doe@example.com" : "",
-    phone: isLoggedIn ? "+1234567890" : "",
-    memberSince: isLoggedIn ? "2023-01-01" : "",
-  }), [isLoggedIn]);
 
   return (
     <>
@@ -189,10 +170,7 @@ const BottomNavigation: React.FC = () => {
       <ProfileSidePanel
         isOpen={isSidePanelOpen}
         onClose={() => setIsSidePanelOpen(false)}
-        profile={profileData}
-        onLogout={handleLogout}
         onLogin={handleLogin}
-        isLoggedIn={isLoggedIn}
       />
     </>
   );

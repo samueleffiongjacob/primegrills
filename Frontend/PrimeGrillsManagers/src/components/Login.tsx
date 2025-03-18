@@ -4,6 +4,7 @@ import { MdEmail } from 'react-icons/md';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAuth } from '../context/authContext';
+import GreetingModal from './GreetingModal';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -15,7 +16,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [unauthorizedModal, setUnauthorizedModal] = useState(false);
-  const { login, loading } = useAuth();
+  const { login, loading, user } = useAuth();
+  const [showGreeting, setShowGreeting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,10 +26,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
       toast.error("All fields are required");
       return;
     }
-    if (!/\S+@\S+\.\S+/.test(email)) {
-      toast.error("Invalid email format");
-      return;
-    }
+   
     if (password.length < 6) {
       toast.error("Password must be at least 6 characters");
       return;
@@ -35,8 +34,9 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
     try {
       await login(email, password);
-      toast.success('Login Success');
-      onClose();
+      toast.success(`Welcome, ${user?.name}`)
+      setShowGreeting(true);
+      //onClose();
     } catch (error: any) {
       console.error("Login failed:", error);
       
@@ -71,10 +71,10 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
               <div className="relative">
                 <MdEmail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 <input
-                  type="email"
+                  type="text"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Email or Username"
+                  placeholder="Email"
                   className="w-full pl-12 text-white pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-400"
                 />
               </div>
@@ -135,6 +135,17 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
           </div>
         </div>
       )}
+      {showGreeting && (
+        <GreetingModal 
+          isOpen={showGreeting} 
+          onClose={() => {
+            setShowGreeting(false);
+            onClose(); // Close the login modal after greeting
+          }} 
+          userName={user?.name || "Manager"}
+        />
+      )}
+
     </>
   );
 };

@@ -49,7 +49,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [tokenExpiration, setTokenExpiration] = useState<Date | null>(null);
   const SIX_HOURS = 6 * 60 * 60 * 1000; // 6 hours for auto-logout
 
@@ -119,9 +119,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       if (response.ok) {
-        // Update token expiration time (13 minutes from now)
+        // Update token expiration time (15 minutes from now)
         console.log('token refreshed')
-        setTokenExpiration(new Date(new Date().getTime() + 13 * 60 * 1000));
+        setTokenExpiration(new Date(new Date().getTime() + 15 * 60 * 1000));
         return true;
       }
       console.log('token not refreshed')
@@ -133,10 +133,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   // Initialize auth state on mount
-  useEffect(() => {
+ /*  useEffect(() => {
     fetchUserData();
   }, []);
-
+ */
   // Set up automatic token refreshing
   useEffect(() => {
     if (!isAuthenticated || !tokenExpiration) return;
@@ -252,12 +252,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   // Helper function to get CSRF token from cookies
-  const getCsrfToken = (): string => {
-    return document.cookie
-      .split("; ")
-      .find(row => row.startsWith("csrftoken="))
-      ?.split("=")[1] || "";
-  };
+  // const getCsrfToken = (): string => {
+  //   return document.cookie
+  //     .split("; ")
+  //     .find(row => row.startsWith("csrftoken="))
+  //     ?.split("=")[1] || "";
+  // };
 
   return (
     <AuthContext.Provider value={{ 
