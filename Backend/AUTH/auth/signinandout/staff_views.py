@@ -6,20 +6,22 @@ from signup.event_publisher import get_publisher
 from django.middleware.csrf import get_token
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.exceptions import TokenError
 from django.contrib.auth import get_user_model
 from signup.models import StaffProfile
 from django.contrib.auth.models import update_last_login
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import LoginHistory
 from .serializers import LoginHistorySerializer
 from datetime import datetime, timedelta
 from django.utils import timezone
 from query.permissions import IsStaffUser, IsManager
+from django.contrib.auth import authenticate
 User = get_user_model()
-authenticate = EmailBackend().authenticate
+#authenticate = EmailBackend().authenticate
 
 class UserLoginHistoryView(generics.ListAPIView):
     serializer_class = LoginHistorySerializer
@@ -56,15 +58,13 @@ def login_staff(request):
         return Response({"error": "Invalid email"}, status=400)  # Specific error for email
 
     # Check if the password is correct
-    user = authenticate(request, username=email, password=password)
+    user = authenticate(request, email=email, password=password)
     if not user:
         return Response({"error": "Incorrect password"}, status=400)  # Specific error for password
     
     if not hasattr(user, 'staff_profile'):
         return Response({"error": "Invalid email"}, status=400) 
 
-    # Update last_login using Django's signal handler
-    update_last_login(None, user)
 
     # Update the staff profile status to "Active"
     try:
@@ -77,10 +77,6 @@ def login_staff(request):
     # Generate JWT tokens
     refresh = RefreshToken.for_user(user)
     access_token = str(refresh.access_token)
-
-    # Set token expiration times
-    access_token_expiry = timezone.now() + timedelta(hours=6)  # Access token expires in 6 hours
-    refresh_token_expiry = timezone.now() + timedelta(hours=6)  # Refresh token expires in 6 hours
 
     # Update last_login using Django's signal handler
     update_last_login(None, user)
@@ -128,7 +124,7 @@ def login_pos(request):
         return Response({"error": "Invalid email"}, status=400)  # Specific error for email
 
     # Check if the password is correct
-    user = authenticate(request, username=email, password=password)
+    user = authenticate(request, email=email, password=password)
     if not user:
         return Response({"error": "Incorrect password"}, status=400)  # Specific error for password
     
@@ -242,7 +238,7 @@ def login_manager(request):
         return Response({"error": "Invalid email"}, status=400)
 
     # Check if the password is correct
-    user = authenticate(request, username=email, password=password)
+    user = authenticate(request, email=email, password=password)
     if not user:
         return Response({"error": "Incorrect password"}, status=400)  # Specific error for password
     
@@ -260,11 +256,6 @@ def login_manager(request):
     # Generate JWT tokens
     refresh = RefreshToken.for_user(user)
     access_token = str(refresh.access_token)
-
-    # Set token expiration times
-    access_token_expiry = timezone.now() + timedelta(hours=6)  # Access token expires in 6 hours
-    refresh_token_expiry = timezone.now() + timedelta(hours=6)  # Refresh token expires in 6 hours
-
 
     LoginHistory.objects.create(
         user=user,

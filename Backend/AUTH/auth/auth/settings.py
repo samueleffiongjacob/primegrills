@@ -195,7 +195,6 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'signinandout.middleware.cookie_auth.CookieJWTAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
     ),
 }
 

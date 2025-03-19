@@ -85,9 +85,9 @@ AUTH_EVENT_MODEL = "event_processor.AuthEvent" # relationship in event_processor
 DATABASES = {
     'default': {
         "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.postgresql"),
-        "NAME": os.environ.get("SQL_DATABASE", "primegrillsevents"),
-        "USER": os.environ.get("SQL_USER", "prime_grills"),
-        "PASSWORD": os.environ.get("SQL_PASSWORD", "prime"),
+        "NAME": os.environ.get("SQL_DATABASE", "primegrillsevents_db"),
+        "USER": os.environ.get("SQL_USER", "primegrills"),
+        "PASSWORD": os.environ.get("SQL_PASSWORD", "primegrills"),
         "HOST": os.environ.get("SQL_HOST", "localhost"),
         "PORT": os.environ.get("SQL_PORT", "5432"),
     }
