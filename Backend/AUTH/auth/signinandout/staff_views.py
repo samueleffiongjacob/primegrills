@@ -101,8 +101,8 @@ def login_staff(request):
     })
 
     # Set HTTP-only cookies
-    response.set_cookie("access_token", access_token, httponly=True, samesite="Lax", secure=True, max_age=6 * 60 * 60 )
-    response.set_cookie("refresh_token", str(refresh), httponly=True, samesite="Lax", secure=True, max_age=6 * 60 * 60)
+    response.set_cookie("access_token", access_token, httponly=True, samesite="Lax", secure=True)
+    response.set_cookie("refresh_token", str(refresh), httponly=True, samesite="Lax", secure=True)
     response.set_cookie("csrftoken", get_token(request), samesite="Lax", secure=True)
 
     return response
@@ -148,10 +148,6 @@ def login_pos(request):
     refresh = RefreshToken.for_user(user)
     access_token = str(refresh.access_token)
     
-    # Set token expiration times
-    access_token_expiry = timezone.now() + timedelta(hours=6)  # Access token expires in 6 hours
-    refresh_token_expiry = timezone.now() + timedelta(hours=6)  # Refresh token expires in 6 hours
- 
     # Update last_login using Django's signal handler
     update_last_login(None, user)
 
@@ -175,8 +171,8 @@ def login_pos(request):
     })
 
     # Set HTTP-only cookies with 6-hour expiration
-    response.set_cookie("access_token", access_token, httponly=True, samesite="Lax", secure=True, max_age=6 * 60 * 60)
-    response.set_cookie("refresh_token", str(refresh), httponly=True, samesite="Lax", secure=True, max_age=6 * 60 * 60)
+    response.set_cookie("access_token", access_token, httponly=True, samesite="Lax", secure=True)
+    response.set_cookie("refresh_token", str(refresh), httponly=True, samesite="Lax", secure=True)
     response.set_cookie("csrftoken", get_token(request), samesite="Lax", secure=True)
 
     return response
@@ -221,8 +217,11 @@ def logout_staff(request):
     except Exception as e:
         return Response({"error": f"Logout failed: {str(e)}"}, status=500)
     
+from django.views.decorators.csrf import csrf_exempt   
 # login_manager function - stores both tokens in HTTP-only cookies
+@csrf_exempt
 @api_view(["POST"])
+@permission_classes([AllowAny])
 def login_manager(request):
     print('Logging staff in ...')
     data = request.data
@@ -278,8 +277,8 @@ def login_manager(request):
     })
 
     # Set HTTP-only cookies with 6-hour expiration
-    response.set_cookie("access_token", access_token, httponly=True, samesite="Lax", secure=True, max_age=6 * 60 * 60)
-    response.set_cookie("refresh_token", str(refresh), httponly=True, samesite="Lax", secure=True, max_age=6 * 60 * 60)
-    response.set_cookie("csrftoken", get_token(request), samesite="Lax", secure=True)
+    response.set_cookie("access_token", access_token, httponly=True, samesite="Lax", secure=False)
+    response.set_cookie("refresh_token", str(refresh), httponly=True, samesite="Lax", secure=False)
+    response.set_cookie("csrftoken", get_token(request), samesite="Lax", secure=False)
 
     return response

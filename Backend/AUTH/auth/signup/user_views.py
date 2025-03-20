@@ -41,7 +41,7 @@ def register_user_with_verification(request):
             
             # Emit user registered event
             publisher = get_publisher()
-            publisher.publish_event('user.registered', {
+            publisher.publish_event('UserSignedUp', {
                 'user_id': user.id,
                 'username': user.username,
                 'email': user.email,
