@@ -110,6 +110,7 @@ class POSLoginView(BaseLoginView):
             raise Response({"error": "Unauthorized role"}, status=400)
 
 class ManagerLoginView(BaseLoginView):
+    permission_classes = [AllowAny]
     event_name = "manager"
 
     def post(self, request):

@@ -11,7 +11,23 @@ def token_refresh(request):
         return Response({"error": "No refresh token provided"}, status=400)
     
     try:
+        # Parse the refresh token
         refresh = RefreshToken(refresh_token)
+        
+        # Get user information from the token
+        user_id = refresh.payload.get('user_id')
+        
+        # Fetch user to get email (you'll need to import your User model)
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        
+        try:
+            user = User.objects.get(id=user_id)
+            # Add email to the access token
+            refresh.access_token['email'] = user.email
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=400)
+        
         access_token = str(refresh.access_token)
         
         response = Response({"message": "Token refreshed successfully"})

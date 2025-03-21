@@ -48,10 +48,12 @@ const StaffService = {
   },
   
   async create(data: StaffFormData): Promise<StaffUser> {
+    const csrfToken = getCookie("csrftoken");
     const response = await fetch(`${this.baseUrl}/register_staff/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        "X-CSRFToken": csrfToken || "",
       },
       credentials: "include",
       body: JSON.stringify(data)
@@ -195,7 +197,7 @@ const Staff = () => {
       await fetchUsers();
       setFormOpen(false);
     } catch (error) {
-      toast.error(`Error ${formMode === 'add' ? 'adding' : 'updating'} user:`)
+      //toast.error(`Error ${formMode === 'add' ? 'adding' : 'updating'} user:`)
       console.error(`Error ${formMode === 'add' ? 'adding' : 'updating'} user:`, error);
       throw error;
     } finally {

@@ -78,7 +78,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
         
         // Set token expiration (assuming we've just refreshed the token)
-        setTokenExpiration(new Date(new Date().getTime() + 6 * 60 * 60 * 1000));
+        setTokenExpiration(new Date(new Date().getTime() + 55 * 60 * 1000));
       } else {
         // If unauthorized or any other error, try refreshing the token
         const refreshed = await refreshToken();
@@ -120,9 +120,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       if (response.ok) {
-        // Update token expiration time (6 hours from now)
+        // Update token expiration time ( 55 mins from now)
         console.log('token refreshed')
-        setTokenExpiration(new Date(new Date().getTime() + 6 * 60 * 60 * 1000));
+        setTokenExpiration(new Date(new Date().getTime() + 55 * 60 * 1000));
         return true;
       }
       console.log('token not refreshed')
@@ -189,10 +189,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = async (email: string, password: string): Promise<void> => {
     try {
       setLoading(true);
+      //const csrfToken = getCsrfToken()
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/login_manager/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          //"X-CSRFToken": csrfToken || ''
         },
         body: JSON.stringify({ email, password }),
         credentials: "include", // Important for including cookies
@@ -205,11 +207,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       // Set token expiration time (15 minutes from now)
-      setTokenExpiration(new Date(new Date().getTime() + 15 * 60 * 1000));
+      setTokenExpiration(new Date(new Date().getTime() + 55 * 60 * 1000));
 
       // Fetch user data after successful login
       await fetchUserData();
-      return true
     } catch (error) {
       console.error("Login failed:", error);
       throw error;
@@ -254,12 +255,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   // Helper function to get CSRF token from cookies
-  // const getCsrfToken = (): string => {
-  //   return document.cookie
-  //     .split("; ")
-  //     .find(row => row.startsWith("csrftoken="))
-  //     ?.split("=")[1] || "";
-  // };
+   const getCsrfToken = (): string => {
+     return document.cookie
+       .split("; ")
+       .find(row => row.startsWith("csrftoken="))
+       ?.split("=")[1] || "";
+   };
 
   return (
     <AuthContext.Provider value={{ 
