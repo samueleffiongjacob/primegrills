@@ -73,6 +73,7 @@ from .serializers import MessageSerializer, ThreadSerializer
 
 User = get_user_model()
 
+
 class SendMessageToUserView(APIView):
     """
     Send a message to a single user

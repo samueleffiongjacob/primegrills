@@ -18,25 +18,24 @@ def token_refresh(request):
         
         # Set the new access token as a cookie
         response.set_cookie(
-            "access_token", 
+            "accessToken", 
             access_token,
-            httponly=True, 
-            samesite="Lax", 
-            secure=True,
-            max_age=6 * 60 *60  # 6 hours
+            httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+            samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
+            secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'] if not settings.DEBUG else False,
+            max_age=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds()
         )
         
-        # Optionally, if you have ROTATE_REFRESH_TOKENS set to True, set the new refresh token
         if 'rest_framework_simplejwt.token_blacklist' in settings.INSTALLED_APPS:
             response.set_cookie(
                 "refresh_token", 
                 str(refresh),
-                httponly=True, 
-                samesite="Lax", 
-                secure=True,
-                max_age=6 * 60 * 60  # 6 hours
+                httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+                samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
+                secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'] if not settings.DEBUG else False,
+                max_age=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds()
             )
-        
+
         return response
         
     except Exception as e:

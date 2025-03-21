@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
 from ...models import StaffProfile  
 from django.contrib.auth import authenticate
+from signup.event_publisher import get_publisher
 
 User = get_user_model()
 
@@ -52,5 +53,16 @@ class Command(BaseCommand):
         authenticated_user = authenticate(email=email, password=password)
         if authenticated_user:
             print("Manager authenticated successfully!")
+              # Emit staff registered event
+            publisher = get_publisher()
+            publisher.publish_event('StaffSignedUp', {
+                'user_id': user.id,
+                'username': user.username,
+                'email': user.email,
+                'role': user.staff_profile.role,
+                'is_active': True,
+                'created_at': user.date_joined.isoformat(),
+                'user_type': 'staff'
+            })
         else:
             print("Failed to authenticate manager.")
