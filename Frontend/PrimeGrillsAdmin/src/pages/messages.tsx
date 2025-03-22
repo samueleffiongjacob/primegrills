@@ -25,6 +25,7 @@ interface ThreadMessage {
     id: number;
     username: string;
     email: string;
+    role: string;
   };
   subject?: string;
 }
@@ -79,7 +80,21 @@ const MessagesPage = () => {
       }
       
       const messagesData = await messagesResponse.json();
-      setMessages(formatMessages(messagesData.results || messagesData));
+      const formattedMessages = formatMessages(messagesData.results || messagesData);
+
+      // Filter messages based on the active tab
+      let filteredMessages = formattedMessages;
+      if (activeTab === "manager") {
+        filteredMessages = formattedMessages.filter((msg) =>
+          msg.messages.some((m) => m.sender.email.includes('manager'))
+        );
+      } else if (activeTab === "staff") {
+        filteredMessages = formattedMessages.filter(
+          (msg) => !msg.messages.some((m) => m.sender.email.includes('manager'))
+        );
+      }
+  
+      setMessages(filteredMessages);
     } catch (error) {
       console.error("Error fetching messages:", error);
     } finally {
@@ -104,13 +119,14 @@ const MessagesPage = () => {
       const staffData = await staffResponse.json();
       
       if (staffData && staffData.results) {
-        const formattedStaffUsers = staffData.results.map(item => ({
-          id: item.user.id,
-          email: item.user.email,
-          username: item.user.username,
-          user_type: item.user.user_type,
-          role: item.role
-        }));
+        const formattedStaffUsers = staffData.results
+          .map((item) => ({
+            id: item.user.id,
+            email: item.user.email,
+            username: item.user.username,
+            user_type: item.user.user_type,
+            role: item.role,
+          })).filter((staff) => staff.email !== currentUser?.email); // Remove the current user
         setStaffUsers(formattedStaffUsers);
       }
     } catch (error) {
@@ -127,36 +143,30 @@ const MessagesPage = () => {
   // Format messages from API response
   const formatMessages = (data: any[]): Message[] => {
     if (!data || !Array.isArray(data)) return [];
-    
-    return data.map(thread => {
+  
+    return data.map((thread) => {
       const threadMessages = thread.messages || [];
-      const latestMessage = threadMessages.length > 0 
-        ? threadMessages[threadMessages.length - 0] // Get first message for subject
+      const latestMessage = threadMessages.length > 0
+        ? threadMessages[threadMessages.length - 1]
         : null;
-      
       const lastMessage = threadMessages.length > 0
         ? threadMessages[threadMessages.length - 1]
         : null;
-      
-      // Determine if current user is the sender of the latest message
+  
       const isSentByCurrentUser = lastMessage?.sender?.email === currentUser?.email;
-      console.log(thread)
-      
-      // Get the appropriate name based on who sent the message
+  
       let displayName = "";
       if (isSentByCurrentUser) {
-        // For sent messages, show the receiver
         const recipients = thread.participants?.filter(
           (p) => p.email !== currentUser?.email
         ) || [];
-        displayName = recipients.length > 0 
-          ? recipients.map(r => r.username).join(", ") 
+        displayName = recipients.length > 0
+          ? recipients.map((r) => r.username).join(", ")
           : "Recipient";
       } else {
-        // For received messages, show the sender
         displayName = lastMessage?.sender?.username || "Unknown";
       }
-      
+  
       return {
         id: thread.id,
         thread_id: thread.id,
@@ -165,7 +175,7 @@ const MessagesPage = () => {
         subject: latestMessage?.subject || "No subject",
         content: lastMessage?.content || "No content",
         timestamp: lastMessage ? new Date(lastMessage.timestamp).toLocaleString() : "Unknown time",
-        read: isSentByCurrentUser ? true : lastMessage?.read || false, // Only received messages have unread state
+        read: isSentByCurrentUser ? true : lastMessage?.read || false,
         isSent: isSentByCurrentUser,
         messages: threadMessages,
       };
@@ -338,7 +348,7 @@ const MessagesPage = () => {
                   {new Date(threadMsg.timestamp).toLocaleString()}
                 </span>
               </div>
-              {showSubject && threadMsg.subject && <p className="font-medium text-gray-700 mb-2">{threadMsg.subject}</p>}
+              {/* {showSubject && threadMsg.subject && <p className="font-medium text-gray-700 mb-2">{threadMsg.subject}</p>} */}
               <p className="whitespace-pre-line">{threadMsg.content}</p>
             </div>
           );
@@ -357,7 +367,7 @@ const MessagesPage = () => {
   
   return (
     <div className="p-6 bg-gray-100 max-h-[80vh] overflow-y-auto">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between sticky items-center mb-6">
         <h1 className="text-2xl font-semibold text-gray-800">Messages</h1>
         <div className="flex items-center gap-3">
           <button 
@@ -439,7 +449,7 @@ const MessagesPage = () => {
                 !msg.isSent && !msg.read
                   ? "border-orange-500" 
                   : msg.isSent 
-                    ? "border-blue-500" 
+                    ? "border-gray-400" 
                     : "border-gray-200"
               }`}
             >
@@ -527,7 +537,7 @@ const MessagesPage = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 backdrop-blur-sm bg-black bg-opacity-30 flex justify-center items-center z-50 p-4"
+            className="fixed inset-0 backdrop-blur-sm bg-[#171943] bg-opacity-30 flex justify-center items-center z-50 p-4"
             onClick={() => setIsModalOpen(false)}
           >
             <motion.div 
