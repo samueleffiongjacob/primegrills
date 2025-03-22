@@ -12,6 +12,7 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/authContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoginModal from './components/Login';
+import MessagesPage from './Pages/messages';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
                 <Route path='menus' element={<MenuPage />} />
                 <Route path='settings' element={<Settings />} />
                 <Route path='orders' element={<TransactionsTable />} />
+                <Route path='message' element={<MessagesPage />} />
                 <Route path='dashboard' element={<Dashboard />} />
               </Route>
               
