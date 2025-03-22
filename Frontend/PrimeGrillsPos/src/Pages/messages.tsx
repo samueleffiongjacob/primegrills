@@ -40,7 +40,7 @@ interface StaffUser {
 
 const MessagesPage = () => {
   const [openMessage, setOpenMessage] = useState<number | null>(null);
-  const [activeTab, setActiveTab] = useState("customers");
+  const [activeTab, setActiveTab] = useState("manager");
   const [messages, setMessages] = useState<Message[]>([]);
   const [reply, setReply] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
