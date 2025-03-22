@@ -54,10 +54,15 @@ class Thread(models.Model):
     participants = models.ManyToManyField(User, related_name="threads")
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ['-created_at']
+
 class Message(models.Model):
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sent_messages")
     thread = models.ForeignKey(Thread, on_delete=models.CASCADE, related_name="messages")
+    subject = models.TextField(blank=True, null=True)
     content = models.TextField()
+    read = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     class Meta:

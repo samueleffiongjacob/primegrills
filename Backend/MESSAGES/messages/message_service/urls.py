@@ -11,12 +11,12 @@ router.register(r'messages', views.MessageViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-    # Thread and message endpoints
-    path('all-staffs/', views.get_all_staffs, name='get-all-staffs'),
+    # Thread and message endpointss
     path('my-threads/', views.ThreadListCreateView.as_view(), name='my-threads'),
     path('thread-messages/', views.MessageListCreateView.as_view(), name='thread-messages'),
     
     # New messaging endpoints
     path('send-message/<int:user_id>/', views.SendMessageToUserView.as_view(), name='send-message-to-user'),
     path('send-group-message/', views.SendMessageToMultipleUsersView.as_view(), name='send-group-message'),
+    path('mark-read/<int:thread_id>/', views.mark_thread_as_read, name='mark_thread_as_read'),
 ]

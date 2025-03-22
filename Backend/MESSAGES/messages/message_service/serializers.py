@@ -5,7 +5,7 @@ from .models import User, ClientProfile, StaffProfile
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "username", "user_type", "created_at"]
+        fields = ["id", "username", "email", "user_type", "created_at"]
 
 class ClientProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer()
