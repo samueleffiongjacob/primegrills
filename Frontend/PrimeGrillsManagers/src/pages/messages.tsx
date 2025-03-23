@@ -24,6 +24,7 @@ interface ThreadMessage {
   sender: {
     id: number;
     username: string;
+    user_type: string;
     email: string;
   };
   subject?: string;
@@ -63,7 +64,7 @@ const MessagesPage = () => {
     setLoading(true);
     try {
       const endpoint = activeTab === "customers" 
-        ? `${import.meta.env.VITE_MESSAGE_BACKEND_URL}/api/my-threads/customers` 
+        ? `${import.meta.env.VITE_MESSAGE_BACKEND_URL}/api/customer-threads/` 
         : `${import.meta.env.VITE_MESSAGE_BACKEND_URL}/api/my-threads/`;
       
       const messagesResponse = await fetch(endpoint, {
@@ -79,7 +80,16 @@ const MessagesPage = () => {
       }
       
       const messagesData = await messagesResponse.json();
-      setMessages(formatMessages(messagesData.results || messagesData));
+      const formattedMessages = formatMessages(messagesData.results || messagesData);
+
+      // Filter messages based on the active tab
+      let filteredMessages = formattedMessages;
+      if (activeTab === "staff") {
+        filteredMessages = formattedMessages.filter((msg) =>
+          !msg.messages.some((m) => m.sender.user_type.toLowerCase() == 'client')
+        );
+      } 
+      setMessages(filteredMessages);
     } catch (error) {
       console.error("Error fetching messages:", error);
     } finally {
