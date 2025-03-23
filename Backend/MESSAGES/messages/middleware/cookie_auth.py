@@ -9,29 +9,29 @@ from message_service.models import User
 class CookieJWTAuthentication(JWTAuthentication):
     def authenticate(self, request):
         header = self.get_header(request)
-        print('cookie')
+        #print('cookie')
         if header is None:
-            print('no header')
+            #print('no header')
             raw_token = request.COOKIES.get('accessToken') or None
-            print('raw_token', raw_token)
+            #print('raw_token', raw_token)
         else:
             raw_token = self.get_raw_token(header)
         if raw_token is None:
-            print('no token')
+            #print('no token')
             return None
         
         # Use the token from the cookie
         try:
             validated_token = self.get_validated_token(raw_token)
-            print("Validated token:", validated_token)
+            #print("Validated token:", validated_token)
         except TokenError as e:
-            print("Token validation error:", str(e))
+            #print("Token validation error:", str(e))
             raise AuthenticationFailed("Invalid token")
 
         email = validated_token.get("email")
-        print(email)
+        #print(email)
         if not email:
-            print("Email missing in token")
+            #print("Email missing in token")
             raise AuthenticationFailed("Email missing in token")
 
         try:
