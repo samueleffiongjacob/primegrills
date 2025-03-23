@@ -8,23 +8,18 @@ from django.http import JsonResponse
 from rest_framework.views import APIView
 from rest_framework_simplejwt.exceptions import TokenError
 from django.contrib.auth import get_user_model
-
+from django.conf import settings
 User = get_user_model()
 
 authenticate = EmailBackend().authenticate
 
-def set_auth_cookies(response, access_token, refresh_token, request):
-    """ Helper function to set authentication cookies securely """
-    response.set_cookie("access_token", access_token, httponly=True, samesite="Lax", secure=True, max_age=5 * 24 * 60 * 60)
-    response.set_cookie("refresh_token", refresh_token, httponly=True, samesite="Lax", secure=True, max_age=5 * 24 * 60 * 60)
-    response.set_cookie("csrftoken", get_token(request), samesite="Lax", secure=True)
-    return response
 
+# Utility function to generate tokens
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
     access = refresh.access_token
-    access["email"] = user.email  # Include email in access token
-    return str(access), str(refresh)
+    access["email"] = user.email  # Include email in token
+    return {"refresh": str(refresh), "access": str(access)}
 
 class BaseAuthView(APIView):
     """ Base class for authentication-related views """
@@ -56,12 +51,33 @@ class LoginView(BaseAuthView):
         if not user:
             return Response({"error": "Incorrect password"}, status=400)
 
-        access_token, refresh_token = get_tokens_for_user(user)
+        tokens = get_tokens_for_user(user)
         self.get_publisher().publish_event('user.loggedin', {'user_id': user.id})
 
         response = JsonResponse({"message": "Login successful"})
-        return set_auth_cookies(response, access_token, refresh_token, request)
-
+        self.set_cookies(response, tokens)
+        return response
+    
+    
+    def set_cookies(self, response, tokens):
+        response.set_cookie(
+            "accessToken", 
+            tokens["access"],
+            httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+            samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
+            secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'] if not settings.DEBUG else False,
+            max_age=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds()
+        )
+        response.set_cookie(
+            "refresh_token", 
+            tokens["refresh"], 
+            httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+            samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
+            secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'] if not settings.DEBUG else False,
+            max_age=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds()
+        )
+        #response.set_cookie("csrftoken", get_token(self.request), samesite="Lax", secure=True)
+        
 class LogoutView(BaseAuthView):
     def post(self, request):
         try:
@@ -74,7 +90,7 @@ class LogoutView(BaseAuthView):
                 self.get_publisher().publish_event('user.loggedout', {"user_id": request.user.id})
 
             response = Response({"message": "Logout successful"}, status=200)
-            response.delete_cookie("access_token")
+            response.delete_cookie("accessToken")
             response.delete_cookie("refresh_token")
             return response
         except TokenError:

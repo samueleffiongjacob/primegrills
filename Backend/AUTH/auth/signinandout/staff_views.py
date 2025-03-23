@@ -40,7 +40,7 @@ class BaseLoginView(APIView):
 
         user = authenticate(request, email=email, password=password)
         if not user:
-            return Response({"error": "Invalid email or password"}, status=400)
+            return Response({"error": "Incorrect password"}, status=400)
 
         if not hasattr(user, 'staff_profile'):
             return Response({"error": "Invalid email"}, status=400)
@@ -139,7 +139,7 @@ def logout_staff(request):
             pass
 
         response = Response({"message": "Logout successful"}, status=200)
-        response.delete_cookie("access_token")
+        response.delete_cookie("accessToken")
         response.delete_cookie("refresh_token")
         return response
     
