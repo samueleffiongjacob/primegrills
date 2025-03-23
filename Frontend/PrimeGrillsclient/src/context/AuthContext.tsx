@@ -25,32 +25,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [user, setUser] = useState<UserProfile | null>(null);
 
-/*   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-      setIsAuthenticated(true);
-    }
-  }, []); */
-
   const login = async (email: string, password: string): Promise<string | boolean> => {
     try {
-
-      const csrfToken = getCookie("csrftoken");
+      //const csrfToken = getCookie("csrftoken");
 
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/login/`, {
         method: "POST",
         credentials: "include",
         headers: { 
           "Content-Type": "application/json",
-          "X-CSRFToken": csrfToken || "",
+          //"X-CSRFToken": csrfToken || "",
         },
         body: JSON.stringify({ email, password }),
       });
 
       if (!response.ok) {
         const errorResponse = await response.json();
-        //console.log(errorResponse)
         return errorResponse?.error || "Login failed";
       }
 
@@ -65,14 +55,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const resendVerificationEmail = async (email: string): Promise<boolean> => {
     try {
-      const csrfToken = getCookie("csrftoken");
+      //const csrfToken = getCookie("csrftoken");
 
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/email/verify/resend/`, {
         method: "POST",
         credentials: "include",
         headers: { 
           "Content-Type": "application/json",
-          "X-CSRFToken": csrfToken || "",
+         // "X-CSRFToken": csrfToken || "",
         },
         body: JSON.stringify({ email }),
       });
@@ -86,36 +76,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const fetchUserProfile = async () => {
     try {
-      const csrfToken = getCookie("csrftoken");
+      //const csrfToken = getCookie("csrftoken");
 
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user/profile/`, {
         method: "GET",
         credentials: "include",
         headers: {
-          "X-CSRFToken": csrfToken || "",
+         // "X-CSRFToken": csrfToken || "",
         }
       });
 
       if (!response.ok) {
-        if (response.status === 401) {
-          const refreshed = await refreshAccessToken();
-          if (!refreshed) {
-            throw new Error("Failed to refresh token");
-          }
-          return await fetchUserProfile();
-        }
         throw new Error("Failed to fetch user profile");
       }
 
       const userData = await response.json();
       setUser(userData);
       setIsAuthenticated(true);
-      //localStorage.setItem('user', JSON.stringify(userData));
     } catch (error) {
       console.error("Profile Fetch Error:", error);
-      if (String(error).includes("Failed to refresh token")) {
-        logout();
-      }
+      logout(); // Log out the user if fetching the profile fails
     }
   };
 
@@ -126,41 +106,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return null;
   };
 
-  const refreshAccessToken = async (): Promise<boolean> => {
-    try {
-      const csrfToken = getCookie("csrftoken");
-
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/token/refresh/`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": csrfToken || "",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Token refresh failed");
-      }
-
-      return true;
-    } catch (error) {
-      console.error("Refresh Token Error:", error);
-      setIsAuthenticated(false);
-      return false;
-    }
-  };
-
   const logout = async () => {
     try {
-      const csrfToken = getCookie("csrftoken");
+     // const csrfToken = getCookie("csrftoken");
 
       await fetch(`${import.meta.env.VITE_BACKEND_URL}/logout/`, {
         method: "POST",
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
-          "X-CSRFToken": csrfToken || "",
+         // "X-CSRFToken": csrfToken || "",
         },
       });
     } catch (error) {
@@ -168,43 +123,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } finally {
       setIsAuthenticated(false);
       setUser(null);
-     /*  localStorage.removeItem('user');
-      localStorage.setItem('anonymous_cart', JSON.stringify([])); */
     }
   };
-
- /*  useEffect(() => {
-    const initAuth = async () => {
-      let retries = 3;
-      while (retries > 0) {
-        try {
-          await fetchUserProfile();
-          break; // Exit loop if successful
-        } catch (error) {
-          console.log("Initial profile fetch failed:", error);
-          retries--;
-          if (retries === 0) {
-            setIsAuthenticated(false);
-            setUser(null);
-            break;
-          }
-          await new Promise((resolve) => setTimeout(resolve, 5000)); // Retry after 5 seconds
-        }
-      }
-    };
-  
-    initAuth();
-  }, []); */
-
-  useEffect(() => {
-    if (!isAuthenticated) return;
-
-    const interval = setInterval(() => {
-      refreshAccessToken();
-    }, 14 * 60 * 1000);
-
-    return () => clearInterval(interval);
-  }, [isAuthenticated]);
 
   return (
     <AuthContext.Provider value={{ 

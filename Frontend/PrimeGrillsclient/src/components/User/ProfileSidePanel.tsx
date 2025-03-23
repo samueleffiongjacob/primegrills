@@ -20,9 +20,9 @@ const ProfileSidePanel: React.FC<ProfileSidePanelProps> = ({
   const [isUploading, setIsUploading] = useState(false);
 
   const menuItems = [
-    { icon: Bell, label: "Notifications", badge: 3, path: "/notifications" },
+    //{ icon: Bell, label: "Notifications", badge: 3, path: "/notifications" },
     { icon: Clock, label: "Order History", path: "/order-history"  },
-    { icon: Heart, label: "Favorites", path: "/favorites"  },
+   // { icon: Heart, label: "Favorites", path: "/favorites"  },
     { icon: MailQuestion, label: "FAQ", path: "/faqs" },
     { icon: MapPin, label: "Addresses" },
   ];
@@ -137,11 +137,11 @@ const ProfileSidePanel: React.FC<ProfileSidePanelProps> = ({
               >
                 <item.icon className="w-5 h-5 mt-1 text-gray-500 mr-3" />
                 <span className="flex-grow text-gray-700">{item.label}</span>
-                {item.badge && (
+                {/* {item.badge && (
                   <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
                     {item.badge}
                   </span>
-                )}
+                )} */}
               </button>
               </Link> 
             ))}

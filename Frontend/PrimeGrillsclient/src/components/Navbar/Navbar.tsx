@@ -21,15 +21,31 @@ interface NavLinkProps {
   onClick?: () => void; // Optional click handler
   isParentActive?: boolean; // Optional boolean to indicate active parent
   className?: string; // Optional additional className
+  hasSubItems?: boolean; // Indicates if the link has sub-items
 }
 
-const NavLink: React.FC<NavLinkProps> = ({ to, children, onClick, isParentActive, className = "" }) => {
+const NavLink: React.FC<NavLinkProps> = ({
+  to,
+  children,
+  onClick,
+  isParentActive,
+  className = "",
+  hasSubItems = false,
+}) => {
   const location = useLocation(); // Get current URL
   const isActive = location.pathname === to || isParentActive; // Check if link is active or parent is active
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (hasSubItems) {
+      e.preventDefault(); // Prevent navigation if the item has sub-items
+    }
+    onClick?.(); // Call the provided onClick handler
+  };
+
   return (
     <Link
       to={to}
-      onClick={onClick}
+      onClick={handleClick}
       className={`group flex items-center gap-1 transition-colors duration-300 relative 
         ${isActive ? "text-[#EE7F61]" : "hover:text-[#EE7F61]"} ${className}`}
     >
@@ -93,7 +109,6 @@ const Navbar = () => {
     { title: "Home", path: "/" },
     {
       title: "Menu",
-      path: "/menu-category",
       subItems: [
         { title: "Menu-Category", path: "/menu-category" },
         { title: "All Menu", path: "/menu/all" },
@@ -108,10 +123,7 @@ const Navbar = () => {
   ];
 
   // Full navigation items for desktop
-  const navItems = [
-    ...tabletVisibleItems,
-    ...mobileToggleItems
-  ];
+  const navItems = [...tabletVisibleItems, ...mobileToggleItems];
 
   const isMobile = windowWidth < 768;
   const isTablet = windowWidth >= 768 && windowWidth < 1024;
@@ -137,11 +149,11 @@ const Navbar = () => {
                 <div
                   key={item.title}
                   className="relative group"
-                  onMouseEnter={() => setHoveredItem(item.title)}
-                  onMouseLeave={() => setHoveredItem(null)}
+                  onMouseOver={() => setHoveredItem(item.title)}
+                  onMouseLeave={() => setTimeout(() => setHoveredItem(null), 200)} // Add a delay to hide the dropdown
                 >
                   <NavLink
-                    to={item.path || '/menu-category'}
+                    to={item.path || ""}
                     onClick={() => {
                       if (item.title.toLowerCase() === "offers") {
                         document
@@ -150,6 +162,7 @@ const Navbar = () => {
                       }
                     }}
                     isParentActive={isParentActive} // Pass whether any subItem is active
+                    hasSubItems={!!item.subItems} // Indicate if the item has sub-items
                   >
                     {item.title}
                     {item.subItems && (
@@ -162,6 +175,8 @@ const Navbar = () => {
                     <div
                       className="absolute left-0 top-full mt-2 w-48 bg-white shadow-lg rounded-md opacity-100 
                       visible transition-opacity duration-300"
+                      onMouseEnter={() => setHoveredItem(item.title)} // Keep dropdown open when mouse is over it
+        
                     >
                       {item.subItems.map((subItem) => {
                         const isSubItemActive =
@@ -201,11 +216,12 @@ const Navbar = () => {
                   key={item.title}
                   className="relative group"
                   onMouseEnter={() => setHoveredItem(item.title)}
-                  onMouseLeave={() => setHoveredItem(null)}
+                  onMouseLeave={() => setTimeout(() => setHoveredItem(null), 200)} // Add a delay to hide the dropdown
                 >
                   <NavLink
-                    to={item.path || '/menu-category'}
+                    to={item.path || "/menu-category"}
                     isParentActive={isParentActive}
+                    hasSubItems={!!item.subItems} // Indicate if the item has sub-items
                   >
                     {item.title}
                     {item.subItems && (
@@ -218,6 +234,8 @@ const Navbar = () => {
                     <div
                       className="absolute left-0 top-full mt-2 w-48 bg-white shadow-lg rounded-md opacity-100 
                       visible transition-opacity duration-300"
+                      onMouseEnter={() => setHoveredItem(item.title)} // Keep dropdown open when mouse is over it
+                      onMouseLeave={() => setHoveredItem(null)} // Hide dropdown when mouse leaves
                     >
                       {item.subItems.map((subItem) => {
                         const isSubItemActive =
@@ -248,8 +266,8 @@ const Navbar = () => {
           {/* Right Section (changes based on screen size) */}
           <div className="flex items-center space-x-3 md:space-x-4">
             {/* Search - visible on all screen sizes */}
-            <SearchBar className={`${isMobile ? 'w-24' : 'w-32 md:w-48'}`} />
-            
+            <SearchBar className={`${isMobile ? "w-24" : "w-32 md:w-48"}`} />
+
             {/* Cart Icon - visible on all screen sizes */}
             <CartIcon />
 
@@ -276,8 +294,8 @@ const Navbar = () => {
             </div>
 
             {/* Mobile Menu Toggle Button */}
-            <button 
-              onClick={toggleMobileMenu} 
+            <button
+              onClick={toggleMobileMenu}
               className="md:block lg:hidden p-2 text-gray-600 hover:text-[#EE7F61]"
             >
               {mobileMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
@@ -294,9 +312,9 @@ const Navbar = () => {
               {/* For mobile, show toggle items only */}
               {/* For tablet, show only the toggleable items */}
               {mobileToggleItems.map((item) => (
-                <NavLink 
-                  key={item.title} 
-                  to={item.path} 
+                <NavLink
+                  key={item.title}
+                  to={item.path}
                   className="py-2"
                   onClick={() => {
                     if (item.title.toLowerCase() === "offers") {
@@ -310,40 +328,6 @@ const Navbar = () => {
                   {item.title}
                 </NavLink>
               ))}
-
-              {/* Only show login button in mobile view (since tablet has it in header) */}
-             {/*  {isMobile && (
-                <div className="py-2">
-                  {!isAuthenticated ? (
-                    <Button 
-                      title="Login" 
-                      onClick={() => {
-                        setActiveModal("login");
-                        setMobileMenuOpen(false);
-                      }} 
-                    />
-                  ) : (
-                    <button
-                      onClick={() => {
-                        toggleProfile();
-                        setMobileMenuOpen(false);
-                      }}
-                      className="flex items-center space-x-2 text-gray-700 hover:text-[#EE7F61]"
-                    >
-                      <span>My Profile</span>
-                      {user?.profileImage ? (
-                        <img
-                          src={user.profileImage}
-                          alt="Profile"
-                          className="w-6 h-6 rounded-full object-cover"
-                        />
-                      ) : (
-                        <User className="w-6 h-6" />
-                      )}
-                    </button>
-                  )}
-                </div>
-              )} */}
             </nav>
           </div>
         </div>

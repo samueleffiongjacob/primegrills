@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FcGoogle } from 'react-icons/fc';
 import { 
   FaFacebook, 
   FaApple, FaUser, 
   FaUserCircle, FaEnvelope, FaPhone, 
-  FaMapMarkerAlt, FaCheckCircle ,FaEye, 
+  FaMapMarkerAlt, FaCheckCircle, FaEye, 
   FaEyeSlash
 } from 'react-icons/fa';
 
 // INTERNAL IMPORTS
 import { signUpUser } from '../../api/auth';
+import { resendVerificationEmail } from '../../api/email';
 
 interface SignUpModalProps {
   isOpen: boolean;
@@ -28,12 +29,16 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
- // const [address, setAddress] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [signupSuccess, setSignupSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  
+  // Add states for email resend functionality
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
+  const [resendMessage, setResendMessage] = useState('');
 
   // Error State
   const [errors, setErrors] = useState<{
@@ -41,10 +46,29 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
     fullName?: string;
     email?: string;
     phoneNumber?: string;
-   // address?: string;
     password?: string;
     confirmPassword?: string;
   }>({});
+
+  // Countdown timer for resend cooldown
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    
+    if (resendCooldown > 0) {
+      timer = setTimeout(() => {
+        setResendCooldown(resendCooldown - 1);
+      }, 1000);
+    } else if (resendMessage) {
+      // Clear the resend message after cooldown ends
+      setTimeout(() => {
+        setResendMessage('');
+      }, 3000);
+    }
+    
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [resendCooldown, resendMessage]);
 
   const validateForm = () => {
     const newErrors: {
@@ -52,7 +76,6 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
       fullName?: string;
       email?: string;
       phoneNumber?: string;
-     // address?: string;
       password?: string;
       confirmPassword?: string;
     } = {};
@@ -61,8 +84,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
     if (!fullName) newErrors.fullName = "Full name is required";
     if (!email) newErrors.email = "Email is required";
     else if (!/\S+@\S+\.\S+/.test(email)) newErrors.email = "Invalid email format";
-    if ( phoneNumber.length !== 11 ) newErrors.phoneNumber = "Phone number is required";
-   // if (!address) newErrors.address = "Address is required";
+    if (phoneNumber.length !== 11) newErrors.phoneNumber = "Phone number must be 11 digits";
     if (!password) newErrors.password = "Password is required";
     else if (password.length < 6) newErrors.password = "Password must be at least 6 characters";
     if (!confirmPassword) newErrors.confirmPassword = "Confirm password is required";
@@ -83,7 +105,6 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
       fullName,
       email,
       phoneNumber,
-      //address,
       password,
     });
     
@@ -99,6 +120,32 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
   
     setSignupSuccess(true);
     setIsLoading(false);
+  };
+
+  // Handle resend verification email
+  const handleResendEmail = async () => {
+    if (resendCooldown > 0) return;
+    
+    setResendLoading(true);
+    
+    try {
+      const response = await resendVerificationEmail(email);
+      
+      if (response.success) {
+        setResendMessage('Verification email sent successfully!');
+        // Set cooldown timer (60 seconds)
+        setResendCooldown(60);
+      } else {
+        setResendMessage(response.message || 'Failed to resend verification email.');
+        // Set a shorter cooldown for errors
+        setResendCooldown(10);
+      }
+    } catch (error) {
+      setResendMessage('An error occurred. Please try again later.');
+      setResendCooldown(10);
+    } finally {
+      setResendLoading(false);
+    }
   };
 
   if (!isOpen) return null;
@@ -120,17 +167,26 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
             <div className="text-sm text-gray-400">
               Don't see the email? Check your spam folder or 
               <button 
-                onClick={() => {
-                  // Implement resend email logic
-                  console.log('Resend verification email');
-                }} 
-                className="text-[#EE7F61] ml-1 hover:underline"
+                onClick={handleResendEmail}
+                disabled={resendLoading || resendCooldown > 0}
+                className={`ml-1 ${
+                  resendCooldown > 0 ? 'text-gray-400 cursor-not-allowed' : 'text-[#EE7F61] hover:underline'
+                }`}
               >
-                resend verification email
+                {resendLoading 
+                  ? "sending..." 
+                  : resendCooldown > 0 
+                    ? `resend in ${resendCooldown}s` 
+                    : "resend verification email"}
               </button>
             </div>
+            {resendMessage && (
+              <p className={`text-sm ${resendMessage.includes('success') ? 'text-green-500' : 'text-red-500'}`}>
+                {resendMessage}
+              </p>
+            )}
           </div>
-          {/* <button
+          <button
             onClick={() => {
               onClose();
               setSignupSuccess(false);
@@ -138,7 +194,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
             className="w-full py-3 bg-[#EE7F61] text-white rounded-xl hover:bg-orange-500 transition-colors"
           >
             Continue
-          </button> */}
+          </button>
         </div>
       </div>
     );
@@ -218,21 +274,6 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
               {errors.phoneNumber && <p className="text-red-500 text-sm">{errors.phoneNumber}</p>}
             </div>
 
-            {/* Address */}
-            {/* <div className="relative">
-              <FaMapMarkerAlt className="absolute left-3 top-2.5 text-gray-400" />
-              <input
-                type="text"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                placeholder="Address"
-                className={`w-full pl-10 pr-4 py-1.5 rounded-xl border ${
-                  errors.address ? 'border-red-500' : 'border-gray-200'
-                } focus:outline-none focus:ring-2 focus:ring-orange-400`}
-              />
-              {errors.address && <p className="text-red-500 text-sm">{errors.address}</p>}
-            </div> */}
-
             {/* Password */}
             <div className="relative">
               <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">🔒</span>
@@ -256,21 +297,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
               </button>
               {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
             </div>
-
-            {/* <div className="relative">
-              <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">🔒</span>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
-                className={`w-full pl-10 pr-4 py-1.5 rounded-xl border ${
-                  errors.password ? 'border-red-500' : 'border-gray-200'
-                } focus:outline-none focus:ring-2 focus:ring-orange-400`}
-              />
-              {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
-            </div> */}
-
+ 
             {/* Confirm Password */}
             <div className="relative">
               <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">🔒</span>
@@ -278,7 +305,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
                 type={showPassword ? "text" : "password"}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Password"
+                placeholder="Confirm Password"
                 className={`w-full pl-10 pr-4 py-1.5 rounded-xl border ${
                   errors.confirmPassword ? 'border-red-500' : 'border-gray-200'
                 } focus:outline-none focus:ring-2 focus:ring-orange-400`}
@@ -292,21 +319,8 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
               >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
-              {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.password}</p>}
-            </div>
-            {/* <div className="relative">
-              <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">🔒</span>
-              <input
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Confirm Password"
-                className={`w-full pl-10 pr-4 py-1.5 rounded-xl border ${
-                  errors.confirmPassword ? 'border-red-500' : 'border-gray-200'
-                } focus:outline-none focus:ring-2 focus:ring-orange-400`}
-              />
               {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword}</p>}
-            </div> */}
+            </div>
 
             <button
               type="submit"
