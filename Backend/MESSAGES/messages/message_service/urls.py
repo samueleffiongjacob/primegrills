@@ -13,7 +13,9 @@ urlpatterns = [
     path('', include(router.urls)),
     # Thread and message endpointss
     path('my-threads/', views.ThreadListCreateView.as_view(), name='my-threads'),
+    path('customer-threads/', views.ClientThreadsView.as_view(), name='customer-threads'),
     path('thread-messages/', views.MessageListCreateView.as_view(), name='thread-messages'),
+    path('feedback/', views.FeedbackView.as_view(), name='feedback'),
     
     # New messaging endpoints
     path('send-message/<int:user_id>/', views.SendMessageToUserView.as_view(), name='send-message-to-user'),

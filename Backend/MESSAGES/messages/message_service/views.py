@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import ValidationError
 
 
 class ThreadListCreateView(generics.ListCreateAPIView):
@@ -64,7 +65,19 @@ class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
 
+class ClientThreadsView(generics.ListAPIView):
+    """
+    Returns threads where at least one participant is a client
+    """
+    serializer_class = ThreadSerializer
+    permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        # Filter threads where at least one participant has a client user_type
+        return Thread.objects.filter(
+            participants__user_type='client'
+        ).distinct().order_by('-created_at')
+    
 class SendMessageToUserView(APIView):
     """
     Send a message to a single user
@@ -172,3 +185,89 @@ def mark_thread_as_read(request, thread_id):
         "thread_id": thread_id,
         "unread_count": 0
     }, status=status.HTTP_200_OK)
+
+
+class FeedbackView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            # First check if content is a string and try to parse it
+            content = request.data.get("content", {})
+            
+            # If content is already a string (which seems to be the case based on the error)
+            if isinstance(content, str):
+                try:
+                    # Try to import json
+                    import json
+                    # Try to parse the string as JSON
+                    content = json.loads(content)
+                except json.JSONDecodeError:
+                    # If it's not valid JSON, raise an error
+                    raise ValidationError("Content must be valid JSON")
+            
+            # Validate required fields
+            required_fields = ["firstName", "lastName", "email", "feedback"]
+            for field in required_fields:
+                if field not in content:
+                    raise ValidationError(f"Missing required field: {field}")
+            
+            # Convert the feedback data to a descriptive sentence
+            ratings_text = ""
+            if "ratings" in content:
+                ratings = []
+                if "foodQuality" in content["ratings"]:
+                    ratings.append(f"food quality: {content['ratings']['foodQuality']}/5")
+                if "services" in content["ratings"]:
+                    ratings.append(f"services: {content['ratings']['services']}/5")
+                if "cleanliness" in content["ratings"]:
+                    ratings.append(f"cleanliness: {content['ratings']['cleanliness']}/5")
+                if "value" in content["ratings"]:
+                    ratings.append(f"value: {content['ratings']['value']}/5")
+                
+                if ratings:
+                    ratings_text = " Ratings: " + ", ".join(ratings) + "."
+            
+            visit_info = ""
+            if "date" in content and content["date"]:
+                visit_info += f" Visit date: {content['date']}."
+            if "visitType" in content and content["visitType"]:
+                visit_info += f" Visit type: {content['visitType']}."
+            
+            # Format as a sentence
+            formatted_content = (
+                f"Feedback from {content['firstName']} {content['lastName']} ({content['email']}):{visit_info}{ratings_text} "
+                f"Feedback message: {content['feedback']}"
+            )
+
+            # Proceed with creating the message
+            subject = "Restaurant Feedback"
+            thread = Thread.objects.create()
+            sender = request.user
+            thread.participants.add(sender)
+            
+            # Find admin or staff users to add to the thread
+            try:
+                staff_users = User.objects.filter(user_type='staff')
+                for staff in staff_users:
+                    thread.participants.add(staff)
+            except Exception as e:
+                # Log the error but continue
+                print(f"Error adding staff to thread: {str(e)}")
+                pass
+
+            message = Message.objects.create(
+                sender=sender,
+                thread=thread,
+                subject=subject,
+                content=formatted_content,
+            )
+
+            return Response(
+                {"message": "Feedback submitted successfully", "message_id": message.id},
+                status=status.HTTP_201_CREATED,
+            )
+        except ValidationError as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
