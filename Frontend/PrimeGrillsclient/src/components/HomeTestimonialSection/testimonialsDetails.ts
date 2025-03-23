@@ -1,4 +1,4 @@
-import customer from '../../assets/images/customer.png';
+import customer from '../../assets/images/chef.png';
 // import testimonial from '../../assets/images/testimonial.png';
 
 export const testimonials = [

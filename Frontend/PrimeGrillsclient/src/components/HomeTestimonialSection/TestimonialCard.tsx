@@ -25,7 +25,7 @@ const TestimonialCard = ({
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center lg:items-end">
                 {/* Left Column: Customer Image */}
                 <div className="relative flex justify-center lg:justify-start">
-                    <span className="bg-[#EE7F61] absolute bottom-0 left-1/2 lg:left-2 transform -translate-x-1/2 lg:translate-x-0 w-[260px] md:w-[320px] h-[220px] md:h-[240px] rounded-t-[140px]" />
+                    <span className="bg-[#EE7F61] absolute bottom-0 left-1/2 lg:left-0 transform -translate-x-1/2 lg:translate-x-0 w-[260px] md:w-[320px] h-[220px] md:h-[240px] rounded-t-[140px]" />
                     <img src={customerImage} alt="Customer" className="relative rounded-lg mr-2 w-72 md:w-80 h-auto" />
                     
                     {/* Badge */}

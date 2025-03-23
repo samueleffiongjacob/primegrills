@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import menuimg1 from '../../assets/images/menuimg1.png';
-import { FaPlus, FaMinus } from "react-icons/fa";
-import Button from "../../components/Navbar/button";
+// import { FaPlus, FaMinus } from "react-icons/fa";
+// import Button from "../../components/Navbar/button";
 import MealDetailsModal from "../../components/MealDetailsModal";
 import { motion } from 'framer-motion';
 import PromotionSection from "./MenuPage/PromotionSection";
@@ -60,6 +60,7 @@ const menuItems = [
 ];
 
 const AllMenuPage: React.FC = () => {
+  const [loading, setLoading] = useState(true);
   const [selectedMeal, setSelectedMeal] =  useState<{
     id: number;
     name: string;
@@ -69,13 +70,33 @@ const AllMenuPage: React.FC = () => {
     items: string[];
   } | null>(null);
 
+   // Simulate data fetching
+   useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div className="min-h-screen p-6 lg:px-12">
       <PromotionSection />
       <h1 className="text-3xl font-bold text-black my-6">All Menu</h1>
       
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-8">
-        {menuItems.map((item, index) => (
+        {loading
+          ? Array(12)
+              .fill(null)
+              .map((_, index) => (
+                <div
+                  key={index}
+                  className="bg-gray-300 animate-pulse rounded-xl py-4 flex flex-col items-center"
+                >
+                  <div className="w-20 md:w-32 h-20 bg-gray-400 rounded-full mb-2"></div>
+                  <div className="w-2/3 h-4 bg-gray-400 rounded mb-2"></div>
+                  <div className="w-1/3 h-4 bg-gray-400 rounded"></div>
+                </div>
+              ))
+        
+          : menuItems.map((item, index) => (
           <motion.div 
             key={index} 
             whileHover={{ scale: 1.05 }}
