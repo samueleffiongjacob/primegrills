@@ -4,20 +4,19 @@ import { MdEmail } from 'react-icons/md';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAuth } from '../context/authContext';
-import GreetingModal from './GreetingModal';
 
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onLoginSuccess: (userName: string) => void; // Callback for successful login
 }
 
-const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
+const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLoginSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [unauthorizedModal, setUnauthorizedModal] = useState(false);
   const { login, loading, user } = useAuth();
-  const [showGreeting, setShowGreeting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,7 +25,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
       toast.error("All fields are required");
       return;
     }
-   
+
     if (password.length < 6) {
       toast.error("Password must be at least 6 characters");
       return;
@@ -34,12 +33,15 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
     try {
       await login(email, password);
-      toast.success(`Welcome, ${user?.name}`)
-      setShowGreeting(true);
-      //onClose();
+      toast.success(`Welcome, ${user?.name}`); // Show a toast message
+
+      // Notify the parent component of a successful login
+      if (user?.name) {
+        onLoginSuccess(user.name);
+      }
     } catch (error: any) {
       console.error("Login failed:", error);
-      
+
       if (error.message === "Invalid email") {
         setUnauthorizedModal(true);
       } else if (error.message === "Incorrect password") {
@@ -109,23 +111,24 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         </div>
       </div>
 
+      {/* Unauthorized Modal */}
       {unauthorizedModal && (
         <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-8 w-full max-w-xl text-center shadow-2xl transform transition-all">
             <div className="mx-auto w-20 h-20 flex items-center justify-center bg-red-100 rounded-full mb-6">
               <span className="text-red-500 text-6xl font-bold">×</span>
             </div>
-            
+
             <h2 className="text-2xl text-red-600 font-bold mb-4">Access Denied</h2>
-            
+
             <p className="text-gray-700 text-lg mb-3">
               Sorry, but this email does not belong to a manager at PRIME GRILLS.
             </p>
-            
+
             <p className="text-gray-600 mb-8">
               Please visit the consultant's office for further assistance with manager details and instructions.
             </p>
-            
+
             <button
               onClick={() => setUnauthorizedModal(false)}
               className="w-full max-w-xs py-3 bg-[#EE7F61] text-white text-lg font-medium rounded-xl hover:bg-orange-500 transition-colors duration-300 shadow-md"
@@ -135,17 +138,6 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
           </div>
         </div>
       )}
-      {showGreeting && (
-        <GreetingModal 
-          isOpen={showGreeting} 
-          onClose={() => {
-            setShowGreeting(false);
-            onClose(); // Close the login modal after greeting
-          }} 
-          userName={user?.name || "Manager"}
-        />
-      )}
-
     </>
   );
 };

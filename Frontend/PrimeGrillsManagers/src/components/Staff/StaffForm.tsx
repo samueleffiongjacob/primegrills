@@ -36,9 +36,9 @@ const FORM_CONFIG = {
     { value: 'Evening', hours: '4 PM - 12 AM' },
     { value: 'Night', hours: '12 AM - 8 AM' }
   ],
-  roles: ['Waiter', 'Chef', 'Manager', 'Admin', 'Pos', 'kitchen'],
+  roles: ['Waiter', 'Chef', 'Manager', 'Admin', 'Pos', 'kitchen', 'Accountant'],
   genders: ['Male', 'Female', 'Other'],
-  statuses: ['Active', 'Inactive'] as const
+  // statuses: ['Active', 'Inactive'] as const
 };
 
 const StaffForm: React.FC<StaffFormProps> = ({
@@ -75,7 +75,14 @@ const StaffForm: React.FC<StaffFormProps> = ({
   // Reset form when initialData changes
   useEffect(() => {
     if (initialData) {
-      setFormData(initialData);
+      // If initialData has a phone number, ensure it's processed correctly
+      const processedData = { ...initialData };
+      if (processedData.phone && !processedData.phone.startsWith('234')) {
+        // Strip any existing prefix if present and add 234
+        const cleanPhone = processedData.phone.replace(/^\+?[0-9]+/, '');
+        processedData.phone = cleanPhone.length > 0 ? cleanPhone : processedData.phone;
+      }
+      setFormData(processedData);
     } else {
       setFormData(initialFormState);
     }
@@ -102,11 +109,10 @@ const StaffForm: React.FC<StaffFormProps> = ({
     if (!value.trim()) return `${name.charAt(0).toUpperCase() + name.slice(1)} is required`;
 
     if (name === 'phone') {
-      // More comprehensive phone validation
-      // Allows international format with + and country code
-      // Also allows common formats like (123) 456-7890, 123-456-7890, etc.
-      if (!/^(\+\d{1,3})?[-.\s]?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$/.test(value)) {
-        return 'Please enter a valid phone number';
+      // Validate only the 10 digits (without the 234 prefix)
+      const phoneDigits = value.replace(/^234/, '');
+      if (!/^\d{10}$/.test(phoneDigits)) {
+        return 'Please enter a valid 10-digit phone number';
       }
     }
 
@@ -127,9 +133,27 @@ const StaffForm: React.FC<StaffFormProps> = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-  
-    // Update form data without validating
-    if (name.startsWith('staff_profile.')) {
+    
+    // Special handling for phone field
+    if (name === 'phone') {
+      let processedValue = value;
+      
+      // Remove any non-digit characters
+      const digitsOnly = value.replace(/\D/g, '');
+      
+      // If the user is typing a new number, ensure it starts with 234
+      if (!digitsOnly.startsWith('234')) {
+        // User is typing just the 10 digits, so we add the prefix
+        processedValue = '234' + digitsOnly.slice(0, 10);
+      } else {
+        // User entered something that already has 234, keep it as is but limit length
+        processedValue = digitsOnly.slice(0, 13); // 234 + 10 digits
+      }
+      
+      setFormData(prev => ({ ...prev, [name]: processedValue }));
+    } 
+    // Handle other fields normally
+    else if (name.startsWith('staff_profile.')) {
       const field = name.split('.')[1]; // Extract the nested field name
       setFormData(prev => ({
         ...prev,
@@ -247,6 +271,16 @@ const StaffForm: React.FC<StaffFormProps> = ({
 
   if (!isOpen) return null;
 
+  const formatPhoneDisplay = (phone: string) => {
+    if (!phone) return '';
+    
+    // Format as 234-XXXXXXXXXX
+    if (phone.startsWith('234') && phone.length >= 13) {
+      return `234-${phone.slice(3)}`;
+    }
+    return phone;
+  };
+
   const FormField = ({ 
     label, 
     name, 
@@ -261,9 +295,14 @@ const StaffForm: React.FC<StaffFormProps> = ({
     required?: boolean;
   }) => {
     const fieldName = name as keyof typeof formData | `staff_profile.${keyof typeof formData.staff_profile}`;
-    const value = name.startsWith('staff_profile.') 
+    let value = name.startsWith('staff_profile.') 
       ? formData.staff_profile[name.split('.')[1] as keyof typeof formData.staff_profile]
       : formData[name as keyof typeof formData];
+    
+    // Format phone display
+    if (name === 'phone') {
+      value = formatPhoneDisplay(value as string);
+    }
 
     const error = errors[fieldName];
 
@@ -294,7 +333,12 @@ const StaffForm: React.FC<StaffFormProps> = ({
             onChange={handleChange}
             className={`w-full p-2 border rounded ${error ? 'border-red-500' : 'border-gray-300'} focus:ring-[#EE7F61] focus:border-[#EE7F61]`}
             required={required}
+            placeholder={name === 'phone' ? 'Enter 10 digits' : ''}
           />
+        )}
+
+        {name === 'phone' && (
+          <p className="text-xs text-gray-500 mt-1">Enter 10 digits (234 prefix will be added automatically)</p>
         )}
 
         {error && <p className="text-red-500 text-xs mt-1">{error}</p>}

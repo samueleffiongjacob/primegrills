@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../../context/authContext";
 import logo from '../../assets/images/primeLogo.png';
 import { motion, AnimatePresence } from 'framer-motion';
+import { FiRefreshCw } from 'react-icons/fi';
 
 // Improved typing for backend data
 interface StaffProfile {
@@ -49,6 +50,7 @@ const Staff = () => {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [itemsPerPage, setItemsPerPage] = useState(25);
+  const [isRefreshing, setIsRefreshing] = useState(false); 
   // Filter users based on search term
   const [statusFilter, setStatusFilter] = useState("");
   const [shiftFilter, setShiftFilter] = useState("");
@@ -87,6 +89,13 @@ const Staff = () => {
     fetchUsers();
   }, [fetchUsers]);
 
+
+  // Handle refresh button click
+  const handleRefresh = async () => {
+    setIsRefreshing(true); // Start refreshing
+    await fetchUsers(); // Fetch updated data
+  };
+
  // Filter users based on search term, status, and shift
  const filteredUsers = users.filter(user => 
   (user.name?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
@@ -105,6 +114,15 @@ const Staff = () => {
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="py-5 bg-white border-b flex items-center justify-between px-6">
           <h1 className="text-xl font-semibold">Staff </h1>
+           {/* Refresh Button */}
+           <button
+              onClick={handleRefresh}
+              className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+              disabled={isRefreshing}
+            >
+              <FiRefreshCw className={`inline-block mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+              {isRefreshing ? "Refreshing..." : "Refresh"}
+            </button>
         </header>
         <main className="flex-1 overflow-auto p-6">
           {loading ? (
@@ -138,6 +156,7 @@ const Staff = () => {
                   </button>
                 </div>
               )}
+              
               
               <div className="mb-6 flex flex-wrap gap-4 items-center">
                 {/* Status Filter */}
@@ -240,10 +259,10 @@ const Staff = () => {
                               className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}
                             >
                               <td className="py-3 px-4 text-gray-600">{index + 1}</td>
-                              <td className="py-3 px-4 font-medium">{user.name}</td>
-                              <td className="py-3 px-4 text-gray-700">{user.email}</td>
-                              <td className="py-3 px-4">{user.staff_profile.role}</td>
-                              <td className="py-3 px-4">
+                              <td className="py-3 px-4 text-sm font-medium">{user.name}</td>
+                              <td className="py-3 px-4 text-sm text-gray-700">{user.email}</td>
+                              <td className="py-3 px-4 text-sm">{user.staff_profile.role}</td>
+                              <td className="py-3 px-4 text-sm">
                                 <span className={`px-2 py-1 rounded-full text-xs ${
                                   user.staff_profile.status === 'Active' 
                                     ? 'bg-green-100 text-green-800' 
@@ -259,8 +278,8 @@ const Staff = () => {
                                   className="w-10 h-10 rounded-full object-cover border" 
                                 />
                               </td>
-                              <td className="py-3 px-4">{user.staff_profile.shift}</td>
-                              <td className="py-3 px-4 text-gray-600">{user.staff_profile.shiftHours}</td>
+                              <td className="py-3 px-4 text-sm">{user.staff_profile.shift}</td>
+                              <td className="py-3 px-4 text-xs text-gray-600">{user.staff_profile.shiftHours}</td>
                     
                             </motion.tr>
                           ))}

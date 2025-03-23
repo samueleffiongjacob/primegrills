@@ -29,14 +29,14 @@ const animationVariants = [
   },
   {
     // Wiggle animation
-    animate: {
+  /*   animate: {
       rotate: [0, -5, 5, -5, 0],
       transition: {
         duration: 0.6,
         repeat: 2,
         repeatType: "reverse" as const,
       },
-    },
+    }, */
   },
   {
     // Pulse animation

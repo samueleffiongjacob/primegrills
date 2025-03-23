@@ -58,6 +58,9 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'dj_rest_auth',
     'dj_rest_auth.registration',
+
+    # backends for authentication
+    'backend',
     
     # Social auth apps (microservices)
     'apple.apps.AppleConfig',
@@ -77,7 +80,6 @@ MIDDLEWARE = [
 
     'allauth.account.middleware.AccountMiddleware',
     'corsheaders.middleware.CorsMiddleware',
-    'signinandout.middleware.token_auto_refresh.JWTRefreshMiddleware'
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -102,6 +104,7 @@ SITE_ID = 1
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
+    'backend.backends.EmailBackend',
 ]
 
 
@@ -189,11 +192,13 @@ AUTH_USER_MODEL = "signup.User" # relationship in singup
 # Rest Framework settings update
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
         'signinandout.middleware.cookie_auth.CookieJWTAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
     ),
 }
+
+# AUTHENTICATION_BACKENDS = [
+#     'django.contrib.auth.backends.ModelBackend',
+# ]
 
 FRONTEND_URL = 'http://localhost:5173'
 # Email Configuration
@@ -207,22 +212,23 @@ DEFAULT_FROM_EMAIL = 'Prime Grills <no-reply@effiongsamuel.tech>'#EMAIL_HOST_USE
 EMAIL_USE_SSL=False
 
 
+
 # JWT settings
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=24),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=5),
-    'ROTATE_REFRESH_TOKENS': False,
+    'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SECRET_KEY,
     'VERIFYING_KEY': None,
-    'AUTH_HEADER_TYPES': ('Bearer',),
-    'USER_ID_FIELD': 'id',
-    'USER_ID_CLAIM': 'user_id',
-    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
-    'TOKEN_TYPE_CLAIM': 'token_type',
+    'AUTH_COOKIE': 'accessToken',
+    'AUTH_COOKIE_HTTP_ONLY': True,
+    'AUTH_COOKIE_SECURE': False,
+    'AUTH_COOKIE_SAMESITE': 'Lax',
+    'AUTH_COOKIE_PATH': '/'
 }
 
 SOCIALACCOUNT_PROVIDERS = {
@@ -265,16 +271,6 @@ ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_USER_MODEL_USERNAME_FIELD = 'username'
 ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = '/login/'
 ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/profile/'
-
-# REST Auth settings
-REST_USE_JWT = True
-REST_AUTH = {
-    'USE_JWT': True,
-    'JWT_AUTH_COOKIE': 'jwt-auth',
-    'JWT_AUTH_REFRESH_COOKIE': 'jwt-refresh-token',
-    'JWT_AUTH_SECURE': False,  # Set to True in production with HTTPS
-    'JWT_AUTH_HTTPONLY': True,
-}
 
 # Social login adapters - each will be configured in its own app
 # Common adapter for all social providers

@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate
+from backend.backends import EmailBackend
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -9,6 +9,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.exceptions import TokenError
+
+authenticate = EmailBackend().authenticate
 
 def get_csrf(request):
     token = get_token(request)
@@ -33,7 +35,7 @@ def user_profile(request):
 def login_user(request):
     print('logging someone in ...')
     data = request.data
-    user = authenticate(request, email=data.get("email"), password=data.get("password"))
+    user = authenticate(request, username=data.get("email"), password=data.get("password"))
 
     if user:
         refresh = RefreshToken.for_user(user)
@@ -86,7 +88,7 @@ def login_user(request):
 def login_staff(request):
     print('logging staff in ...')
     data = request.data
-    user = authenticate(request, email=data.get("email"), password=data.get("password"))
+    user = authenticate(request, username=data.get("email"), password=data.get("password"))
 
     if user:
         refresh = RefreshToken.for_user(user)

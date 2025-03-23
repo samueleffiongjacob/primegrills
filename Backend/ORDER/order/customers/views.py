@@ -120,6 +120,7 @@ class OrderViewSet(viewsets.ModelViewSet):
                 quantity = int(item_data['quantity'])
                 
                 if not product.is_available:
+                    
                     raise ValueError(f"Product {product.name} is not available")
 
                 item_data.update({
@@ -152,7 +153,7 @@ class OrderViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['put'])
     def update_payment_status(self, request, pk=None):
-        order = self.get_object()
+        order = self.get_object(id=pk)
         payment_status = request.data.get('payment')
         if payment_status in dict(Order.PAY_STATS):
             order.payment = payment_status

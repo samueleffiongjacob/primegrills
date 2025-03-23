@@ -1,7 +1,5 @@
-
-
 import React, { useState } from "react";
-import { User, Bell, Clock, Heart,  MapPin, LogOut, X, LogIn, MailQuestion } from "lucide-react";
+import { User, Bell, Clock, Heart, MapPin, LogOut, X, LogIn, MailQuestion } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { Link } from "react-router-dom";
 
@@ -18,11 +16,10 @@ const ProfileSidePanel: React.FC<ProfileSidePanelProps> = ({
 }) => {
   const { user, isAuthenticated, logout, fetchUserProfile } = useAuth();
   const [isUploading, setIsUploading] = useState(false);
+  const [showAddress, setShowAddress] = useState(false); // State to track if address is shown
 
   const menuItems = [
-    { icon: Bell, label: "Notifications", badge: 3, path: "/notifications" },
-    { icon: Clock, label: "Order History", path: "/order-history"  },
-    { icon: Heart, label: "Favorites", path: "/favorites"  },
+    { icon: Clock, label: "Order History", path: "/order-history" },
     { icon: MailQuestion, label: "FAQ", path: "/faqs" },
     { icon: MapPin, label: "Addresses" },
   ];
@@ -53,19 +50,14 @@ const ProfileSidePanel: React.FC<ProfileSidePanelProps> = ({
     setIsUploading(true);
 
     try {
-      const csrfToken = getCookie("csrftoken");
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user/profile/upload-image/`, {
         method: "POST",
         credentials: "include",
-        headers: {
-          "X-CSRFToken": csrfToken || "",
-        },
         body: formData,
       });
 
       if (!response.ok) throw new Error("Failed to upload image");
 
-      // Refresh user profile to get the updated image URL
       await fetchUserProfile();
     } catch (error) {
       console.error("Image Upload Error:", error);
@@ -74,11 +66,8 @@ const ProfileSidePanel: React.FC<ProfileSidePanelProps> = ({
     }
   };
 
-  const getCookie = (name: string): string | null => {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
-    return null;
+  const handleAddressClick = () => {
+    setShowAddress(!showAddress); // Toggle address visibility
   };
 
   return (
@@ -132,18 +121,20 @@ const ProfileSidePanel: React.FC<ProfileSidePanelProps> = ({
         {isAuthenticated && (
           <div className="space-y-2">
             {menuItems.map((item, index) => (
-              <Link to={item.path || ''}>
-              <button key={index} className="w-full flex text-left p-3 hover:bg-gray-100 rounded-lg"
-              >
-                <item.icon className="w-5 h-5 mt-1 text-gray-500 mr-3" />
-                <span className="flex-grow text-gray-700">{item.label}</span>
-                {item.badge && (
-                  <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-                    {item.badge}
-                  </span>
+              <div key={index}>
+                <button
+                  onClick={item.label === "Addresses" ? handleAddressClick : undefined}
+                  className="w-full flex text-left p-3 hover:bg-gray-100 rounded-lg"
+                >
+                  <item.icon className="w-5 h-5 mt-1 text-gray-500 mr-3" />
+                  <span className="flex-grow text-gray-700">{item.label}</span>
+                </button>
+                {item.label === "Addresses" && showAddress && (
+                  <div className="pl-8 text-sm text-gray-600">
+                    {profile.address ? profile.address : "No address set"}
+                  </div>
                 )}
-              </button>
-              </Link> 
+              </div>
             ))}
           </div>
         )}

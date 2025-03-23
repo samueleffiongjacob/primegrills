@@ -32,17 +32,15 @@ def callback(ch, method, properties, body):
         if event_type == "menu_created" or event_type == "menu_updated":
             # Use the serializer to validate and save the customer data
             
-            if event_type == "menu_created" or event_type == "menu_updated":
-                serializer = FoodProductSerializer(data=event_data, context={"event_type": event_type}, many=True, partial=True)
-            else:
-                raise ValueError(f"Invalid or event type not menu_created")
+            
+            serializer = FoodProductSerializer(data=event_data, context={"event_type": event_type}, many=True, partial=True)
             
             if serializer.is_valid():
                 serializer.save()
-                logger.info(f"Processed customer: {event_data.get('email')}")
+                logger.info(f"Processed Menu event: {event_data.get('name')}")
             else:
                 logger.error(f"Invalid menu data: {serializer.errors}")
-                raise ValueError(f"Invalid customer data: {serializer.errors}")
+                raise ValueError(f"Invalid menu data: {serializer.errors}")
 
         # Forward relevant data to Query Service
         # process_event(event_type, event_user_data)

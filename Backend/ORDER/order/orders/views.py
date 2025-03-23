@@ -11,6 +11,7 @@ from customers.models import FoodProduct
 from pos.models import Transaction as PosTransaction
 from .models import Orders
 from .serializers import OrdersSerializer, OrderItemsSerializer
+from django.contrib.contenttypes.models import ContentType
 
 
 class OrdersViewSet(viewsets.ModelViewSet):
@@ -20,11 +21,15 @@ class OrdersViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def process_order(self, request):
-        order = self.get_object()
+        order = self.queryset.filter(id=request.data.get('id'))
+        serialized = self.serializer_class(order)
         # Add order processing logic here
-        order.status = 'complete'
-        order.save()
-        return Response({'status': 'order processed'})
+        if not serialized.is_valid():
+            return Response(serialized.error, status=status.HTTP_400_BAD_REQUEST)
+        serialized.save( 
+            status='complete'
+        )
+        return Response({'status': 'order processed'}, status=status.HTTP_202_ACCEPTED)
     
     @action(detail=False, methods=['get'])
     def cancel_order(self, request):
@@ -40,24 +45,37 @@ class OrdersViewSet(viewsets.ModelViewSet):
     def create_order(self, request):
         
         # Add order processing logic here
-        user = self.request.user
+        user = request.user
+
+        content_type = ContentType.objects.get(model=str(user.type))
 
         
 
         orders = {
-            'content_type': user.content_type,
-            'object_id': user.id,
-            'order_id': request.data.get('order_id'),
+            'content_type': content_type,
+            'user_id': user.id,
             'date': datetime.now(),
             'time': timezone.now().time(),
             'status': 'PENDING',
             'total': request.data.get('total') or 0,
             }
+        
+        if request.data.get('orderType'):
+            orders['order_type'] = request.data.get('orderType')
+        
+
         order = OrdersSerializer(data=orders)
 
-        if  not order.is_valid():
+        if not order.is_valid():
             return Response(order.errors, status=status.HTTP_400_BAD_REQUEST)
         
+        if not request.data.get('order_id'):
+            self.perform_create(order)
+        else:
+            order_id = request.data.get('order_id')
+            order.save(
+                order_id=order_id
+            )
         order.save()
 
         items_data = request.data.get('items', [])
@@ -82,7 +100,7 @@ class OrdersViewSet(viewsets.ModelViewSet):
             except Exception as e:
                 order.delete()
                 return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        order.total = total
+        order.data.total = total
         order.save()
 
         return Response({'status': 'order created'}, status=status.HTTP_201_CREATED)
@@ -120,6 +138,13 @@ class OrdersViewSet(viewsets.ModelViewSet):
         
         else:
             return Response({'error': 'no ID'}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+    def perform_create(self, serializer):
+        order_id = f"ORD-{uuid.uuid4().hex[:8].upper()}"
+        serializer.save(
+            order_id=order_id
+        )
         
 
 # Create your views here.

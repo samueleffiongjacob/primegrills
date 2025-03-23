@@ -1,5 +1,5 @@
 import HeaderBar from '@components/headerBar';
-import { SlHome, SlSettings } from 'react-icons/sl';
+import { SlHome, SlSettings, SlEnvolope } from 'react-icons/sl';
 import { LiaFile } from 'react-icons/lia';
 import { RxDashboard } from 'react-icons/rx';
 import { MdRestaurantMenu } from 'react-icons/md';
@@ -44,6 +44,13 @@ function Sidebar() {
                         <NavLink to="/settings" className={({ isActive }) => `flex items-center text-2xl ${isActive ? 'text-primary' : ''}`}>
                             {({ isActive }) => (
                                 <SlSettings color={isActive ? '#EE7F61' : 'currentColor'} className='h-13 w-13' />
+                            )}
+                        </NavLink>
+                    </li>
+                    <li className="text-lg font-semibold">
+                        <NavLink to="/message" className={({ isActive }) => `flex items-center text-2xl ${isActive ? 'text-primary' : ''}`}>
+                            {({ isActive }) => (
+                                <SlEnvolope color={isActive ? '#EE7F61' : 'currentColor'} className='h-13 w-13' />
                             )}
                         </NavLink>
                     </li>

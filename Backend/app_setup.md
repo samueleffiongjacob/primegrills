@@ -81,7 +81,7 @@ python manage.py create_manager
 python manage.py runserver 8002
 deactivate
 
-cd Backend/EVENTS
+cd Backend/EVENTS/event_service
 python -m venv venv
 source venv/bin/activate
 pip freeze > requirements.txt # only when u are done for the days developmet sothat others can use it.

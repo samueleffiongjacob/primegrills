@@ -1,146 +1,99 @@
-from django.contrib.auth import authenticate
+from backend.backends import EmailBackend
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from signup.event_publisher import get_publisher
 from django.middleware.csrf import get_token
 from django.http import JsonResponse
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework_simplejwt.exceptions import TokenError
 from django.contrib.auth import get_user_model
-
+from django.conf import settings
 User = get_user_model()
 
-@api_view(["GET"])
-def get_csrf(request):
-    token = get_token(request)
-    print(token)
-    return JsonResponse({"csrfToken": token})
+authenticate = EmailBackend().authenticate
 
-# login_user function - stores both tokens in HTTP-only cookies
-@api_view(["POST"])
-def login_user(request):
-    print('logging someone in ...')
-    data = request.data
-    email = data.get("email")
-    password = data.get("password")
 
-    if not email or not password:
-        return Response({"error": "Email and password are required"}, status=400)
-    print(data)
-    
-    # Check if the user exists and is verified
-    try:
-        # Check if the user exists
-        user = User.objects.get(email=email)
-        # If the user is not active (e.g., email not verified)
-        if not user.is_active:
-            print(user.is_active)
-            return Response({"error": "Email not verified"}, status=400)
-    except User.DoesNotExist:
-        return Response({"error": "Invalid credentials"}, status=400)
-    #user = User.objects.get(email=email , user_type='client')
-    
-    
-    user = authenticate(request, email=email, password=password)
-    if not user:
-        return Response({"error": "Incorrect password"}, status=400)  # Specific error for password
-    print(user)
+# Utility function to generate tokens
+def get_tokens_for_user(user):
+    refresh = RefreshToken.for_user(user)
+    access = refresh.access_token
+    access["email"] = user.email  # Include email in token
+    return {"refresh": str(refresh), "access": str(access)}
 
-    if user:
-        if user.is_active == False:
-            return Response({"error": "Email not verified"}, status=400)
+class BaseAuthView(APIView):
+    """ Base class for authentication-related views """
+    def get_publisher(self):
+        return get_publisher()
+
+class GetCSRFView(BaseAuthView):
+    def get(self, request):
+        token = get_token(request)
+        return JsonResponse({"csrfToken": token})
+
+class LoginView(BaseAuthView):
+    def post(self, request):
+        data = request.data
+        email = data.get("email")
+        password = data.get("password")
         
-        refresh = RefreshToken.for_user(user)
-        access_token = str(refresh.access_token)
+        if not email or not password:
+            return Response({"error": "Email and password are required"}, status=400)
         
-        # Emit user logged in event
-        publisher = get_publisher()
-        publisher.publish_event('user.loggedin', {
-            'user_id': user.id,
-        })
-        
-        response = JsonResponse({
-            "message": "Login successful",
-        })
+        try:
+            user = User.objects.get(email=email)
+            if not user.is_active:
+                return Response({"error": "Email not verified"}, status=400)
+        except User.DoesNotExist:
+            return Response({"error": "Invalid credentials"}, status=400)
 
-        # Set access token in HTTP-only cookie
+        user = authenticate(request, username=email, password=password)
+        if not user:
+            return Response({"error": "Incorrect password"}, status=400)
+
+        tokens = get_tokens_for_user(user)
+        self.get_publisher().publish_event('user.loggedin', {'user_id': user.id})
+
+        response = JsonResponse({"message": "Login successful"})
+        self.set_cookies(response, tokens)
+        return response
+    
+    
+    def set_cookies(self, response, tokens):
         response.set_cookie(
-            "access_token", 
-            access_token,
-            httponly=True, 
-            samesite="Lax", 
-            secure=True,
-            max_age=5 * 24 * 60 * 60  # 5 days
+            "accessToken", 
+            tokens["access"],
+            httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+            samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
+            secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'] if not settings.DEBUG else False,
+            max_age=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds()
         )
-        
-        # Set refresh token in HTTP-only cookie
         response.set_cookie(
             "refresh_token", 
-            str(refresh),
-            httponly=True, 
-            samesite="Lax", 
-            secure=True,
-            max_age=5 * 24 * 60 * 60  # 5 days
+            tokens["refresh"], 
+            httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+            samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
+            secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'] if not settings.DEBUG else False,
+            max_age=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds()
         )
+        #response.set_cookie("csrftoken", get_token(self.request), samesite="Lax", secure=True)
         
-        # Set CSRF token
-        response.set_cookie(
-            "csrftoken", 
-            get_token(request), 
-            samesite="Lax", 
-            secure=True
-        )
-        
-        return response
-    
-    return Response({"error": "Invalid credentials"}, status=400)
+class LogoutView(BaseAuthView):
+    def post(self, request):
+        try:
+            refresh_token = request.COOKIES.get("refresh_token")
+            if refresh_token:
+                token = RefreshToken(refresh_token)
+                token.blacklist()
 
-@api_view(["POST"])
-def logout_user(request):
-    try:
-        refresh_token = request.COOKIES.get("refresh_token")
-        if refresh_token:
-            token = RefreshToken(refresh_token)
-            token.blacklist()
-        
-        publisher = get_publisher()
-        if hasattr(request, 'user') and request.user.id:
-            publisher.publish_event('user.loggedout', {"user_id": request.user.id})
-        
-        response = Response({"message": "Logout successful"}, status=200)
-        
-        # Clear cookies
-        response.delete_cookie("access_token")
-        response.delete_cookie("refresh_token")
-        
-        return response
-        
-    except TokenError:
-        return Response({"error": "Invalid token"}, status=400)
-    except Exception as e:
-        return Response({"error": f"Logout failed: {str(e)}"}, status=500)
-    
-    try:
-        refresh_token = request.COOKIES.get("refresh_token")
-        if refresh_token:
-            token = RefreshToken(refresh_token)
-            token.blacklist()
-        
-        publisher = get_publisher()
-        if hasattr(request, 'user') and request.user.id:
-            publisher.publish_event('staff.loggedout', {"user_id": request.user.id})
-        
-        response = Response({"message": "Logout successful"}, status=200)
-        
-        # Clear cookies
-        response.delete_cookie("access_token")
-        response.delete_cookie("refresh_token")
-        
-        return response
-        
-    except TokenError:
-        return Response({"error": "Invalid token"}, status=400)
-    except Exception as e:
-        return Response({"error": f"Logout failed: {str(e)}"}, status=500)
+            if hasattr(request, 'user') and request.user.id:
+                self.get_publisher().publish_event('user.loggedout', {"user_id": request.user.id})
+
+            response = Response({"message": "Logout successful"}, status=200)
+            response.delete_cookie("accessToken")
+            response.delete_cookie("refresh_token")
+            return response
+        except TokenError:
+            return Response({"error": "Invalid token"}, status=400)
+        except Exception as e:
+            return Response({"error": f"Logout failed: {str(e)}"}, status=500)
