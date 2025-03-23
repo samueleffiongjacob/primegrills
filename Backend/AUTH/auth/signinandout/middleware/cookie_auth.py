@@ -5,7 +5,6 @@ from django.contrib.auth import get_user_model
 from rest_framework.exceptions import AuthenticationFailed
 
 User = get_user_model()
-p
 
 class CookieJWTAuthentication(JWTAuthentication):
     def authenticate(self, request):
