@@ -4,12 +4,13 @@ import logo from '../../assets/images/primeLogo.png';
 import { motion, AnimatePresence } from 'framer-motion';
 import StaffForm, { StaffFormData } from "./StaffForm";
 import pencil from '../../assets/images/pencil.png';
-import trash from '../../assets/images/trash.png';
+//import trash from '../../assets/images/trash.png';
 import { getCookie } from "../../utils/cookie";
-import LoginHistoryModal from "../LoginHistory";
+//import LoginHistoryModal from "../LoginHistory";
 import { showToast } from '../../utils/toast';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { FiRefreshCw } from 'react-icons/fi';
 
 // Improved typing for backend data
 interface StaffProfile {
@@ -119,10 +120,10 @@ const Staff = () => {
   const [formMode, setFormMode] = useState<'add' | 'edit'>('add');
   const [selectedUser, setSelectedUser] = useState<StaffFormData | undefined>(undefined);
   const [actionLoading, setActionLoading] = useState(false);
-  // Filter users based on search term
   const [statusFilter, setStatusFilter] = useState("");
   const [shiftFilter, setShiftFilter] = useState("");
-  
+  const [isRefreshing, setIsRefreshing] = useState(false); // State for refresh loading
+
   // Memoized fetch function
   const fetchUsers = useCallback(async () => {
     if (!isAuthenticated) return;
@@ -139,7 +140,6 @@ const Staff = () => {
         profileImage: user.profileImage || logo, // Default image if missing
         staff_profile: {
           ...user.staff_profile
-        
         },
       }));
       
@@ -147,15 +147,21 @@ const Staff = () => {
     } catch (err) {
       console.error("Error fetching users:", err);
       setError("Failed to load staff data. Please try again.");
-
     } finally {
       setLoading(false);
+      setIsRefreshing(false); // Stop refreshing
     }
   }, [isAuthenticated, currentUser?.email, currentUser?.staff_profile.status]);
 
   useEffect(() => {
     fetchUsers();
   }, [fetchUsers]);
+
+  // Handle refresh button click
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchUsers(); 
+  };
 
   const handleAddUser = () => {
     setSelectedUser(undefined);
@@ -197,7 +203,6 @@ const Staff = () => {
       await fetchUsers();
       setFormOpen(false);
     } catch (error) {
-      //toast.error(`Error ${formMode === 'add' ? 'adding' : 'updating'} user:`)
       console.error(`Error ${formMode === 'add' ? 'adding' : 'updating'} user:`, error);
       throw error;
     } finally {
@@ -220,8 +225,6 @@ const Staff = () => {
     }
   };
 
-
-  
   // Filter users based on search term, status, and shift
   const filteredUsers = users.filter(user => 
     (user.name?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
@@ -242,17 +245,29 @@ const Staff = () => {
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="py-5 bg-white border-b flex items-center justify-between px-6">
           <h1 className="text-xl font-semibold">Staff Management</h1>
-          {canManageUsers && (
+          <div className="flex items-center gap-4">
+            {/* Refresh Button */}
             <button
-              onClick={handleAddUser}
-              className="bg-[#EE7F61] text-white px-4 py-2 rounded-lg hover:bg-[#e06a4c] focus:outline-none focus:ring-2 focus:ring-[#EE7F61]"
-              disabled={actionLoading}
+              onClick={handleRefresh}
+              className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+              disabled={isRefreshing}
             >
-              Add New Staff
+              <FiRefreshCw className={`inline-block mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+              {isRefreshing ? "Refreshing..." : "Refresh"}
             </button>
-          )}
+            {canManageUsers && (
+              <button
+                onClick={handleAddUser}
+                className="bg-[#EE7F61] text-white px-4 py-2 rounded-lg hover:bg-[#e06a4c] focus:outline-none focus:ring-2 focus:ring-[#EE7F61]"
+                disabled={actionLoading}
+              >
+                Add New Staff
+              </button>
+            )}
+          </div>
         </header>
         <main className="flex-1 overflow-auto p-6">
+          {/* Rest of the component remains unchanged */}
           {loading ? (
             <motion.div 
               className="flex justify-center items-center h-64"
@@ -286,7 +301,7 @@ const Staff = () => {
               )}
               
               <div className="mb-6 flex flex-wrap gap-4 items-center">
-                 {/* Status Filter */}
+                {/* Status Filter */}
                 <select 
                   className="border border-gray-300 rounded-lg p-2"
                   value={statusFilter}
@@ -372,7 +387,6 @@ const Staff = () => {
                           <th className="py-3 px-4 text-left">Image</th>
                           <th className="py-3 px-4 text-left">Shift</th>
                           <th className="py-3 px-4 text-left">Hours</th>
-                          <th className="py-3 px-4 text-left">Login Activity</th>
                           {canManageUsers && <th className="py-3 px-4 text-center">Actions</th>}
                         </tr>
                       </thead>
@@ -387,11 +401,11 @@ const Staff = () => {
                             transition={{ duration: 0.2, delay: index * 0.03 }}
                             className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}
                           >
-                            <td className="py-3 px-4 text-gray-600">{index + 1}</td> {/* Updated to show S/N */}
-                            <td className="py-3 px-4 font-medium">{user.name}</td>
-                            <td className="py-3 px-4 text-gray-700">{user.email}</td>
-                            <td className="py-3 px-4">{user.staff_profile.role}</td>
-                            <td className="py-3 px-4">
+                            <td className="py-3 px-4 text-sm text-gray-600">{index + 1}</td> {/* Updated to show S/N */}
+                            <td className="py-3 px-4 text-sm font-medium">{user.name}</td>
+                            <td className="py-3 px-4 text-sm text-gray-700">{user.email}</td>
+                            <td className="py-3 px-4 text-sm">{user.staff_profile.role}</td>
+                            <td className="py-3 px-4 text-sm">
                               <span className={`px-2 py-1 rounded-full text-xs ${
                                 user.staff_profile.status === 'Active' 
                                   ? 'bg-green-100 text-green-800' 
@@ -407,13 +421,8 @@ const Staff = () => {
                                 className="w-10 h-10 rounded-full object-cover border" 
                               />
                             </td>
-                            <td className="py-3 px-4">{user.staff_profile.shift}</td>
-                            <td className="py-3 px-4 text-gray-600">{user.staff_profile.shiftHours}</td>
-                            <td className="py-3 px-4 text-gray-600">
-                              <div className="flex items-center">
-                                <LoginHistoryModal userId={user.id} trigger="click"/>
-                              </div>
-                            </td>
+                            <td className="py-3 px-4 text-sm">{user.staff_profile.shift}</td>
+                            <td className="py-3 px-4 text-gray-600 text-xs ">{user.staff_profile.shiftHours}</td>
                             {canManageUsers && (
                               <td className="py-3 px-4 text-center">
                                 <button
@@ -424,14 +433,14 @@ const Staff = () => {
                                 >
                                   <img src={pencil} alt="Edit" className="h-5 w-5"/>
                                 </button>
-                                <button 
+                                {/* <button 
                                   className="p-2 hover:text-red-600 hover:bg-red-50 rounded"
                                   onClick={() => handleDeleteUser(user.id)}
                                   aria-label={`Delete ${user.name}`}
                                   title="Delete staff member"
                                 >
                                   <img src={trash} alt="Delete" className="h-5 w-5"/>
-                                </button>
+                                </button> */}
                               </td>
                             )}
                           </motion.tr>
@@ -441,8 +450,6 @@ const Staff = () => {
                     </table>
                   </div>
                 )}
-                
-                
               </div>
             </>
           )}

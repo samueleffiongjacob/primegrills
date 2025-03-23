@@ -2,6 +2,7 @@ import React, { JSX, useState } from "react";
 import { useAuth } from "../context/authContext";
 import { ToastContainer } from 'react-toastify';
 import LoginModal from "./Login";
+import GreetingModal from "./GreetingModal";
 // import { Navigate } from "react-router-dom";
 
 
@@ -12,6 +13,19 @@ interface ProtectedRouteProps {
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { isAuthenticated, user: currentUser } = useAuth();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [showGreeting, setShowGreeting] = useState(false);
+  const [userName, setUserName] = useState('');
+
+  const handleLoginSuccess = (name: string) => {
+    setUserName(name); 
+    setShowGreeting(true); 
+    // Add a timeout before closing the login modal
+    setTimeout(() => {
+      setIsLoginModalOpen(false); 
+    }, 2000); // 2000ms =  seconds
+  };
+
+
 
   if (!isAuthenticated && currentUser?.staff_profile.status !== "Active") {
     return (
@@ -33,7 +47,14 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
         <LoginModal
           isOpen={isLoginModalOpen}
           onClose={() => setIsLoginModalOpen(false)}
+          onLoginSuccess={handleLoginSuccess}
         />
+
+        <GreetingModal
+        isOpen={showGreeting}
+        onClose={() => setShowGreeting(false)}
+        userName={userName}
+      />
       </div>
     );
   }
