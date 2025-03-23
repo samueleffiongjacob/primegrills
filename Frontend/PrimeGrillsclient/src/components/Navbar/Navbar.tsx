@@ -128,6 +128,11 @@ const Navbar = () => {
   const isMobile = windowWidth < 768;
   const isTablet = windowWidth >= 768 && windowWidth < 1024;
 
+  // Function to handle hover state
+  const handleNavItemHover = (itemTitle: string | null) => {
+    setHoveredItem(itemTitle);
+  };
+
   return (
     <header className="sticky top-0 z-50 bg-white shadow-sm">
       <div className="container mx-auto px-4 md:px-6 lg:px-8">
@@ -149,8 +154,8 @@ const Navbar = () => {
                 <div
                   key={item.title}
                   className="relative group"
-                  onMouseOver={() => setHoveredItem(item.title)}
-                  onMouseLeave={() => setTimeout(() => setHoveredItem(null), 200)} // Add a delay to hide the dropdown
+                  onMouseEnter={() => handleNavItemHover(item.title)}
+                  onMouseLeave={() => handleNavItemHover(null)}
                 >
                   <NavLink
                     to={item.path || ""}
@@ -175,8 +180,6 @@ const Navbar = () => {
                     <div
                       className="absolute left-0 top-full mt-2 w-48 bg-white shadow-lg rounded-md opacity-100 
                       visible transition-opacity duration-300"
-                      onMouseEnter={() => setHoveredItem(item.title)} // Keep dropdown open when mouse is over it
-        
                     >
                       {item.subItems.map((subItem) => {
                         const isSubItemActive =
@@ -215,8 +218,8 @@ const Navbar = () => {
                 <div
                   key={item.title}
                   className="relative group"
-                  onMouseEnter={() => setHoveredItem(item.title)}
-                  onMouseLeave={() => setTimeout(() => setHoveredItem(null), 200)} // Add a delay to hide the dropdown
+                  onMouseEnter={() => handleNavItemHover(item.title)}
+                  onMouseLeave={() => handleNavItemHover(null)}
                 >
                   <NavLink
                     to={item.path || "/menu-category"}
@@ -234,8 +237,6 @@ const Navbar = () => {
                     <div
                       className="absolute left-0 top-full mt-2 w-48 bg-white shadow-lg rounded-md opacity-100 
                       visible transition-opacity duration-300"
-                      onMouseEnter={() => setHoveredItem(item.title)} // Keep dropdown open when mouse is over it
-                      onMouseLeave={() => setHoveredItem(null)} // Hide dropdown when mouse leaves
                     >
                       {item.subItems.map((subItem) => {
                         const isSubItemActive =

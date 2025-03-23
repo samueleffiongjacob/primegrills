@@ -25,17 +25,34 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [user, setUser] = useState<UserProfile | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  // Check for authentication when component mounts
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      try {
+        // Try to fetch the user profile
+        await fetchUserProfile();
+      } catch (error) {
+        // If there's an error, ensure the user is logged out
+        console.error("Auth check failed:", error);
+        setIsAuthenticated(false);
+        setUser(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkAuthStatus();
+  }, []);
 
   const login = async (email: string, password: string): Promise<string | boolean> => {
     try {
-      //const csrfToken = getCookie("csrftoken");
-
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/login/`, {
         method: "POST",
-        credentials: "include",
+        credentials: "include", // Important: This ensures cookies are sent with the request
         headers: { 
           "Content-Type": "application/json",
-          //"X-CSRFToken": csrfToken || "",
         },
         body: JSON.stringify({ email, password }),
       });
@@ -56,14 +73,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const resendVerificationEmail = async (email: string): Promise<boolean> => {
     try {
-      //const csrfToken = getCookie("csrftoken");
-
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/email/verify/resend/`, {
         method: "POST",
         credentials: "include",
         headers: { 
           "Content-Type": "application/json",
-         // "X-CSRFToken": csrfToken || "",
         },
         body: JSON.stringify({ email }),
       });
@@ -77,14 +91,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const fetchUserProfile = async () => {
     try {
-      //const csrfToken = getCookie("csrftoken");
-
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user/profile/`, {
         method: "GET",
-        credentials: "include",
-        headers: {
-         // "X-CSRFToken": csrfToken || "",
-        }
+        credentials: "include", // Important: This ensures cookies are sent with the request
       });
 
       if (!response.ok) {
@@ -96,7 +105,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setIsAuthenticated(true);
     } catch (error) {
       console.error("Profile Fetch Error:", error);
-      logout(); // Log out the user if fetching the profile fails
+      // Don't automatically log out here anymore
+      // Let the error be caught by the caller
+      throw error;
     }
   };
 
@@ -109,14 +120,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logout = async () => {
     try {
-     // const csrfToken = getCookie("csrftoken");
-
       await fetch(`${import.meta.env.VITE_BACKEND_URL}/logout/`, {
         method: "POST",
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
-         // "X-CSRFToken": csrfToken || "",
         },
       });
     } catch (error) {
@@ -126,6 +134,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(null);
     }
   };
+
+  if (isLoading) {
+    // You could return a loading spinner here if you want
+    return null;
+  }
 
   return (
     <AuthContext.Provider value={{ 
